@@ -41,7 +41,7 @@ const NAV_SECTIONS = [
   { id: "team", label: "Team & Operations" },
   { id: "technology", label: "Technology & AI" },
   { id: "competitive", label: "Competitive Positioning" },
-  { id: "investment", label: "Investment Summary" },
+  { id: "investment", label: "Year 1 Budget Plan" },
 ];
 
 function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
@@ -614,8 +614,8 @@ export default function MarketingPlan() {
               />
               <VerificationStep
                 number={5}
-                title="Vehicle History Report"
-                description="We partner with TRA, INTERPOL's I-24/7 vehicle database, and East African traffic authorities to check: outstanding fines, reported theft, accident history, and previous ownership count."
+                title="Vehicle History Check"
+                description="Seller-provided ownership documents are cross-referenced with our internal database to verify the ownership chain. We flag inconsistencies, confirm the stated number of previous owners, and check whether the vehicle profile matches any duplicated or suspicious listings on the platform."
                 icon={<IconSearch size={18} />}
               />
               <VerificationStep
@@ -839,32 +839,32 @@ export default function MarketingPlan() {
               <RevenueCard
                 number={1}
                 title="Basic Listing Fee"
-                description="Free for first 3 listings/month. TZS 5,000–15,000 per additional listing. Estimated avg revenue per active seller: TZS 8,500/month."
+                description="Free for first 3 listings/month. TZS 1,000–3,000 per additional listing. Simple and accessible for individual sellers, keeping the barrier to entry very low."
               />
               <RevenueCard
                 number={2}
                 title="Featured & Bumped Listings"
-                description="Pay to appear at top of search results. TZS 10,000–50,000 depending on duration and placement tier. High-margin, scalable."
+                description="Pay to appear at the top of search results. TZS 2,000–8,000 depending on duration and placement tier. High-margin, scalable, and in demand from active sellers."
               />
               <RevenueCard
                 number={3}
                 title="Dealer Subscription Packages"
-                description="Monthly subscription for unlimited listings + analytics + priority support. 3 tiers: Standard (TZS 80K), Premium (TZS 150K), Enterprise (TZS 350K). Target: 500 dealer subscriptions in Year 1."
+                description="Monthly subscription for unlimited listings + analytics + priority support. 3 tiers: Standard (TZS 20K), Premium (TZS 40K), Enterprise (TZS 80K). Target: 200 dealer subscriptions in Year 1."
               />
               <RevenueCard
                 number={4}
                 title="Motokah Verified Inspection"
-                description="Physical inspection fee: TZS 120,000–180,000 depending on vehicle type. Revenue split: 60% to inspection partner, 40% to Motokah."
+                description="Physical inspection fee: TZS 40,000–70,000 depending on vehicle type. Revenue split: 60% to inspection partner workshop, 40% to Motokah."
               />
               <RevenueCard
                 number={5}
                 title="Finance & Insurance Leads"
-                description="Pay-per-lead model with partnered banks (CRDB, NMB, Equity Bank) and insurance companies (Jubilee, UAP, Resolution). Est. TZS 15,000–45,000 per qualified lead."
+                description="Pay-per-lead referral model with partnered banks (CRDB, NMB) and insurance companies. Est. TZS 3,000–10,000 per qualified lead passed to a partner."
               />
               <RevenueCard
                 number={6}
-                title="Data & Pricing Intelligence (B2B)"
-                description="Anonymised market pricing data and volume reports sold to importers, dealers, and fleet companies. Annual subscription: $1,200–$4,800 USD depending on data depth."
+                title="Market Pricing Reports (B2B)"
+                description="Anonymised market pricing data and volume reports sold to importers, dealers, and fleet companies. Annual subscription: $200–$600 USD depending on data depth and frequency."
               />
             </div>
             <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
@@ -883,33 +883,27 @@ export default function MarketingPlan() {
               {[
                 {
                   icon: <IconStar size={18} />,
-                  title: "Executive Team",
+                  title: "Founders",
                   description:
-                    "Founders with backgrounds in automotive, fintech, and marketplace businesses across East Africa. Advised by former executives from Jumia, Cars45, and OLX Africa.",
+                    "Three co-founders driving the business: product vision, investor relations, and day-to-day operations. Each founder owns a defined domain — ensuring fast decisions without layers of management.",
                 },
                 {
-                  icon: <IconClipboardCheck size={18} />,
-                  title: "Operations Team",
+                  icon: <IconDeviceMobile size={18} />,
+                  title: "Engineering & Product",
                   description:
-                    "Dedicated verification agents handling listing reviews, seller support, and dispute resolution. 24-hour turnaround guaranteed.",
-                },
-                {
-                  icon: <IconRobot size={18} />,
-                  title: "Technology Team",
-                  description:
-                    "Full-stack engineers, AI/ML specialists, and mobile developers. Platform built on modern cloud infrastructure (AWS/Vercel). Uptime SLA: 99.9%.",
+                    "Responsible for the web platform, mobile app (iOS and Android), and all backend systems. Shipping features continuously. Platform hosted on modern cloud infrastructure with 99.9% uptime target.",
                 },
                 {
                   icon: <IconTrendingUp size={18} />,
-                  title: "Growth Team",
+                  title: "Marketing & Growth",
                   description:
-                    "Performance marketing managers, influencer relations, and dealer success managers in each active market.",
+                    "Owns all customer acquisition: social media campaigns, influencer partnerships, dealer outreach, radio, and content. Tracks CAC and conversion from every channel.",
                 },
                 {
-                  icon: <IconUsers size={18} />,
-                  title: "Customer Support",
+                  icon: <IconClipboardCheck size={18} />,
+                  title: "Operations & Support",
                   description:
-                    "Multi-channel support via WhatsApp, in-app chat, and phone. Response time target: under 2 hours. Swahili and English.",
+                    "Handles listing verification, seller onboarding, customer support via WhatsApp and in-app chat, and dealer account management. Response time target: under 2 hours.",
                 },
               ].map((item) => (
                 <div key={item.title} className="bg-card border border-border rounded-xl p-5 shadow-sm flex gap-3 items-start">
@@ -928,11 +922,11 @@ export default function MarketingPlan() {
               <div className="flex items-start gap-3">
                 <IconTrendingUp size={22} className="flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-base mb-2">Built to Scale</h4>
+                  <h4 className="font-bold text-base mb-2">Lean by Design</h4>
                   <p className="text-primary-foreground/85 text-sm leading-relaxed">
-                    Our technology-first approach means each new market requires minimal incremental headcount. The
-                    platform handles listing management, fraud detection, pricing, and matchmaking automatically —
-                    allowing our lean human team to focus on partnerships, verification quality, and brand trust.
+                    Our platform-first approach keeps the team small and focused. The software handles listing
+                    management, pricing analysis, and buyer-seller matching automatically — freeing the team to
+                    focus on partnerships, verification quality, and market expansion.
                   </p>
                 </div>
               </div>
@@ -999,33 +993,39 @@ export default function MarketingPlan() {
             </div>
           </SectionWrapper>
 
-          {/* SECTION 10 — INVESTMENT */}
+          {/* SECTION 10 — YEAR 1 BUDGET PLAN */}
           <SectionWrapper id="investment" muted>
             <SectionHeader
               icon={<IconBuildingBank size={18} />}
               label="Section 10"
-              title="Funding Round"
+              title="Year 1 Budget Plan"
+              subtitle="How we allocate resources across the business in our first year of operation in Tanzania."
             />
 
-            <div className="bg-card border border-primary/30 rounded-2xl p-6 shadow-sm mb-8 text-center">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Seed Round</p>
-              <p className="text-5xl font-extrabold text-primary tracking-tight">$500,000</p>
-              <p className="text-sm text-muted-foreground mt-1">USD</p>
-            </div>
-
-            <h3 className="text-base font-bold text-foreground mb-4">Use of Funds</h3>
+            <h3 className="text-base font-bold text-foreground mb-4">Budget Allocation</h3>
             <div className="bg-card border border-border rounded-2xl p-6 shadow-sm mb-8 space-y-4">
-              <FundBar label="Marketing & Customer Acquisition (Phase 1)" pct={35} color="bg-primary" />
-              <FundBar label="Technology & Platform Development" pct={30} color="bg-blue-500" />
-              <FundBar label="Operations & Team" pct={20} color="bg-teal-500" />
-              <FundBar label="Working Capital & Reserve" pct={15} color="bg-slate-400" />
+              <FundBar label="Marketing & Customer Acquisition" pct={35} color="bg-primary" />
+              <FundBar label="Technology & App Development" pct={30} color="bg-blue-500" />
+              <FundBar label="Operations & On-Ground Team" pct={20} color="bg-teal-500" />
+              <FundBar label="Working Capital & Contingency" pct={15} color="bg-slate-400" />
             </div>
 
-            <div className="bg-primary text-primary-foreground rounded-2xl p-8 text-center mb-8">
+            <h3 className="text-base font-bold text-foreground mb-4">Key Year 1 Milestones</h3>
+            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm mb-8">
+              <ul className="space-y-3">
+                <GoalItem text="Platform live and publicly launched in Dar es Salaam" />
+                <GoalItem text="200+ verified dealers onboarded in Tanzania" />
+                <GoalItem text="5,000+ active listings within 3 months of launch" />
+                <GoalItem text="Inspection partner agreements signed in 2 cities" />
+                <GoalItem text="Begin scoping Kenya market for Phase 2 entry" />
+                <GoalItem text="Reach break-even on operational costs by Month 9" />
+              </ul>
+            </div>
+
+            <div className="bg-primary text-primary-foreground rounded-2xl p-8 text-center">
               <p className="text-base sm:text-lg font-medium leading-relaxed max-w-2xl mx-auto">
-                Join us in building Africa&apos;s most trusted vehicle marketplace. We are not just building a
-                classifieds site — we are building the infrastructure layer for how Africa buys, sells, and
-                finances vehicles.
+                Motokah is not just a classifieds site. It is the infrastructure layer for how Africa buys,
+                sells, and trusts vehicles — built by a focused founding team who understand the market.
               </p>
               <div className="mt-6 flex items-center justify-center gap-2 text-primary-foreground/90">
                 <IconMail size={16} />
