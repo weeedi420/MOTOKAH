@@ -8,9 +8,12 @@ import NotificationBell from "@/components/NotificationBell";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 
 const navLinks = [
-  { label: "Buy Cars", href: "/search" },
-  { label: "Sell Your Car", href: "/sell" },
+  { label: "Used Cars", href: "/search" },
+  { label: "New Cars", href: "/search?condition=New" },
+  { label: "Bikes", href: "/search?bodyType=Motorcycle" },
+  { label: "Dealers", href: "/dealers" },
   { label: "Compare", href: "/compare" },
+  { label: "Blog", href: "/blog" },
 ];
 
 export default function Header() {
