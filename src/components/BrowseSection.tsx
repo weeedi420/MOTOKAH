@@ -39,18 +39,18 @@ const allCategories = [
 ];
 
 const brandLogos: Record<string, string> = {
-  Toyota:      "https://logos.hunter.io/toyota.com",
-  Suzuki:      "https://logos.hunter.io/suzuki.com",
-  Honda:       "https://logos.hunter.io/honda.com",
-  Nissan:      "https://logos.hunter.io/nissan.com",
-  KIA:         "https://logos.hunter.io/kia.com",
-  Hyundai:     "https://logos.hunter.io/hyundai.com",
-  BMW:         "https://logos.hunter.io/bmw.co.uk",
-  Ford:        "https://logos.hunter.io/ford.com",
-  Mitsubishi:  "https://logos.hunter.io/mitsubishi-motors.com",
-  Isuzu:       "https://logos.hunter.io/isuzu.com",
-  "Land Rover":"https://logos.hunter.io/landrover.com",
-  Mercedes:    "https://logos.hunter.io/mercedes-benz.com",
+  Toyota:      "https://logo.clearbit.com/toyota.com",
+  Suzuki:      "https://logo.clearbit.com/suzuki.com",
+  Honda:       "https://logo.clearbit.com/honda.com",
+  Nissan:      "https://logo.clearbit.com/nissan.com",
+  KIA:         "https://logo.clearbit.com/kia.com",
+  Hyundai:     "https://logo.clearbit.com/hyundai.com",
+  BMW:         "https://logo.clearbit.com/bmw.com",
+  Ford:        "https://logo.clearbit.com/ford.com",
+  Mitsubishi:  "https://logo.clearbit.com/mitsubishi-motors.com",
+  Isuzu:       "https://logo.clearbit.com/isuzu.com",
+  "Land Rover":"https://logo.clearbit.com/landrover.com",
+  Mercedes:    "https://logo.clearbit.com/mercedes-benz.com",
 };
 
 const brandColors: Record<string, string> = {

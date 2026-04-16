@@ -44,6 +44,7 @@ const NAV_SECTIONS = [
   { id: "team", label: "Team & Operations" },
   { id: "technology", label: "Technology Stack" },
   { id: "competitive", label: "Competitive Positioning" },
+  { id: "partnership-model", label: "Partnership Model" },
   { id: "investment", label: "Year 1 Budget Plan" },
 ];
 
@@ -1153,6 +1154,146 @@ export default function MarketingPlan() {
               </div>
               <div className="p-5">
                 <ComparisonTable />
+              </div>
+            </div>
+          </SectionWrapper>
+
+          {/* SECTION — 1POINT SOLUTIONS PARTNERSHIP MODEL */}
+          <SectionWrapper id="partnership-model">
+            <SectionHeader
+              icon={<IconCertificate size={18} />}
+              label="Partnership Model"
+              title="1Point Solutions — Strategic Services Partnership"
+              subtitle="A legally structured services-for-equity arrangement that reduces Motokah's cash burn, distributes execution risk, and aligns all parties around a shared outcome."
+            />
+
+            {/* What We're Proposing */}
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 mb-8">
+              <h3 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
+                <IconFileText size={16} className="text-primary" /> The Proposal
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                Motokah's founders register the company as an independent entity — fully owned and controlled by them. <strong className="text-foreground">1Point Solutions does not co-found the company.</strong> Instead, 1Point Solutions enters as a contracted service partner via two legal instruments: a <strong className="text-foreground">Services Agreement</strong> and a <strong className="text-foreground">Shareholders Agreement (SHA)</strong>.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                In exchange for providing a defined package of services — technology infrastructure, engineering, marketing execution, and call support — 1Point Solutions receives an agreed <strong className="text-foreground">equity stake (%) in Motokah Ltd</strong>. This is known in commercial law as a <em>Services-for-Equity</em> arrangement, widely used across the African startup ecosystem.
+              </p>
+            </div>
+
+            {/* Two Documents */}
+            <h3 className="text-base font-bold text-foreground mb-4">The Two Legal Documents</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+              <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <IconFileText size={16} className="text-primary" />
+                  </div>
+                  <h4 className="font-semibold text-foreground text-sm">Services Agreement</h4>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-3">Defines exactly what 1Point Solutions delivers, on what timeline, and the market value of those services. Replaces cash expenditure with contributed services.</p>
+                <ul className="space-y-1.5">
+                  {[
+                    "Technology infrastructure (servers, cloud, CI/CD)",
+                    "Engineering team (web, mobile, backend)",
+                    "Customer call support (dedicated agents)",
+                    "Marketing budget & execution (ads, SEO, influencer)",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-foreground">
+                      <IconCheck size={13} className="text-green-500 flex-shrink-0 mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <IconShield size={16} className="text-primary" />
+                  </div>
+                  <h4 className="font-semibold text-foreground text-sm">Shareholders Agreement (SHA)</h4>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-3">Governs the equity granted in exchange for services. Protects both parties throughout the company's life.</p>
+                <ul className="space-y-1.5">
+                  {[
+                    "Vesting over 24–36 months tied to milestone delivery",
+                    "IP Assignment — all work belongs to Motokah",
+                    "Non-compete for vehicle marketplace (+ 2 yrs post-exit)",
+                    "Drag-along / Tag-along in acquisition scenarios",
+                    "Right of First Refusal (ROFR) on share sales",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-foreground">
+                      <IconCheck size={13} className="text-green-500 flex-shrink-0 mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Why this protects everyone */}
+            <h3 className="text-base font-bold text-foreground mb-4">Why This Structure Protects Everyone</h3>
+            <div className="space-y-3 mb-8">
+              {[
+                {
+                  title: "No overvaluation risk",
+                  description: "Equity is tied to service delivery milestones — not speculative future profits or inflated cash investment estimates. Each party's contribution is valued at market rate and documented.",
+                },
+                {
+                  title: "Reduces Motokah's burn rate",
+                  description: "Servers, engineers, marketing spend, and call support are expensive. Replacing these cash line items with contracted services means Motokah can operate leaner and reach profitability faster.",
+                },
+                {
+                  title: "Aligns incentives completely",
+                  description: "1Point Solutions only benefits if Motokah succeeds. There is no retainer, no monthly invoice — only equity. Both parties are pulling in the same direction.",
+                },
+                {
+                  title: "Founders retain control",
+                  description: "1Point Solutions holds a minority equity stake with defined service obligations. Motokah founders retain operational control and decision-making authority. There is no governance conflict.",
+                },
+                {
+                  title: "Investor-ready structure",
+                  description: "When Motokah raises a formal round, investors deal with the company directly. 1Point Solutions' equity is already issued, documented, and vested — no messy re-negotiation at deal close.",
+                },
+              ].map(({ title, description }) => (
+                <div key={title} className="flex gap-3 items-start bg-card border border-border rounded-lg p-4">
+                  <IconCheck size={15} className="text-green-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-sm font-semibold text-foreground">{title} — </span>
+                    <span className="text-sm text-muted-foreground">{description}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Equity calculation */}
+            <div className="bg-muted/50 border border-border rounded-xl p-6 mb-8">
+              <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                <IconChartBar size={16} className="text-primary" /> How to Calculate Fair Equity
+              </h3>
+              <ol className="space-y-3">
+                {[
+                  "Estimate the monthly market value of services contributed by 1Point Solutions (infrastructure + engineering + marketing + support).",
+                  "Multiply by the vesting period in months (e.g. 36 months) to get total service contribution value.",
+                  "Agree on Motokah's post-agreement valuation with both parties (based on comparable early-stage marketplaces in East Africa).",
+                  "Equity % = (Total service value) ÷ (Post-agreement valuation). For a significant infrastructure + marketing contribution at early stage, this typically results in 10–25%.",
+                  "Both parties instruct a corporate lawyer to formalise in the SHA and Services Agreement before any work begins.",
+                ].map((step, i) => (
+                  <li key={i} className="flex gap-3 items-start text-sm">
+                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i + 1}</span>
+                    <span className="text-muted-foreground leading-relaxed">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Closing note */}
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 flex gap-3 items-start">
+              <IconAlertCircle size={18} className="text-primary flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-foreground mb-1">Recommended Next Step</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Both parties should engage a registered corporate lawyer in Tanzania (or the jurisdiction of incorporation) to draft the Services Agreement and SHA before any development or marketing work begins. This protects the founders, protects 1Point Solutions, and creates a clean cap table for future investors.
+                </p>
               </div>
             </div>
           </SectionWrapper>

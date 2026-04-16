@@ -28,7 +28,7 @@ export default function StickySearchBar() {
 
   return (
     <div
-      className={`lg:hidden fixed top-[57px] left-0 right-0 z-40 bg-card border-b border-border shadow-sm transition-all duration-300 ${
+      className={`lg:hidden fixed top-[58px] left-0 right-0 z-[45] bg-card border-b border-border shadow-sm transition-all duration-300 ${
         visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
       }`}
     >
