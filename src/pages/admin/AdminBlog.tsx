@@ -56,7 +56,7 @@ function renderMarkdown(md: string): string {
 }
 
 interface ToolbarButtonProps {
-  icon: React.ComponentType<{ size?: number; stroke?: number }>;
+  icon: React.ComponentType<{ size?: number | string; stroke?: number }>;
   title: string;
   onClick: () => void;
 }
