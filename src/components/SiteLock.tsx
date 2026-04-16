@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { IconLock, IconEye, IconEyeOff } from "@tabler/icons-react";
 
-const LOCK_KEY = "motokah_site_access";
 const PASSWORD = "MOTO2025";
 
 export default function SiteLock({ children }: { children: React.ReactNode }) {
@@ -10,14 +9,9 @@ export default function SiteLock({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState(false);
   const [showPw, setShowPw] = useState(false);
 
-  useEffect(() => {
-    if (localStorage.getItem(LOCK_KEY) === "true") setUnlocked(true);
-  }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input === PASSWORD) {
-      localStorage.setItem(LOCK_KEY, "true");
       setUnlocked(true);
     } else {
       setError(true);

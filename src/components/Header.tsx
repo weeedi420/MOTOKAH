@@ -4,21 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import NotificationBell from "@/components/NotificationBell";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const navLinks = [
-  { label: "Used Cars", href: "/search" },
-  { label: "New Cars", href: "/search?condition=New" },
-  { label: "Bikes", href: "/search?bodyType=Motorcycle" },
-  { label: "Dealers", href: "/dealers" },
-  { label: "Compare", href: "/compare" },
-  { label: "Blog", href: "/blog" },
+  { key: "nav.usedCars", href: "/search" },
+  { key: "nav.newCars", href: "/search?condition=New" },
+  { key: "nav.bikes", href: "/search?bodyType=Motorcycle" },
+  { key: "nav.dealers", href: "/dealers" },
+  { key: "nav.compare", href: "/compare" },
+  { key: "nav.blog", href: "/blog" },
 ];
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   return (
@@ -35,14 +38,17 @@ export default function Header() {
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => (
-            <Link key={link.label} to={link.href} className="px-3 py-2 text-sm text-secondary-foreground hover:text-primary transition-colors rounded-md hover:bg-secondary">
-              {link.label}
+            <Link key={link.key} to={link.href} className="px-3 py-2 text-sm text-secondary-foreground hover:text-primary transition-colors rounded-md hover:bg-secondary">
+              {t(link.key)}
             </Link>
           ))}
         </nav>
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Theme Toggle */}
           <button onClick={toggleTheme} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
             {theme === "dark" ? <IconSun size={18} stroke={2.5} /> : <IconMoon size={18} stroke={2.5} />}
@@ -53,15 +59,15 @@ export default function Header() {
 
           {user ? (
             <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="hidden sm:inline-flex border-border text-foreground hover:bg-secondary gap-1">
-              <IconUser size={16} /> Profile
+              <IconUser size={16} /> {t("nav.profile")}
             </Button>
           ) : (
             <Button variant="outline" size="sm" onClick={() => navigate("/auth")} className="hidden sm:inline-flex border-border text-foreground hover:bg-secondary">
-              Sign In
+              {t("nav.signIn")}
             </Button>
           )}
           <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold" onClick={() => navigate("/sell")}>
-            Post Ad
+            {t("nav.postAd")}
           </Button>
 
           {/* Mobile Menu */}
@@ -75,39 +81,42 @@ export default function Header() {
               <SheetTitle className="text-primary font-bold text-lg">Motokah</SheetTitle>
               <nav className="flex flex-col gap-1 mt-6 overflow-y-auto flex-1">
                 {navLinks.map(link => (
-                  <SheetClose asChild key={link.label}>
+                  <SheetClose asChild key={link.key}>
                     <Link to={link.href} className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
-                      {link.label}
+                      {t(link.key)}
                     </Link>
                   </SheetClose>
                 ))}
                 {user && (
                   <>
                     <SheetClose asChild>
-                      <Link to="/profile" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">My Profile</Link>
+                      <Link to="/profile" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">{t("nav.profile")}</Link>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Link to="/wishlist" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">Wishlist</Link>
+                      <Link to="/wishlist" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">{t("nav.wishlist")}</Link>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Link to="/messages" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">Messages</Link>
+                      <Link to="/messages" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">{t("nav.messages")}</Link>
                     </SheetClose>
                   </>
                 )}
                 <hr className="border-border my-2" />
+                {/* Language switcher in mobile menu */}
+                <LanguageSwitcher mobile />
+                <hr className="border-border my-2" />
                 <SheetClose asChild>
                   <button onClick={toggleTheme} className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
                     {theme === "dark" ? <IconSun size={18} stroke={2.5} /> : <IconMoon size={18} stroke={2.5} />}
-                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                    {theme === "dark" ? t("nav.lightMode") : t("nav.darkMode")}
                   </button>
                 </SheetClose>
                 {user ? null : (
                   <SheetClose asChild>
-                    <Link to="/auth"><Button variant="outline" className="border-border text-foreground w-full">Sign In</Button></Link>
+                    <Link to="/auth"><Button variant="outline" className="border-border text-foreground w-full">{t("nav.signIn")}</Button></Link>
                   </SheetClose>
                 )}
                 <SheetClose asChild>
-                  <Link to="/sell"><Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full">Post Ad</Button></Link>
+                  <Link to="/sell"><Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full">{t("nav.postAd")}</Button></Link>
                 </SheetClose>
               </nav>
             </SheetContent>

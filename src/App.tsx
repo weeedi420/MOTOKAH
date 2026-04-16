@@ -45,6 +45,7 @@ import NotFound from "./pages/NotFound.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
 import SiteLock from "@/components/SiteLock";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const queryClient = new QueryClient();
 
@@ -105,6 +106,7 @@ function AnimatedRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
+      <LanguageProvider>
       <SiteLock>
         <AuthProvider>
         <WishlistProvider>
@@ -120,6 +122,7 @@ const App = () => (
         </WishlistProvider>
         </AuthProvider>
       </SiteLock>
+      </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
