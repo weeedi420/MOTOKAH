@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import HeroSearch from "@/components/HeroSearch";
+import StickySearchBar from "@/components/StickySearchBar";
 import BrowseSection from "@/components/BrowseSection";
 import ExploreServices from "@/components/ExploreServices";
 import FeaturedListings from "@/components/FeaturedListings";
@@ -19,9 +20,10 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 const Index = () => {
   usePageTitle("Find Your Perfect Ride in Tanzania");
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />
       <HeroSearch />
+      <StickySearchBar />
       <BrowseSection />
       <ExploreServices />
       <FeaturedListings />

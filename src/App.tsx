@@ -42,6 +42,7 @@ import AdminNewsletter from "./pages/admin/AdminNewsletter.tsx";
 import AdminDealers from "./pages/admin/AdminDealers.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
+import BottomNav from "@/components/BottomNav";
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,7 @@ const App = () => (
           <Sonner />
           <PWAInstallBanner />
           <BrowserRouter>
+            <BottomNav />
             <AnimatedRoutes />
           </BrowserRouter>
         </TooltipProvider>

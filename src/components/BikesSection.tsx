@@ -94,7 +94,7 @@ export default function BikesSection() {
     <section className="container mx-auto py-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold flex items-center gap-2">
-          <IconMotorbike size={24} stroke={2.5} className="text-primary" /> Bikes & Motorcycles
+          <IconMotorbike size={24} stroke={2.5} className="text-primary" /> New Bikes by Make
         </h2>
         <div className="flex items-center gap-2">
           <button onClick={() => scroll("left")} disabled={!canScrollLeft}
