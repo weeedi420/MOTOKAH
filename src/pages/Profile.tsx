@@ -293,9 +293,9 @@ export default function Profile() {
               </div>
             ) : (
               listings.map((l) => {
-                const daysLeft = l.expires_at ? differenceInDays(parseISO(l.expires_at), new Date()) : null;
-                const isExpiringSoon = daysLeft !== null && daysLeft <= 7 && daysLeft >= 0;
-                const isExpired = daysLeft !== null && daysLeft < 0;
+                const daysLeft = null;
+                const isExpiringSoon = false;
+                const isExpired = false;
                 return (
                   <div key={l.id} className={`bg-card border rounded-lg p-4 flex items-center justify-between ${isExpired ? "border-destructive/50" : isExpiringSoon ? "border-accent/50" : "border-border"}`}>
                     <div>
