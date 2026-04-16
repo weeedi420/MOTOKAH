@@ -109,7 +109,7 @@ export default function BikesSection() {
         </div>
       </div>
       {loading ? (
-        <div className="flex gap-4">
+        <div className="flex gap-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="min-w-[280px] h-[320px] rounded-xl bg-muted animate-pulse flex-shrink-0" />
           ))}

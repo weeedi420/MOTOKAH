@@ -9,7 +9,7 @@ export default function BrandFilterMobile({ selectedBrand, onSelectBrand }: Bran
   return (
     <section className="md:hidden px-5 py-6">
       <h2 className="text-lg font-bold text-foreground mb-4">Browse Brands</h2>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {carMakes.map((brand) => (
           <button
             key={brand}

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { IconMenu2, IconSun, IconMoon, IconUser } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "@/components/NotificationBell";
@@ -68,32 +68,44 @@ export default function Header() {
                 <IconMenu2 size={22} stroke={2.5} />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-surface-2 border-border">
+            <SheetContent side="right" className="bg-surface-2 border-border flex flex-col overflow-hidden">
               <SheetTitle className="text-primary font-bold text-lg">Motokah</SheetTitle>
-              <nav className="flex flex-col gap-1 mt-6">
+              <nav className="flex flex-col gap-1 mt-6 overflow-y-auto flex-1">
                 {navLinks.map(link => (
-                  <Link key={link.label} to={link.href} className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
-                    {link.label}
-                  </Link>
+                  <SheetClose asChild key={link.label}>
+                    <Link to={link.href} className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
+                      {link.label}
+                    </Link>
+                  </SheetClose>
                 ))}
                 {user && (
                   <>
-                    <Link to="/profile" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">My Profile</Link>
-                    <Link to="/wishlist" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">Wishlist</Link>
-                    <Link to="/messages" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">Messages</Link>
+                    <SheetClose asChild>
+                      <Link to="/profile" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">My Profile</Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link to="/wishlist" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">Wishlist</Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link to="/messages" className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">Messages</Link>
+                    </SheetClose>
                   </>
                 )}
                 <hr className="border-border my-2" />
-                <button onClick={toggleTheme} className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
-                  {theme === "dark" ? <IconSun size={18} stroke={2.5} /> : <IconMoon size={18} stroke={2.5} />}
-                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                </button>
-                {user ? (
-                  <Link to="/profile"><Button variant="outline" className="border-border text-foreground w-full">My Profile</Button></Link>
-                ) : (
-                  <Link to="/auth"><Button variant="outline" className="border-border text-foreground w-full">Sign In</Button></Link>
+                <SheetClose asChild>
+                  <button onClick={toggleTheme} className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
+                    {theme === "dark" ? <IconSun size={18} stroke={2.5} /> : <IconMoon size={18} stroke={2.5} />}
+                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                  </button>
+                </SheetClose>
+                {user ? null : (
+                  <SheetClose asChild>
+                    <Link to="/auth"><Button variant="outline" className="border-border text-foreground w-full">Sign In</Button></Link>
+                  </SheetClose>
                 )}
-                <Link to="/sell"><Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full">Post Ad</Button></Link>
+                <SheetClose asChild>
+                  <Link to="/sell"><Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full">Post Ad</Button></Link>
+                </SheetClose>
               </nav>
             </SheetContent>
           </Sheet>
