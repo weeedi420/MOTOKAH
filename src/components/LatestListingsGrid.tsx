@@ -1,11 +1,11 @@
 import { IconClock } from "@tabler/icons-react";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
+import { mockListings } from "@/data/mockData";
 
 export default function LatestListingsGrid() {
   const { listings, loading } = useListings({ limit: 12 });
-
-  if (!loading && listings.length === 0) return null;
+  const displayListings = listings.length > 0 ? listings : (!loading ? mockListings : []);
 
   return (
     <section className="container mx-auto py-10">
@@ -23,7 +23,7 @@ export default function LatestListingsGrid() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {listings.map((l) => (
+          {displayListings.map((l) => (
             <VehicleCard key={l.id} listing={l} />
           ))}
         </div>

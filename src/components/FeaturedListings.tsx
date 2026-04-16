@@ -1,6 +1,7 @@
 import { IconFlame, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
+import { mockListings } from "@/data/mockData";
 import { useRef, useState, useEffect } from "react";
 
 export default function FeaturedListings() {
@@ -30,7 +31,7 @@ export default function FeaturedListings() {
     el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
   };
 
-  if (!loading && listings.length === 0) return null;
+  const displayListings = listings.length > 0 ? listings : (!loading ? mockListings : []);
 
   return (
     <section className="container mx-auto py-10">
@@ -60,7 +61,7 @@ export default function FeaturedListings() {
         <div ref={scrollRef}
           className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 scrollbar-none"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-          {listings.map((l) => (
+          {displayListings.map((l) => (
             <div key={l.id} className="min-w-[280px] max-w-[320px] snap-start flex-shrink-0">
               <VehicleCard listing={l} />
             </div>
