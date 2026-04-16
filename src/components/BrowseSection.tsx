@@ -39,19 +39,57 @@ const allCategories = [
 ];
 
 const brandLogos: Record<string, string> = {
-  Toyota:     "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carlogo.svg/200px-Toyota_carlogo.svg.png",
-  Suzuki:     "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/200px-Suzuki_logo_2.svg.png",
-  Honda:      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Honda_Logo.svg/200px-Honda_Logo.svg.png",
-  Nissan:     "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Nissan_2020_logo.svg/200px-Nissan_2020_logo.svg.png",
-  KIA:        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.svg/200px-Kia-logo.svg.png",
-  Hyundai:    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png",
-  BMW:        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/200px-BMW.svg.png",
-  Ford:       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/200px-Ford_logo_flat.svg.png",
-  Mitsubishi: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Mitsubishi_logo.svg/200px-Mitsubishi_logo.svg.png",
-  Isuzu:      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Isuzu_logo.svg/200px-Isuzu_logo.svg.png",
-  "Land Rover":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Land_Rover_logo.svg/200px-Land_Rover_logo.svg.png",
-  Mercedes:   "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/200px-Mercedes-Logo.svg.png",
+  Toyota:      "https://logo.clearbit.com/toyota.com",
+  Suzuki:      "https://logo.clearbit.com/suzuki.com",
+  Honda:       "https://logo.clearbit.com/honda.com",
+  Nissan:      "https://logo.clearbit.com/nissan.com",
+  KIA:         "https://logo.clearbit.com/kia.com",
+  Hyundai:     "https://logo.clearbit.com/hyundai.com",
+  BMW:         "https://logo.clearbit.com/bmw.com",
+  Ford:        "https://logo.clearbit.com/ford.com",
+  Mitsubishi:  "https://logo.clearbit.com/mitsubishi.com",
+  Isuzu:       "https://logo.clearbit.com/isuzu.com",
+  "Land Rover":"https://logo.clearbit.com/landrover.com",
+  Mercedes:    "https://logo.clearbit.com/mercedes-benz.com",
 };
+
+const brandColors: Record<string, string> = {
+  Toyota: "#EB0A1E", Suzuki: "#E8000D", Honda: "#E40521",
+  Nissan: "#C3002F", KIA: "#BB162B", Hyundai: "#002C5F",
+  BMW: "#0166B1", Ford: "#003893", Mitsubishi: "#E60026",
+  Isuzu: "#CF0A2C", "Land Rover": "#005A2B", Mercedes: "#222222",
+};
+
+function BrandCard({ brand, onClick }: { brand: string; onClick: () => void }) {
+  const [imgError, setImgError] = useState(false);
+  const color = brandColors[brand] || "#444";
+  return (
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-card transition-all duration-200 hover:border-primary hover:shadow-sm active:scale-[0.97]"
+    >
+      <div className="w-full h-12 flex items-center justify-center bg-slate-100 rounded-md px-2">
+        {imgError ? (
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg"
+            style={{ background: color }}
+          >
+            {brand[0]}
+          </div>
+        ) : (
+          <img
+            src={brandLogos[brand]}
+            alt={brand}
+            className="max-h-9 max-w-full object-contain"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        )}
+      </div>
+      <span className="text-[11px] font-semibold text-foreground text-center">{brand}</span>
+    </button>
+  );
+}
 
 const brandItems = Object.keys(brandLogos);
 
@@ -110,7 +148,7 @@ export default function BrowseSection() {
               display: "grid",
               gridTemplateRows: "repeat(2, auto)",
               gridAutoFlow: "column",
-              gridAutoColumns: "76px",
+              gridAutoColumns: "88px",
               width: "max-content",
             }}
           >
@@ -118,15 +156,15 @@ export default function BrowseSection() {
               <button
                 key={cat.name}
                 onClick={() => navigate(`/search?${cat.param}`)}
-                className="snap-start flex flex-col items-center justify-center gap-1.5 py-2.5 px-1 rounded-lg bg-card border border-border cursor-pointer transition-all duration-200 hover:border-primary hover:shadow-sm active:scale-[0.97] w-[72px]"
+                className="snap-start flex flex-col items-center justify-center gap-1.5 py-3 px-1 rounded-lg bg-card border border-border cursor-pointer transition-all duration-200 hover:border-primary hover:shadow-sm active:scale-[0.97] w-[84px]"
               >
                 <img
                   src={cat.icon}
                   alt={cat.name}
-                  className="w-12 h-9 object-contain dark:invert dark:brightness-200"
+                  className="w-16 h-12 object-contain dark:invert dark:brightness-200"
                   loading="lazy"
                 />
-                <span className="text-[9px] font-medium text-foreground text-center leading-tight line-clamp-2 w-full px-0.5">{cat.name}</span>
+                <span className="text-[10px] font-medium text-foreground text-center leading-tight line-clamp-2 w-full px-0.5">{cat.name}</span>
               </button>
             ))}
           </div>
@@ -150,20 +188,11 @@ export default function BrowseSection() {
       {activeTab === "Brand" && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-3">
           {brandItems.map((brand) => (
-            <button key={brand}
+            <BrandCard
+              key={brand}
+              brand={brand}
               onClick={() => navigate(`/search?make=${encodeURIComponent(brand)}`)}
-              className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-card transition-all duration-200 hover:border-primary hover:shadow-sm active:scale-[0.97]">
-              <div className="w-full h-10 flex items-center justify-center bg-white rounded-md px-2">
-                <img
-                  src={brandLogos[brand]}
-                  alt={brand}
-                  className="max-h-8 max-w-full object-contain"
-                  loading="lazy"
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
-                />
-              </div>
-              <span className="text-[11px] font-semibold text-foreground text-center">{brand}</span>
-            </button>
+            />
           ))}
         </div>
       )}
