@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import HeroSearch from "@/components/HeroSearch";
 import BrowseSection from "@/components/BrowseSection";
+import ExploreServices from "@/components/ExploreServices";
 import FeaturedListings from "@/components/FeaturedListings";
 import LatestListingsGrid from "@/components/LatestListingsGrid";
 import PromoBanner from "@/components/PromoBanner";
@@ -22,6 +23,7 @@ const Index = () => {
       <Header />
       <HeroSearch />
       <BrowseSection />
+      <ExploreServices />
       <FeaturedListings />
       <LatestListingsGrid />
       <PromoBanner />
