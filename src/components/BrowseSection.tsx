@@ -39,18 +39,18 @@ const allCategories = [
 ];
 
 const brandLogos: Record<string, string> = {
-  Toyota:      "https://logo.clearbit.com/toyota.com",
-  Suzuki:      "https://logo.clearbit.com/suzuki.com",
-  Honda:       "https://logo.clearbit.com/honda.com",
-  Nissan:      "https://logo.clearbit.com/nissan.com",
-  KIA:         "https://logo.clearbit.com/kia.com",
-  Hyundai:     "https://logo.clearbit.com/hyundai.com",
-  BMW:         "https://logo.clearbit.com/bmw.com",
-  Ford:        "https://logo.clearbit.com/ford.com",
-  Mitsubishi:  "https://logo.clearbit.com/mitsubishi.com",
-  Isuzu:       "https://logo.clearbit.com/isuzu.com",
-  "Land Rover":"https://logo.clearbit.com/landrover.com",
-  Mercedes:    "https://logo.clearbit.com/mercedes-benz.com",
+  Toyota:      "https://logo.hunter.io/?domain=toyota.com",
+  Suzuki:      "https://logo.hunter.io/?domain=suzuki.com",
+  Honda:       "https://logo.hunter.io/?domain=honda.com",
+  Nissan:      "https://logo.hunter.io/?domain=nissan.com",
+  KIA:         "https://logo.hunter.io/?domain=kia.com",
+  Hyundai:     "https://logo.hunter.io/?domain=hyundai.com",
+  BMW:         "https://logo.hunter.io/?domain=bmw.com",
+  Ford:        "https://logo.hunter.io/?domain=ford.com",
+  Mitsubishi:  "https://logo.hunter.io/?domain=mitsubishi.com",
+  Isuzu:       "https://logo.hunter.io/?domain=isuzu.com",
+  "Land Rover":"https://logo.hunter.io/?domain=landrover.com",
+  Mercedes:    "https://logo.hunter.io/?domain=mercedes-benz.com",
 };
 
 const brandColors: Record<string, string> = {

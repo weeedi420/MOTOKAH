@@ -5,7 +5,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandApple, IconSparkles } from "@tabler/icons-react";
+import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandApple, IconBrandFacebook, IconSparkles } from "@tabler/icons-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -55,7 +55,7 @@ export default function Auth() {
     return null;
   }
 
-  const handleSocialLogin = async (provider: "google" | "apple") => {
+  const handleSocialLogin = async (provider: "google" | "apple" | "facebook") => {
     setSocialLoading(provider);
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
@@ -184,6 +184,20 @@ export default function Auth() {
                     <IconBrandApple size={18} />
                   )}
                   Continue with Apple
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full gap-2 font-medium"
+                  onClick={() => handleSocialLogin("facebook")}
+                  disabled={!!socialLoading}
+                >
+                  {socialLoading === "facebook" ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" />
+                  ) : (
+                    <IconBrandFacebook size={18} className="text-[#1877F2]" />
+                  )}
+                  Continue with Facebook
                 </Button>
               </div>
 

@@ -45,7 +45,7 @@ export default function PWAInstallBanner() {
   if (!prompt || dismissed) return null;
 
   return (
-    <div className="fixed left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-50 bg-card border border-border rounded-xl shadow-lg p-4 flex items-start gap-3" style={{ bottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
+    <div className="fixed left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-50 bg-card border border-border rounded-xl shadow-lg p-4 flex items-start gap-3" style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 5rem))' }}>
       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
         <IconDownload size={20} className="text-primary" />
       </div>
