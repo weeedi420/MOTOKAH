@@ -56,7 +56,8 @@ function renderMarkdown(md: string): string {
 }
 
 interface ToolbarButtonProps {
-  icon: React.ComponentType<{ size?: number; stroke?: number }>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon: React.ComponentType<any>;
   title: string;
   onClick: () => void;
 }
