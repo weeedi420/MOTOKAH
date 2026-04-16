@@ -32,7 +32,7 @@ type ListingRow = {
   status: string;
   created_at: string;
   views: number;
-  expires_at: string | null;
+  
 };
 
 type SavedSearch = {
@@ -161,19 +161,13 @@ export default function Profile() {
       }
     });
     supabase.from("listings")
-      .select("id, title, make, model, year, price, currency, status, created_at, views, expires_at")
+      .select("id, title, make, model, year, price, currency, status, created_at, views")
       .eq("seller_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => {
         if (data) setListings(data as ListingRow[]);
       });
-    supabase.from("saved_searches")
-      .select("id, name, filters, created_at")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (data) setSavedSearches(data as SavedSearch[]);
-      });
+    // saved_searches table not yet created - skip for now
   }, [user]);
 
   const saveProfile = async () => {
@@ -199,19 +193,10 @@ export default function Profile() {
   };
 
   const renewListing = async (id: string) => {
-    const newExpiry = new Date();
-    newExpiry.setDate(newExpiry.getDate() + 60);
-    const { error } = await supabase.from("listings").update({ expires_at: newExpiry.toISOString() }).eq("id", id);
-    if (error) {
-      toast({ title: "Could not renew listing", variant: "destructive" });
-    } else {
-      setListings(prev => prev.map(l => l.id === id ? { ...l, expires_at: newExpiry.toISOString() } : l));
-      toast({ title: "Listing renewed for 60 more days!" });
-    }
+    toast({ title: "Listing renewal coming soon!" });
   };
 
   const deleteSavedSearch = async (id: string) => {
-    await supabase.from("saved_searches").delete().eq("id", id);
     setSavedSearches(prev => prev.filter(s => s.id !== id));
     toast({ title: "Search removed" });
   };

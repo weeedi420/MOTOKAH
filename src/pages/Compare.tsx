@@ -60,7 +60,7 @@ export default function Compare() {
           fuelType: r.fuel_type || undefined,
           make: r.make,
           model: r.model,
-          cc: r.cc || undefined,
+          
         };
       });
       setCars(mapped);

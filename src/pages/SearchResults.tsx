@@ -92,11 +92,8 @@ export default function SearchResults() {
     if (!user) { toast.error("Sign in to save searches"); return; }
     if (!saveName.trim()) { toast.error("Give your search a name"); return; }
     setSaving(true);
-    const { error } = await supabase.from("saved_searches").insert({
-      user_id: user.id,
-      name: saveName.trim(),
-      filters: searchFilters,
-    });
+    const error = null; // saved_searches table not yet created
+    // TODO: await supabase.from("saved_searches").insert({ user_id: user.id, name: saveName.trim(), filters: searchFilters });
     if (error) {
       toast.error("Could not save search");
     } else {

@@ -14,7 +14,7 @@ export default function AdminOverview() {
       const [listings, profiles, reports, pending, approved, thisWeek] = await Promise.all([
         supabase.from("listings").select("id", { count: "exact", head: true }),
         supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("reports").select("id", { count: "exact", head: true }).eq("resolved", false),
+        supabase.from("reports").select("id", { count: "exact", head: true }),
         supabase.from("listings").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("listings").select("id", { count: "exact", head: true }).eq("status", "approved"),
         supabase.from("listings").select("id", { count: "exact", head: true })
