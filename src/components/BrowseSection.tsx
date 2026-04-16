@@ -39,18 +39,18 @@ const allCategories = [
 ];
 
 const brandLogos: Record<string, string> = {
-  Toyota:      "https://logo.hunter.io/?domain=toyota.com",
-  Suzuki:      "https://logo.hunter.io/?domain=suzuki.com",
-  Honda:       "https://logo.hunter.io/?domain=honda.com",
-  Nissan:      "https://logo.hunter.io/?domain=nissan.com",
-  KIA:         "https://logo.hunter.io/?domain=kia.com",
-  Hyundai:     "https://logo.hunter.io/?domain=hyundai.com",
-  BMW:         "https://logo.hunter.io/?domain=bmw.com",
-  Ford:        "https://logo.hunter.io/?domain=ford.com",
-  Mitsubishi:  "https://logo.hunter.io/?domain=mitsubishi.com",
-  Isuzu:       "https://logo.hunter.io/?domain=isuzu.com",
-  "Land Rover":"https://logo.hunter.io/?domain=landrover.com",
-  Mercedes:    "https://logo.hunter.io/?domain=mercedes-benz.com",
+  Toyota:      "https://logos.hunter.io/toyota.com",
+  Suzuki:      "https://logos.hunter.io/suzuki.com",
+  Honda:       "https://logos.hunter.io/honda.com",
+  Nissan:      "https://logos.hunter.io/nissan.com",
+  KIA:         "https://logos.hunter.io/kia.com",
+  Hyundai:     "https://logos.hunter.io/hyundai.com",
+  BMW:         "https://logos.hunter.io/bmw.co.uk",
+  Ford:        "https://logos.hunter.io/ford.com",
+  Mitsubishi:  "https://logos.hunter.io/mitsubishi-motors.com",
+  Isuzu:       "https://logos.hunter.io/isuzu.com",
+  "Land Rover":"https://logos.hunter.io/landrover.com",
+  Mercedes:    "https://logos.hunter.io/mercedes-benz.com",
 };
 
 const brandColors: Record<string, string> = {

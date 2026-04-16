@@ -44,6 +44,7 @@ import MarketingPlan from "./pages/MarketingPlan.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
+import SiteLock from "@/components/SiteLock";
 
 const queryClient = new QueryClient();
 
@@ -104,19 +105,21 @@ function AnimatedRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <AuthProvider>
-      <WishlistProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <PWAInstallBanner />
-          <BrowserRouter>
-            <BottomNav />
-            <AnimatedRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </WishlistProvider>
-      </AuthProvider>
+      <SiteLock>
+        <AuthProvider>
+        <WishlistProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <PWAInstallBanner />
+            <BrowserRouter>
+              <BottomNav />
+              <AnimatedRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </WishlistProvider>
+        </AuthProvider>
+      </SiteLock>
     </ThemeProvider>
   </QueryClientProvider>
 );

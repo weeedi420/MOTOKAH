@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconSparkles, IconScale, IconBuildingStore, IconShieldCheck } from "@tabler/icons-react";
+import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconSparkles, IconScale, IconBuildingStore, IconCar } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
@@ -59,7 +58,13 @@ export default function VehicleCard({ listing }: { listing: Listing }) {
     <a href={`/listing/${listing.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02] transition-all duration-300 block">
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden">
-        <img src={listing.image} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+        {listing.image ? (
+          <img src={listing.image} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+        ) : (
+          <div className="w-full h-full bg-muted flex items-center justify-center">
+            <IconCar size={48} className="text-muted-foreground/40" stroke={1.5} />
+          </div>
+        )}
         {badge && (
           <span className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase flex items-center gap-1 ${badge.className}`}>
             <badge.icon size={12} stroke={2.5} /> {badge.label}

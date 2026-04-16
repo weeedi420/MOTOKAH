@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { type Listing } from "@/data/mockData";
-
-const defaultImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&h=600&fit=crop";
+import { type Listing, mockListings } from "@/data/mockData";
 
 export interface ListingWithDescription extends Listing {
   description?: string | null;
@@ -15,6 +13,17 @@ export function useListing(id: string | undefined) {
 
   useEffect(() => {
     if (!id) { setLoading(false); return; }
+
+    // Handle mock listings (demo data)
+    if (id.startsWith("mock-")) {
+      const mock = mockListings.find((m) => m.id === id);
+      if (mock) {
+        setListing({ ...mock, description: null });
+        setImages([]);
+      }
+      setLoading(false);
+      return;
+    }
 
     const fetch = async () => {
       setLoading(true);
@@ -35,9 +44,8 @@ export function useListing(id: string | undefined) {
 
       const imgs = (r.listing_images as { image_url: string; display_order: number }[]) || [];
       const sorted = [...imgs].sort((a, b) => a.display_order - b.display_order).map((i) => i.image_url);
-      const galleryImages = sorted.length > 0 ? sorted : [defaultImage];
 
-      setImages(galleryImages);
+      setImages(sorted);
       setListing({
         id: r.id,
         title: r.title,
@@ -48,7 +56,7 @@ export function useListing(id: string | undefined) {
         mileage: r.mileage || 0,
         transmission: r.transmission || "Manual",
         location: r.city || "Tanzania",
-        image: galleryImages[0],
+        image: sorted[0] || "",
         views: r.views || 0,
         sellerName: profile?.display_name || "Private Seller",
         sellerRating: 4.5,

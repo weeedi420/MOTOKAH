@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import ImageGallery from "@/components/ImageGallery";
 import SpecsTable from "@/components/SpecsTable";
 import SellerCard from "@/components/SellerCard";
-import ReviewsSection from "@/components/ReviewsSection";
 import SimilarListings from "@/components/SimilarListings";
 import { useListing } from "@/hooks/useListing";
 import { IconHeart, IconShare, IconFlag, IconChevronRight, IconBrandWhatsapp, IconBrandFacebook, IconBrandTwitter, IconCopy, IconX } from "@tabler/icons-react";
@@ -141,8 +140,6 @@ export default function ListingDetail() {
     );
   }
 
-  const isDealer = listing.sellerType === "dealer";
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -267,14 +264,6 @@ export default function ListingDetail() {
               </button>
             </div>
 
-            {/* Reviews — only for dealers */}
-            {isDealer && listing.sellerId && (
-              <ReviewsSection
-                sellerId={listing.sellerId}
-                sellerName={listing.sellerName}
-                listingId={listing.id}
-              />
-            )}
           </div>
 
           {/* Right Column */}
