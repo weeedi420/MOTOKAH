@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,17 +45,19 @@ import PWAInstallBanner from "@/components/PWAInstallBanner";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
-      <WishlistProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <PWAInstallBanner />
-          <BrowserRouter>
-            <Routes>
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.18, ease: "easeInOut" }}
+        style={{ minHeight: "100vh" }}
+      >
+        <Routes location={location}>
               <Route path="/" element={<Index />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/search" element={<SearchResults />} />
@@ -89,7 +92,23 @@ const App = () => (
                 <Route path="dealers" element={<AdminDealers />} />
               </Route>
               <Route path="*" element={<NotFound />} />
-            </Routes>
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <AuthProvider>
+      <WishlistProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <PWAInstallBanner />
+          <BrowserRouter>
+            <AnimatedRoutes />
           </BrowserRouter>
         </TooltipProvider>
       </WishlistProvider>
