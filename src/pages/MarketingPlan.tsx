@@ -94,7 +94,7 @@ function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
                 setError(false);
               }}
               placeholder="Enter password"
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-base"
             />
             {error && (
               <p className="flex items-center gap-1.5 text-red-500 text-xs font-medium mt-1">
@@ -438,15 +438,12 @@ function SectionHeader({
 export default function MarketingPlan() {
   usePageTitle("Marketing Plan");
 
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(() =>
+    localStorage.getItem(STORAGE_KEY) === "true" ||
+    sessionStorage.getItem("motokah_unlocked") === "1"
+  );
   const [activeSection, setActiveSection] = useState("executive-summary");
   const contentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (localStorage.getItem(STORAGE_KEY) === "true") {
-      setUnlocked(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (!unlocked) return;
