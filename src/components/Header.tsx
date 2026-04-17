@@ -46,8 +46,10 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-          {/* Language Switcher */}
-          <LanguageSwitcher />
+          {/* Language Switcher — desktop only; mobile uses sheet menu */}
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
 
           {/* Theme Toggle */}
           <button onClick={toggleTheme} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">

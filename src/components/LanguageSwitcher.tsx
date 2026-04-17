@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { IconLanguage, IconCheck, IconChevronDown } from "@tabler/icons-react";
+import { IconLanguage, IconCheck, IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 
 interface LangOption {
   code: string;
@@ -101,6 +101,76 @@ function triggerGoogleTranslate(langCode: string) {
   }
 }
 
+function MobileLangList({ currentLang, defaultOpenGroup, onSelect }: {
+  currentLang: string;
+  defaultOpenGroup: string;
+  onSelect: (code: string) => void;
+}) {
+  const [openGroup, setOpenGroup] = useState<string>(defaultOpenGroup);
+  const [search, setSearch] = useState("");
+
+  const filtered = search.trim()
+    ? [{ label: "Results", langs: ALL_LANGS.filter(l =>
+        l.name.toLowerCase().includes(search.toLowerCase()) ||
+        l.native.toLowerCase().includes(search.toLowerCase())
+      )}]
+    : LANGUAGE_GROUPS;
+
+  return (
+    <div className="px-1">
+      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-2 py-1 mb-1">Language</p>
+      <div className="px-2 mb-2">
+        <input
+          type="text"
+          placeholder="Search language..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full h-9 px-3 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+      </div>
+      <div className="flex flex-col gap-0.5">
+        {filtered.map(group => {
+          const isOpen = search.trim() ? true : openGroup === group.label;
+          return (
+            <div key={group.label}>
+              {!search.trim() && (
+                <button
+                  onClick={() => setOpenGroup(isOpen ? "" : group.label)}
+                  className="w-full flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-secondary transition-colors"
+                >
+                  <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{group.label}</p>
+                  {isOpen ? <IconChevronDown size={13} className="text-muted-foreground" /> : <IconChevronRight size={13} className="text-muted-foreground" />}
+                </button>
+              )}
+              {isOpen && group.langs.map(l => (
+                <button
+                  key={l.code}
+                  onClick={() => onSelect(l.code)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
+                    currentLang === l.code
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-secondary-foreground hover:text-primary hover:bg-secondary"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{l.flag}</span>
+                    <span>{l.native}</span>
+                    <span className="text-xs text-muted-foreground">({l.name})</span>
+                  </span>
+                  {currentLang === l.code && <IconCheck size={14} className="text-primary" />}
+                </button>
+              ))}
+              {search.trim() && group.langs.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-4">No language found</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -138,36 +208,14 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
     : LANGUAGE_GROUPS;
 
   if (mobile) {
-    return (
-      <div className="px-1">
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-2 py-1 mb-1">Language</p>
-        <div className="max-h-64 overflow-y-auto flex flex-col gap-0.5">
-          {LANGUAGE_GROUPS.map(group => (
-            <div key={group.label}>
-              <p className="text-[10px] font-bold text-muted-foreground px-2 py-1 uppercase tracking-wider">{group.label}</p>
-              {group.langs.map(l => (
-                <button
-                  key={l.code}
-                  onClick={() => handleSelect(l.code)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
-                    currentLang === l.code
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-secondary-foreground hover:text-primary hover:bg-secondary"
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    <span>{l.flag}</span>
-                    <span>{l.native}</span>
-                    <span className="text-xs text-muted-foreground">({l.name})</span>
-                  </span>
-                  {currentLang === l.code && <IconCheck size={14} className="text-primary" />}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    // Find which group contains the current lang so we open it by default
+    const defaultOpenGroup = LANGUAGE_GROUPS.find(g => g.langs.some(l => l.code === currentLang))?.label
+      ?? LANGUAGE_GROUPS[0].label;
+    return <MobileLangList
+      currentLang={currentLang}
+      defaultOpenGroup={defaultOpenGroup}
+      onSelect={handleSelect}
+    />;
   }
 
   return (
