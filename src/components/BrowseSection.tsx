@@ -1,41 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const S = "/icons/steering.png";
+// Boat icon as inline SVG data URI
+const BOAT_ICON = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23555' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M8 38 L32 14 L56 38'/><path d='M4 46 Q16 54 32 46 Q48 38 60 46'/><line x1='32' y1='14' x2='32' y2='8'/><line x1='24' y1='8' x2='40' y2='8'/></svg>`;
+const TUK_ICON = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23555' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><rect x='8' y='20' width='32' height='22' rx='4'/><path d='M40 28 L56 28 L56 42 L40 42'/><circle cx='18' cy='46' r='6'/><circle cx='46' cy='46' r='6'/><path d='M8 30 L8 20'/></svg>`;
 
 const allCategories = [
-  { name: "Sedan",        icon: "/icons/sedan.png",       param: "bodyType=Sedan" },
-  { name: "SUV",          icon: "/icons/suv.png",         param: "bodyType=SUV" },
-  { name: "Hatchback",    icon: "/icons/hatchback.png",   param: "bodyType=Hatchback" },
-  { name: "Double Cab",   icon: "/icons/pickup.png",      param: "bodyType=Pickup" },
-  { name: "Crossover",    icon: "/icons/crossover.png",   param: "bodyType=Crossover" },
-  { name: "Estate",       icon: "/icons/wagon.png",       param: "bodyType=Estate" },
-  { name: "Van",          icon: "/icons/van.png",         param: "bodyType=Van" },
-  { name: "Minibus",      icon: "/icons/minibus.png",     param: "bodyType=Minibus" },
-  { name: "Jeep / 4x4",  icon: "/icons/jeep.png",        param: "bodyType=4x4" },
-  { name: "MPV",          icon: "/icons/mpv.png",         param: "bodyType=MPV" },
-  { name: "Convertible",  icon: "/icons/convertible.png", param: "bodyType=Convertible" },
-  { name: "Truck",        icon: "/icons/truck.png",       param: "bodyType=Truck" },
-  { name: "Motorcycle",   icon: "/icons/bike-sports.png", param: "bodyType=Motorcycle" },
-  { name: "Scooter",      icon: "/icons/bike-scooter.png",param: "bodyType=Scooter" },
-  { name: "ATV / Quad",   icon: "/icons/bike-atv.png",    param: "bodyType=ATV" },
-  { name: "Bus",          icon: "/icons/minibus.png",     param: "bodyType=Bus" },
-  { name: "Budget Cars",  icon: "/icons/budget.png",      param: "maxPrice=5000000" },
-  { name: "Electric",     icon: "/icons/engine.png",      param: "fuelType=Electric" },
-  { name: "Automatic",    icon: S,                        param: "transmission=Automatic" },
-  { name: "4WD / AWD",    icon: "/icons/jeep.png",        param: "transmission=4WD" },
-  { name: "Japanese Cars",icon: S,                        param: "make=Toyota" },
-  { name: "Low Mileage",  icon: S,                        param: "maxMileage=50000" },
-  { name: "New Cars",     icon: "/icons/sedan.png",       param: "condition=New" },
-  { name: "Low Priced",   icon: "/icons/budget.png",      param: "maxPrice=10000000" },
-  { name: "Toyota",       icon: S,                        param: "make=Toyota" },
-  { name: "Suzuki",       icon: S,                        param: "make=Suzuki" },
-  { name: "Honda",        icon: S,                        param: "make=Honda" },
-  { name: "Nissan",       icon: S,                        param: "make=Nissan" },
-  { name: "Mitsubishi",   icon: S,                        param: "make=Mitsubishi" },
-  { name: "Isuzu",        icon: S,                        param: "make=Isuzu" },
-  { name: "Land Rover",   icon: "/icons/suv.png",         param: "make=Land+Rover" },
-  { name: "BMW",          icon: S,                        param: "make=BMW" },
+  { name: "Sedan",        icon: "/icons/sedan.png",        param: "bodyType=Sedan" },
+  { name: "SUV / 4x4",   icon: "/icons/suv.png",          param: "bodyType=SUV" },
+  { name: "Double Cab",  icon: "/icons/pickup.png",        param: "bodyType=Pickup" },
+  { name: "Hatchback",   icon: "/icons/hatchback.png",     param: "bodyType=Hatchback" },
+  { name: "Minibus",     icon: "/icons/minibus.png",       param: "bodyType=Minibus" },
+  { name: "Bus",         icon: "/icons/minibus.png",       param: "bodyType=Bus" },
+  { name: "Truck",       icon: "/icons/truck.png",         param: "bodyType=Truck" },
+  { name: "Van",         icon: "/icons/van.png",           param: "bodyType=Van" },
+  { name: "Boda Boda",   icon: "/icons/bike-sports.png",   param: "bodyType=Motorcycle" },
+  { name: "Tuk-tuk",     icon: TUK_ICON,                  param: "bodyType=Tuk-tuk" },
+  { name: "Boat",        icon: BOAT_ICON,                  param: "bodyType=Boat" },
 ];
 
 const brandLogos: Record<string, string> = {

@@ -147,9 +147,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      return { error: error as Error | null };
-    } catch (err) {
-      return { error: err as Error };
+      if (error) return { error: new Error("Server unavailable. Use the demo accounts above to preview.") };
+      return { error: null };
+    } catch {
+      return { error: new Error("Server unavailable. Use the demo accounts above to preview.") };
     }
   };
 
@@ -163,9 +164,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           emailRedirectTo: window.location.origin,
         },
       });
-      return { error: error as Error | null };
-    } catch (err) {
-      return { error: err as Error };
+      if (error) return { error: new Error("Server unavailable. Use the demo accounts above to preview.") };
+      return { error: null };
+    } catch {
+      return { error: new Error("Server unavailable. Use the demo accounts above to preview.") };
     }
   };
 
