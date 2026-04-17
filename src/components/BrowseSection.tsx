@@ -1,21 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Boat icon as inline SVG data URI
+// Inline SVG icons for vehicles without PNG assets
 const BOAT_ICON = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23555' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M8 38 L32 14 L56 38'/><path d='M4 46 Q16 54 32 46 Q48 38 60 46'/><line x1='32' y1='14' x2='32' y2='8'/><line x1='24' y1='8' x2='40' y2='8'/></svg>`;
-const TUK_ICON = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23555' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><rect x='8' y='20' width='32' height='22' rx='4'/><path d='M40 28 L56 28 L56 42 L40 42'/><circle cx='18' cy='46' r='6'/><circle cx='46' cy='46' r='6'/><path d='M8 30 L8 20'/></svg>`;
+// Bajaji (auto-rickshaw / tuk-tuk): rounded cabin left, open passenger right, 3 wheels
+const BAJAJI_ICON = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23555' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'><path d='M6 42 L6 26 Q6 18 14 18 L28 18 L28 42 Z'/><path d='M28 22 L50 22 L54 28 L54 42 L28 42 Z'/><line x1='28' y1='18' x2='52' y2='18'/><circle cx='14' cy='47' r='5'/><circle cx='46' cy='47' r='5'/><line x1='19' y1='47' x2='41' y2='47'/></svg>`;
 
 const allCategories = [
   { name: "Saloon",      icon: "/icons/sedan.png",        param: "bodyType=Sedan" },
   { name: "4x4 / Jeep",  icon: "/icons/suv.png",          param: "bodyType=SUV" },
   { name: "Double Cab",  icon: "/icons/pickup.png",        param: "bodyType=Pickup" },
-  { name: "Hatchback",   icon: "/icons/hatchback.png",     param: "bodyType=Hatchback" },
+  { name: "Small Car",   icon: "/icons/hatchback.png",     param: "bodyType=Hatchback" },
   { name: "Daladala",    icon: "/icons/minibus.png",       param: "bodyType=Minibus" },
-  { name: "Bus",         icon: "/icons/minibus.png",       param: "bodyType=Bus" },
   { name: "Lorry",       icon: "/icons/truck.png",         param: "bodyType=Truck" },
   { name: "Van",         icon: "/icons/van.png",           param: "bodyType=Van" },
   { name: "Boda Boda",   icon: "/icons/bike-sports.png",   param: "bodyType=Motorcycle" },
-  { name: "Bajaji",      icon: TUK_ICON,                  param: "bodyType=Tuk-tuk" },
+  { name: "Bajaji",      icon: BAJAJI_ICON,               param: "bodyType=Tuk-tuk" },
   { name: "Boat",        icon: BOAT_ICON,                  param: "bodyType=Boat" },
 ];
 
@@ -63,22 +63,13 @@ export default function BrowseSection() {
         ))}
       </div>
 
-      {/* Category Tab — 2-row horizontal swipe carousel */}
+      {/* Category Tab — single row horizontal swipe */}
       {activeTab === "Category" && (
         <div
           className="mt-3 overflow-x-auto snap-x snap-mandatory"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
         >
-          <div
-            className="grid gap-2"
-            style={{
-              display: "grid",
-              gridTemplateRows: "repeat(2, auto)",
-              gridAutoFlow: "column",
-              gridAutoColumns: "88px",
-              width: "max-content",
-            }}
-          >
+          <div className="flex gap-2" style={{ width: "max-content" }}>
             {allCategories.map((cat) => (
               <button
                 key={cat.name}
