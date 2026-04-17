@@ -125,7 +125,7 @@ function MobileLangList({ currentLang, defaultOpenGroup, onSelect }: {
           placeholder="Search language..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full h-9 px-3 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+          className="w-full h-9 px-3 text-base rounded-lg border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
       <div className="flex flex-col gap-0.5">
@@ -240,8 +240,7 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
               placeholder="Search language..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              autoFocus
-              className="w-full h-8 px-3 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full h-8 px-3 text-base rounded-lg border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           {/* List */}

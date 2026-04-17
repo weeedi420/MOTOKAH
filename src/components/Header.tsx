@@ -79,7 +79,7 @@ export default function Header() {
                 <IconMenu2 size={22} stroke={2.5} />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-surface-2 border-border flex flex-col overflow-hidden">
+            <SheetContent side="right" className="bg-surface-2 border-border flex flex-col overflow-hidden" onOpenAutoFocus={e => e.preventDefault()}>
               <SheetTitle className="text-primary font-bold text-lg">Motokah</SheetTitle>
               <nav className="flex flex-col gap-1 mt-6 overflow-y-auto flex-1">
                 {navLinks.map(link => (
