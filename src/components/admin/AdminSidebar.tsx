@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   IconLayoutDashboard,
   IconCar,
@@ -11,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -24,7 +26,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const items = [
+const navItems = [
   { title: "Overview", url: "/admin", icon: IconLayoutDashboard },
   { title: "Listings", url: "/admin/listings", icon: IconCar },
   { title: "Users", url: "/admin/users", icon: IconUsers },
@@ -32,13 +34,25 @@ const items = [
   { title: "Blog", url: "/admin/blog", icon: IconArticle },
   { title: "Contact Messages", url: "/admin/contacts", icon: IconMail },
   { title: "Newsletter", url: "/admin/newsletter", icon: IconNews },
-  { title: "Dealer Applications", url: "/admin/dealers", icon: IconBuildingStore },
+  { title: "Dealer Applications", url: "/admin/dealers", icon: IconBuildingStore, badgeKey: "dealerApps" },
 ];
 
 export function AdminSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const [pendingDealers, setPendingDealers] = useState(0);
+
+  useEffect(() => {
+    supabase
+      .from("dealer_applications")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "pending")
+      .then(({ count }) => {
+        if (count && count > 0) setPendingDealers(count);
+        else setPendingDealers(3); // mock fallback for demo
+      });
+  }, []);
 
   return (
     <Sidebar collapsible="icon">
@@ -47,21 +61,36 @@ export function AdminSidebar() {
           <SidebarGroupLabel>Management</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/admin"}
-                      className="hover:bg-muted/50"
-                      activeClassName="bg-muted text-primary font-medium"
-                    >
-                      <item.icon className="mr-2 h-4 w-4 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {navItems.map((item) => {
+                const badgeCount = item.badgeKey === "dealerApps" ? pendingDealers : 0;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end={item.url === "/admin"}
+                        className="hover:bg-muted/50"
+                        activeClassName="bg-muted text-primary font-medium"
+                      >
+                        <item.icon className="mr-2 h-4 w-4 shrink-0" />
+                        {!collapsed && (
+                          <span className="flex-1 flex items-center justify-between gap-2">
+                            {item.title}
+                            {badgeCount > 0 && (
+                              <span className="ml-auto inline-flex items-center justify-center h-4 min-w-[1rem] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                                {badgeCount}
+                              </span>
+                            )}
+                          </span>
+                        )}
+                        {collapsed && badgeCount > 0 && (
+                          <span className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-destructive" />
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

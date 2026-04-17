@@ -350,3 +350,28 @@ export const priceRanges = [
   { label: "25M - 50M", min: 25000000, max: 50000000 },
   { label: "50M+", min: 50000000, max: Infinity },
 ];
+
+export interface MockDealer {
+  user_id: string;
+  display_name: string;
+  city: string;
+  phone: string;
+  avatar_url: null;
+  verified_at: string | null;
+  listing_count: number;
+  rating: number;
+  description: string;
+}
+
+// display_name values MUST match sellerName in mockListings exactly
+export const mockDealers: MockDealer[] = [
+  { user_id: "mock-dealer-1", display_name: "Premium Auto TZ",    city: "Dar es Salaam", phone: "+255 712 100 001", avatar_url: null, verified_at: "2024-01-15T00:00:00Z", listing_count: 52, rating: 4.9, description: "Tanzania's top dealer for Japanese imports and pickup trucks. Over 10 years serving Dar es Salaam." },
+  { user_id: "mock-dealer-2", display_name: "Safari Motors",      city: "Arusha",        phone: "+255 712 100 002", avatar_url: null, verified_at: "2024-03-10T00:00:00Z", listing_count: 38, rating: 4.7, description: "Specialists in 4WD and safari-ready vehicles. Based in Arusha, serving the Northern Circuit." },
+  { user_id: "mock-dealer-3", display_name: "Karibu Motors",      city: "Dar es Salaam", phone: "+255 712 100 003", avatar_url: null, verified_at: "2023-11-20T00:00:00Z", listing_count: 24, rating: 4.5, description: "Your friendly Dar es Salaam dealer. Affordable hybrid and fuel-efficient vehicles." },
+  { user_id: "mock-dealer-4", display_name: "TopDrive Tanzania",  city: "Dar es Salaam", phone: "+255 712 100 004", avatar_url: null, verified_at: "2024-02-01T00:00:00Z", listing_count: 67, rating: 4.8, description: "The largest inventory in Tanzania. SUVs, sedans, and commercial vehicles for every budget." },
+  { user_id: "mock-dealer-5", display_name: "Zanzibar Auto Hub",  city: "Zanzibar",      phone: "+255 712 100 005", avatar_url: null, verified_at: "2024-04-05T00:00:00Z", listing_count: 18, rating: 4.4, description: "Zanzibar's premier car dealership. Hatchbacks and city cars at competitive prices." },
+  { user_id: "mock-dealer-6", display_name: "Kilimanjaro Motors", city: "Arusha",        phone: "+255 712 100 006", avatar_url: null, verified_at: "2023-09-14T00:00:00Z", listing_count: 31, rating: 4.6, description: "Quality used SUVs and 4x4s for the Northern Highlands. Trusted by farmers and tour operators." },
+  { user_id: "mock-dealer-7", display_name: "EV Tanzania",        city: "Dar es Salaam", phone: "+255 712 100 007", avatar_url: null, verified_at: null,                     listing_count: 14, rating: 4.7, description: "East Africa's first hybrid and electric vehicle specialist. Future-proof your drive." },
+  { user_id: "mock-dealer-8", display_name: "Southern Autos",     city: "Mbeya",         phone: "+255 712 100 008", avatar_url: null, verified_at: "2024-01-30T00:00:00Z", listing_count: 22, rating: 4.3, description: "Serving the Southern Highlands since 2015. Workhorses and commercial vehicles." },
+  { user_id: "mock-dealer-9", display_name: "City Cars TZ",       city: "Dar es Salaam", phone: "+255 712 100 009", avatar_url: null, verified_at: "2023-12-01T00:00:00Z", listing_count: 41, rating: 4.6, description: "Modern SUVs and crossovers for city life. Financing options available." },
+];

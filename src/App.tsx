@@ -32,6 +32,7 @@ import Privacy from "./pages/Privacy.tsx";
 import DealerDirectory from "./pages/DealerDirectory.tsx";
 import DealerProfilePage from "./pages/DealerProfile.tsx";
 import BecomeDealer from "./pages/BecomeDealer.tsx";
+import DealerDashboard from "./pages/DealerDashboard.tsx";
 import AdminOverview from "./pages/admin/AdminOverview.tsx";
 import AdminListings from "./pages/admin/AdminListings.tsx";
 import AdminUsers from "./pages/admin/AdminUsers.tsx";
@@ -85,6 +86,7 @@ function AnimatedRoutes() {
               <Route path="/dealers" element={<DealerDirectory />} />
               <Route path="/dealer/:id" element={<DealerProfilePage />} />
               <Route path="/become-dealer" element={<ProtectedRoute><BecomeDealer /></ProtectedRoute>} />
+              <Route path="/dealer-dashboard" element={<ProtectedRoute><DealerDashboard /></ProtectedRoute>} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminOverview />} />
                 <Route path="listings" element={<AdminListings />} />

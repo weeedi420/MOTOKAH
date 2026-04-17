@@ -2,15 +2,16 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
+import { useWishlist } from "@/hooks/useWishlist";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { IconUser, IconEdit, IconTrash, IconEye, IconCheck, IconCamera, IconShieldLock, IconQrcode, IconBookmark, IconAlertTriangle, IconRefresh } from "@tabler/icons-react";
+import { IconUser, IconEdit, IconTrash, IconEye, IconCheck, IconCamera, IconShieldLock, IconQrcode, IconBookmark, IconAlertTriangle, IconRefresh, IconLayoutDashboard, IconCar, IconHeart, IconMessageCircle, IconChevronRight, IconBuildingStore } from "@tabler/icons-react";
 import ReviewsSection from "@/components/ReviewsSection";
 import { Link, useNavigate } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { format, differenceInDays, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 type ProfileData = {
   display_name: string | null;
@@ -137,10 +138,11 @@ function MfaSection() {
 }
 
 export default function Profile() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isDealer } = useAuth();
+  const { wishlistIds } = useWishlist();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"listings" | "reviews" | "settings" | "security" | "saved">("listings");
+  const [tab, setTab] = useState<"dashboard" | "listings" | "reviews" | "settings" | "security" | "saved">("dashboard");
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [listings, setListings] = useState<ListingRow[]>([]);
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
@@ -267,6 +269,9 @@ export default function Profile() {
 
         {/* Tabs */}
         <div className="flex flex-wrap border-b border-border mb-6 gap-0">
+          <button onClick={() => setTab("dashboard")} className={`px-4 pb-3 text-sm font-semibold flex items-center gap-1 ${tab === "dashboard" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
+            <IconLayoutDashboard size={14} /> Dashboard
+          </button>
           <button onClick={() => setTab("listings")} className={`px-4 pb-3 text-sm font-semibold ${tab === "listings" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
             My Listings ({listings.length})
           </button>
@@ -283,6 +288,103 @@ export default function Profile() {
             <span className="flex items-center gap-1"><IconShieldLock size={14} /> Security</span>
           </button>
         </div>
+
+        {tab === "dashboard" && (
+          <div className="space-y-5">
+            {/* Dealer redirect banner */}
+            {isDealer && (
+              <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <IconBuildingStore size={22} className="text-primary shrink-0" />
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">You have a Dealer account</p>
+                    <p className="text-xs text-muted-foreground">Access your full dealer portal with inventory and analytics</p>
+                  </div>
+                </div>
+                <Button size="sm" onClick={() => navigate("/dealer-dashboard")} className="shrink-0 gap-1">
+                  Dealer Dashboard <IconChevronRight size={14} />
+                </Button>
+              </div>
+            )}
+
+            {/* Welcome banner */}
+            <div className="bg-gradient-to-r from-primary/10 via-accent/5 to-background border border-border rounded-xl p-5">
+              <h2 className="text-lg font-bold text-foreground mb-0.5">
+                Welcome back, {profile?.display_name?.split(" ")[0] || "there"} 👋
+              </h2>
+              <p className="text-sm text-muted-foreground">Here's a summary of your Motokah activity</p>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-card border border-border rounded-xl p-4 text-center">
+                <IconCar size={22} className="mx-auto text-primary mb-1" />
+                <p className="text-2xl font-extrabold text-foreground">{listings.filter(l => l.status === "approved").length}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Active Listings</p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-4 text-center">
+                <IconHeart size={22} className="mx-auto text-destructive mb-1" />
+                <p className="text-2xl font-extrabold text-foreground">{wishlistIds.size}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Wishlisted</p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-4 text-center">
+                <IconMessageCircle size={22} className="mx-auto text-accent mb-1" />
+                <p className="text-2xl font-extrabold text-foreground">—</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Messages</p>
+              </div>
+            </div>
+
+            {/* Quick actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <Button onClick={() => navigate("/sell")} className="gap-2 justify-start h-12">
+                <IconCar size={18} /> Post New Ad
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/search")} className="gap-2 justify-start h-12">
+                <IconLayoutDashboard size={18} /> Browse Cars
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/wishlist")} className="gap-2 justify-start h-12">
+                <IconHeart size={18} /> My Wishlist
+              </Button>
+            </div>
+
+            {/* Recent listings */}
+            {listings.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-foreground text-sm">Recent Listings</h3>
+                  <button onClick={() => setTab("listings")} className="text-xs text-primary hover:underline">View all</button>
+                </div>
+                <div className="space-y-2">
+                  {listings.slice(0, 3).map(l => (
+                    <div key={l.id} className="bg-card border border-border rounded-lg p-3 flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <Link to={`/listing/${l.id}`} className="text-sm font-medium text-foreground hover:text-primary truncate block">{l.title}</Link>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                          l.status === "approved" ? "bg-success/20 text-success" :
+                          l.status === "pending" ? "bg-accent/20 text-accent" :
+                          l.status === "sold" ? "bg-muted text-muted-foreground" :
+                          "bg-destructive/20 text-destructive"
+                        }`}>{l.status}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-0.5">
+                        <IconEye size={12} /> {l.views}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {listings.length === 0 && (
+              <div className="text-center py-8 bg-card border border-border rounded-xl">
+                <IconCar size={36} className="mx-auto text-muted-foreground mb-3 opacity-40" />
+                <p className="font-semibold text-foreground mb-1">Ready to sell your car?</p>
+                <p className="text-sm text-muted-foreground mb-4">Post your first listing in minutes</p>
+                <Button onClick={() => navigate("/sell")}>Post Your First Ad</Button>
+              </div>
+            )}
+          </div>
+        )}
 
         {tab === "listings" && (
           <div className="space-y-3">

@@ -3,11 +3,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconSearch, IconMapPin, IconPhone, IconStarFilled, IconBuildingStore, IconShieldCheck } from "@tabler/icons-react";
+import { IconSearch, IconMapPin, IconStarFilled, IconBuildingStore, IconShieldCheck } from "@tabler/icons-react";
+import { mockDealers } from "@/data/mockData";
 
 type DealerProfile = {
   user_id: string;
@@ -17,16 +17,8 @@ type DealerProfile = {
   phone: string | null;
   verified_at: string | null;
   listing_count?: number;
+  rating?: number;
 };
-
-const mockDealers: DealerProfile[] = [
-  { user_id: "mock-dealer-1", display_name: "Premium Auto TZ",    avatar_url: null, city: "Dar es Salaam", phone: "+255 712 000 001", verified_at: new Date().toISOString(), listing_count: 52 },
-  { user_id: "mock-dealer-2", display_name: "Safari Motors",      avatar_url: null, city: "Arusha",        phone: "+255 712 000 002", verified_at: new Date().toISOString(), listing_count: 38 },
-  { user_id: "mock-dealer-3", display_name: "Karibu Motors",      avatar_url: null, city: "Dar es Salaam", phone: "+255 712 000 003", verified_at: new Date().toISOString(), listing_count: 24 },
-  { user_id: "mock-dealer-4", display_name: "Kilimanjaro Cars",   avatar_url: null, city: "Moshi",         phone: "+255 712 000 004", verified_at: null,                     listing_count: 17 },
-  { user_id: "mock-dealer-5", display_name: "Zanzibar Auto Hub",  avatar_url: null, city: "Zanzibar",      phone: "+255 712 000 005", verified_at: new Date().toISOString(), listing_count: 31 },
-  { user_id: "mock-dealer-6", display_name: "East Africa Motors", avatar_url: null, city: "Nairobi",       phone: "+254 712 000 006", verified_at: new Date().toISOString(), listing_count: 45 },
-];
 
 export default function DealerDirectory() {
   usePageTitle("Dealer Directory — Motokah");
@@ -43,7 +35,6 @@ export default function DealerDirectory() {
         .eq("seller_type", "dealer");
 
       if (data && data.length > 0) {
-        // Get listing counts for each dealer
         const dealersWithCounts = await Promise.all(
           data.map(async (dealer) => {
             const { count } = await supabase
@@ -56,7 +47,6 @@ export default function DealerDirectory() {
         );
         setDealers(dealersWithCounts);
       } else {
-        // No dealers in DB yet — show mock dealers for demo
         setDealers(mockDealers);
       }
       setLoading(false);
@@ -85,7 +75,7 @@ export default function DealerDirectory() {
         </section>
 
         {/* Filters */}
-        <section className="container mx-auto py-8">
+        <section className="container mx-auto py-8 px-4">
           <div className="flex flex-col sm:flex-row gap-3 mb-8">
             <div className="relative flex-1">
               <IconSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -122,31 +112,42 @@ export default function DealerDirectory() {
                   className="bg-card border border-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg transition-all group"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0">
+                    {/* Avatar */}
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden shrink-0 border-2 border-border group-hover:border-primary/40 transition-colors">
                       {dealer.avatar_url ? (
                         <img src={dealer.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <IconBuildingStore size={28} className="text-muted-foreground" />
+                        <span className="text-2xl font-black text-primary">
+                          {(dealer.display_name || "?")[0]}
+                        </span>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-1.5 mb-1">
                         <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
                           {dealer.display_name || "Unnamed Dealer"}
                         </h3>
                         {dealer.verified_at && (
-                          <IconShieldCheck size={18} className="text-success shrink-0" />
+                          <IconShieldCheck size={16} className="text-success shrink-0" />
                         )}
                       </div>
                       {dealer.city && (
                         <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
-                          <IconMapPin size={14} /> {dealer.city}
+                          <IconMapPin size={13} /> {dealer.city}
                         </p>
                       )}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant="secondary" className="text-xs">
-                          {dealer.listing_count} listing{dealer.listing_count !== 1 ? "s" : ""}
+                          {dealer.listing_count ?? 0} listing{(dealer.listing_count ?? 0) !== 1 ? "s" : ""}
                         </Badge>
+                        {dealer.rating && (
+                          <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
+                            <IconStarFilled size={12} className="text-accent" /> {dealer.rating.toFixed(1)}
+                          </span>
+                        )}
+                        {dealer.verified_at && (
+                          <span className="text-[10px] text-success font-medium">Verified</span>
+                        )}
                       </div>
                     </div>
                   </div>

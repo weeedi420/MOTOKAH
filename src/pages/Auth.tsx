@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandApple, IconBrandFacebook, IconSparkles } from "@tabler/icons-react";
+import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandApple, IconBrandFacebook, IconSparkles, IconBuildingStore } from "@tabler/icons-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -42,29 +41,31 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [isDealer, setIsDealer] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
-  const { signIn, signUp, resetPassword, user } = useAuth();
+  const { signIn, signUp, resetPassword, user, isAdmin, isDealer: userIsDealer } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   usePageTitle(tab === "login" ? "Sign In" : tab === "register" ? "Create Account" : tab === "otp" ? "Magic Link" : "Reset Password");
 
+  // Redirect already-logged-in users based on role
   if (user) {
-    navigate("/profile", { replace: true });
+    if (isAdmin) navigate("/admin", { replace: true });
+    else if (userIsDealer) navigate("/dealer-dashboard", { replace: true });
+    else navigate("/profile", { replace: true });
     return null;
   }
 
   const handleSocialLogin = async (provider: "google" | "apple" | "facebook") => {
     setSocialLoading(provider);
     try {
-      const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: window.location.origin,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin },
       });
-      if (result.error) {
-        toast({ title: "Error", description: (result.error as Error).message, variant: "destructive" });
-      }
-      if (result.redirected) return;
+      if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
     } catch (err: unknown) {
       toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
     } finally {
@@ -94,11 +95,15 @@ export default function Auth() {
         const { error } = await signIn(email, password);
         if (error) throw error;
         toast({ title: "Welcome back!" });
-        navigate("/");
+        // Role-based redirect handled by the user check above on next render
       } else if (tab === "register") {
         const { error } = await signUp(email, password, name);
         if (error) throw error;
-        toast({ title: "Account created!", description: "Check your email to verify." });
+        toast({ title: "Account created!", description: "Check your email to verify your account." });
+        if (isDealer) {
+          // Send them to dealer application form after signup
+          setTimeout(() => navigate("/become-dealer"), 500);
+        }
       } else if (tab === "forgot") {
         const { error } = await resetPassword(email);
         if (error) throw error;
@@ -157,55 +162,22 @@ export default function Auth() {
             <>
               {/* Social Login Buttons */}
               <div className="space-y-2 mb-5">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full gap-2 font-medium"
-                  onClick={() => handleSocialLogin("google")}
-                  disabled={!!socialLoading}
-                >
-                  {socialLoading === "google" ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" />
-                  ) : (
-                    <IconBrandGoogle size={18} />
-                  )}
+                <Button type="button" variant="outline" className="w-full gap-2 font-medium" onClick={() => handleSocialLogin("google")} disabled={!!socialLoading}>
+                  {socialLoading === "google" ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" /> : <IconBrandGoogle size={18} />}
                   Continue with Google
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full gap-2 font-medium"
-                  onClick={() => handleSocialLogin("apple")}
-                  disabled={!!socialLoading}
-                >
-                  {socialLoading === "apple" ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" />
-                  ) : (
-                    <IconBrandApple size={18} />
-                  )}
+                <Button type="button" variant="outline" className="w-full gap-2 font-medium" onClick={() => handleSocialLogin("apple")} disabled={!!socialLoading}>
+                  {socialLoading === "apple" ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" /> : <IconBrandApple size={18} />}
                   Continue with Apple
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full gap-2 font-medium"
-                  onClick={() => handleSocialLogin("facebook")}
-                  disabled={!!socialLoading}
-                >
-                  {socialLoading === "facebook" ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" />
-                  ) : (
-                    <IconBrandFacebook size={18} className="text-[#1877F2]" />
-                  )}
+                <Button type="button" variant="outline" className="w-full gap-2 font-medium" onClick={() => handleSocialLogin("facebook")} disabled={!!socialLoading}>
+                  {socialLoading === "facebook" ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" /> : <IconBrandFacebook size={18} className="text-[#1877F2]" />}
                   Continue with Facebook
                 </Button>
               </div>
 
-              {/* Divider */}
               <div className="relative mb-5">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border" />
-                </div>
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
                 <div className="relative flex justify-center text-xs">
                   <span className="px-2 bg-card text-muted-foreground">or continue with email</span>
                 </div>
@@ -237,6 +209,25 @@ export default function Auth() {
                   <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10" required minLength={6} />
                 </div>
                 {tab === "register" && <PasswordStrength password={password} />}
+
+                {/* Dealer toggle — only on register */}
+                {tab === "register" && (
+                  <label className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors bg-muted/30">
+                    <input
+                      type="checkbox"
+                      checked={isDealer}
+                      onChange={e => setIsDealer(e.target.checked)}
+                      className="w-4 h-4 accent-primary"
+                    />
+                    <div className="flex items-center gap-2">
+                      <IconBuildingStore size={16} className="text-primary" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">Register as a Dealer</p>
+                        <p className="text-xs text-muted-foreground">You'll complete your dealer application after signup</p>
+                      </div>
+                    </div>
+                  </label>
+                )}
 
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Please wait..." : tab === "login" ? "Sign In" : "Create Account"}
