@@ -20,6 +20,24 @@
     <link rel="manifest" href="/manifest.json" />
   </head>
   <body>
+    <!-- Google Translate (hidden widget — triggered programmatically) -->
+    <div id="google_translate_element" style="display:none;visibility:hidden;position:absolute;"></div>
+    <script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          autoDisplay: false,
+          multilanguagePage: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+    <style>
+      /* Hide Google Translate toolbar banner */
+      .goog-te-banner-frame, .goog-te-balloon-frame { display: none !important; }
+      body { top: 0 !important; }
+      .skiptranslate { display: none !important; }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
