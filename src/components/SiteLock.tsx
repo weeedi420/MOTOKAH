@@ -58,8 +58,7 @@ export default function SiteLock({ children }: { children: React.ReactNode }) {
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Enter access code"
-              autoFocus
-              className={`w-full h-11 pl-4 pr-10 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 transition-colors ${
+              className={`w-full h-11 pl-4 pr-10 rounded-lg border bg-background text-base focus:outline-none focus:ring-2 transition-colors ${
                 error
                   ? "border-destructive ring-destructive/30 placeholder-destructive/50"
                   : "border-input focus:ring-primary"
