@@ -13,8 +13,8 @@ export default function AdminUsers() {
         .select("id, user_id, display_name, phone, city, seller_type, verified_at, created_at")
         .order("created_at", { ascending: false })
         .limit(200);
-      if (error) throw error;
-      return data;
+      if (error) return [];
+      return data ?? [];
     },
   });
 

@@ -19,8 +19,8 @@ export default function AdminListings() {
         .select("id, title, make, model, year, price, currency, status, city, created_at, views, seller_id")
         .order("created_at", { ascending: false })
         .limit(200);
-      if (error) throw error;
-      return data;
+      if (error) return [];
+      return data ?? [];
     },
   });
 

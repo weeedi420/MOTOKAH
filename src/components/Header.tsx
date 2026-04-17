@@ -27,7 +27,7 @@ export default function Header() {
   return (
     <>
     <EmailVerificationBanner />
-    <header className="sticky top-0 z-50 border-b-2 border-primary bg-card/95 backdrop-blur-md safe-top">
+    <header className="sticky top-0 z-50 border-b-2 border-primary bg-card backdrop-blur-md safe-top">
       <div className="container mx-auto flex items-center justify-between py-3">
         {/* Logo */}
         <Link to="/" className="flex flex-col">

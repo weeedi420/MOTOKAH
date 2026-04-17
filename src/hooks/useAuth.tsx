@@ -2,6 +2,36 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
+// ─── Demo accounts (bypass Supabase — no env vars needed) ─────────────────────
+const DEMO_PASSWORD = "moto2026";
+const DEMO_SESSION_KEY = "motokah_demo_session";
+
+const DEMO_ACCOUNTS: Record<string, { role: "admin" | "dealer" | "private"; name: string; dealerName?: string }> = {
+  "admin@motokah.com":  { role: "admin",   name: "Motokah Admin" },
+  "dealer@motokah.com": { role: "dealer",  name: "Safari Motors", dealerName: "Safari Motors" },
+  "user@motokah.com":   { role: "private", name: "Demo User" },
+};
+
+function makeDemoUser(email: string, name: string): User {
+  return {
+    id: `demo-${email.split("@")[0]}`,
+    email,
+    email_confirmed_at: "2026-01-01T00:00:00Z",
+    confirmed_at: "2026-01-01T00:00:00Z",
+    created_at: "2026-01-01T00:00:00Z",
+    updated_at: "2026-01-01T00:00:00Z",
+    user_metadata: { display_name: name },
+    app_metadata: {},
+    aud: "authenticated",
+    role: "authenticated",
+    identities: [],
+    factors: [],
+    phone: "",
+    last_sign_in_at: "2026-01-01T00:00:00Z",
+  } as unknown as User;
+}
+// ──────────────────────────────────────────────────────────────────────────────
+
 interface UserProfile {
   seller_type: "private" | "dealer";
   display_name: string | null;
@@ -35,16 +65,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchProfile = async (userId: string) => {
-    const [{ data: profileData }, { data: adminRole }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("seller_type, display_name, verified_at, phone, city, avatar_url")
-        .eq("user_id", userId)
-        .single(),
-      supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
-    ]);
-    if (profileData) setProfile(profileData as UserProfile);
-    setIsAdmin(!!adminRole);
+    try {
+      const [{ data: profileData }, { data: adminRole }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("seller_type, display_name, verified_at, phone, city, avatar_url")
+          .eq("user_id", userId)
+          .single(),
+        supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
+      ]);
+      if (profileData) setProfile(profileData as UserProfile);
+      setIsAdmin(!!adminRole);
+    } catch {
+      // Supabase unavailable — profile stays null, not admin
+    }
   };
 
   const refreshProfile = async () => {
@@ -52,11 +86,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // Check for persisted demo session first (no network needed)
+    const stored = localStorage.getItem(DEMO_SESSION_KEY);
+    if (stored) {
+      try {
+        const { user: demoUser, profile: demoProfile, isAdmin: demoAdmin } = JSON.parse(stored);
+        setUser(demoUser);
+        setProfile(demoProfile);
+        setIsAdmin(demoAdmin);
+        setLoading(false);
+        return;
+      } catch {
+        localStorage.removeItem(DEMO_SESSION_KEY);
+      }
+    }
+
+    // Normal Supabase auth
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        // Use setTimeout to avoid Supabase deadlock on auth state change
         setTimeout(() => fetchProfile(session.user.id), 0);
       } else {
         setProfile(null);
@@ -70,39 +119,77 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) fetchProfile(session.user.id);
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, displayName?: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: displayName || email },
-        emailRedirectTo: window.location.origin,
-      },
-    });
-    return { error: error as Error | null };
+  const signIn = async (email: string, password: string) => {
+    const demo = DEMO_ACCOUNTS[email.toLowerCase().trim()];
+    if (demo && password === DEMO_PASSWORD) {
+      const demoUser = makeDemoUser(email.toLowerCase().trim(), demo.name);
+      const demoProfile: UserProfile = {
+        seller_type: demo.role === "dealer" ? "dealer" : "private",
+        display_name: demo.dealerName ?? demo.name,
+        verified_at: "2026-01-01T00:00:00Z",
+        phone: "+255 700 000 000",
+        city: "Dar es Salaam",
+        avatar_url: null,
+      };
+      const demoAdmin = demo.role === "admin";
+      localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify({ user: demoUser, profile: demoProfile, isAdmin: demoAdmin }));
+      setUser(demoUser);
+      setProfile(demoProfile);
+      setIsAdmin(demoAdmin);
+      setLoading(false);
+      return { error: null };
+    }
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      return { error: error as Error | null };
+    } catch (err) {
+      return { error: err as Error };
+    }
   };
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error as Error | null };
+  const signUp = async (email: string, password: string, displayName?: string) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: displayName || email },
+          emailRedirectTo: window.location.origin,
+        },
+      });
+      return { error: error as Error | null };
+    } catch (err) {
+      return { error: err as Error };
+    }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem(DEMO_SESSION_KEY);
+    setUser(null);
     setProfile(null);
     setIsAdmin(false);
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // ignore if Supabase unavailable
+    }
   };
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    return { error: error as Error | null };
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      return { error: error as Error | null };
+    } catch (err) {
+      return { error: err as Error };
+    }
   };
 
   const isDealer = profile?.seller_type === "dealer";

@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandApple, IconBrandFacebook, IconSparkles, IconBuildingStore } from "@tabler/icons-react";
+import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandApple, IconBrandFacebook, IconSparkles, IconBuildingStore, IconShieldCheck, IconBuildingBank, IconUserCircle } from "@tabler/icons-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -36,6 +36,12 @@ function PasswordStrength({ password }: { password: string }) {
   );
 }
 
+const DEMO_LOGINS = [
+  { label: "Admin Demo",    email: "admin@motokah.com",  icon: IconShieldCheck,  color: "text-destructive", bg: "bg-destructive/10 border-destructive/30 hover:bg-destructive/20" },
+  { label: "Dealer Demo",   email: "dealer@motokah.com", icon: IconBuildingBank, color: "text-accent",      bg: "bg-accent/10 border-accent/30 hover:bg-accent/20" },
+  { label: "Customer Demo", email: "user@motokah.com",   icon: IconUserCircle,   color: "text-success",    bg: "bg-success/10 border-success/30 hover:bg-success/20" },
+];
+
 export default function Auth() {
   const [tab, setTab] = useState<Tab>("login");
   const [email, setEmail] = useState("");
@@ -57,6 +63,17 @@ export default function Auth() {
     else navigate("/profile", { replace: true });
     return null;
   }
+
+  const handleDemoLogin = async (demoEmail: string) => {
+    setLoading(true);
+    const { error } = await signIn(demoEmail, "moto2026");
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Demo login successful!" });
+    }
+    setLoading(false);
+  };
 
   const handleSocialLogin = async (provider: "google" | "apple" | "facebook") => {
     setSocialLoading(provider);
@@ -95,13 +112,11 @@ export default function Auth() {
         const { error } = await signIn(email, password);
         if (error) throw error;
         toast({ title: "Welcome back!" });
-        // Role-based redirect handled by the user check above on next render
       } else if (tab === "register") {
         const { error } = await signUp(email, password, name);
         if (error) throw error;
         toast({ title: "Account created!", description: "Check your email to verify your account." });
         if (isDealer) {
-          // Send them to dealer application form after signup
           setTimeout(() => navigate("/become-dealer"), 500);
         }
       } else if (tab === "forgot") {
@@ -123,6 +138,28 @@ export default function Auth() {
           <h1 className="text-3xl font-extrabold text-primary">Motokah</h1>
           <p className="text-muted-foreground text-sm mt-1">Find Your Perfect Ride</p>
         </div>
+
+        {/* ── Demo Quick-Login ─────────────────────────────────────── */}
+        <div className="bg-card border border-border rounded-xl p-4 mb-4 shadow-sm">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 text-center">
+            Demo Access — one click, no signup
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {DEMO_LOGINS.map(({ label, email: demoEmail, icon: Icon, color, bg }) => (
+              <button
+                key={demoEmail}
+                onClick={() => handleDemoLogin(demoEmail)}
+                disabled={loading}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-semibold transition-colors ${bg} ${color} disabled:opacity-50`}
+              >
+                <Icon size={20} />
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-muted-foreground text-center mt-2">Password for all demo accounts: <span className="font-mono font-bold text-foreground">moto2026</span></p>
+        </div>
+        {/* ─────────────────────────────────────────────────────────── */}
 
         <div className="bg-card border border-border rounded-xl p-6 shadow-lg">
           {tab === "forgot" ? (

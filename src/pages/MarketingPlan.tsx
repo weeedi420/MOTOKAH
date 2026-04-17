@@ -28,7 +28,7 @@ import {
 } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
-const PASSWORD = "MOTO2025";
+const PASSWORD = "MOTO2026";
 const STORAGE_KEY = "mk_plan_auth";
 
 const NAV_SECTIONS = [
@@ -498,7 +498,7 @@ export default function MarketingPlan() {
             <div>
               <span className="text-lg font-extrabold text-primary tracking-tight leading-none">Motokah</span>
               <p className="text-[10px] text-muted-foreground leading-none mt-0.5 hidden sm:block">
-                Strategic Marketing &amp; Growth Plan — 2025–2028
+                Strategic Marketing &amp; Growth Plan — 2026–2028
               </p>
             </div>
           </div>
@@ -553,7 +553,7 @@ export default function MarketingPlan() {
               Motokah
             </h1>
             <p className="text-lg sm:text-xl font-medium opacity-90">
-              Strategic Marketing &amp; Growth Plan — 2025–2028
+              Strategic Marketing &amp; Growth Plan — 2026–2028
             </p>
             <p className="mt-4 text-sm opacity-70 max-w-xl mx-auto">
               Africa&apos;s purpose-built vehicle marketplace. Starting in Tanzania. Scaling continent-wide.
@@ -1347,7 +1347,7 @@ export default function MarketingPlan() {
           {/* FOOTER */}
           <footer className="bg-foreground text-background py-8 px-4 text-center">
             <p className="text-sm font-bold tracking-wide mb-1">motokah.com</p>
-            <p className="text-xs opacity-70 mb-4">Confidential — Not for Distribution — Motokah 2025</p>
+            <p className="text-xs opacity-70 mb-4">Confidential — Not for Distribution — Motokah 2026</p>
             <div className="border-t border-background/10 pt-4">
               <p className="text-[11px] opacity-50">
                 Platform built and powered by{" "}

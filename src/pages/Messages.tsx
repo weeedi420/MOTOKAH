@@ -57,8 +57,8 @@ export default function Messages() {
       .select("*")
       .or(`participant1_id.eq.${user.id},participant2_id.eq.${user.id}`)
       .order("last_message_at", { ascending: false })
-      .then(async ({ data }) => {
-        if (!data) { setConvoLoading(false); return; }
+      .then(async ({ data, error }) => {
+        if (error || !data) { setConvoLoading(false); return; }
 
         const convos = await Promise.all(data.map(async (c) => {
           const otherId = c.participant1_id === user.id ? c.participant2_id : c.participant1_id;

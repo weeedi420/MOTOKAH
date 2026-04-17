@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IconLock, IconEye, IconEyeOff } from "@tabler/icons-react";
 
-const PASSWORD = "MOTO2025";
+const PASSWORD = "MOTO2026";
 const SESSION_KEY = "motokah_unlocked";
 
 export default function SiteLock({ children }: { children: React.ReactNode }) {
