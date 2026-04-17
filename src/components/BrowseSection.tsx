@@ -6,73 +6,19 @@ const BOAT_ICON = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/sv
 const TUK_ICON = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23555' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><rect x='8' y='20' width='32' height='22' rx='4'/><path d='M40 28 L56 28 L56 42 L40 42'/><circle cx='18' cy='46' r='6'/><circle cx='46' cy='46' r='6'/><path d='M8 30 L8 20'/></svg>`;
 
 const allCategories = [
-  { name: "Sedan",        icon: "/icons/sedan.png",        param: "bodyType=Sedan" },
-  { name: "SUV / 4x4",   icon: "/icons/suv.png",          param: "bodyType=SUV" },
+  { name: "Saloon",      icon: "/icons/sedan.png",        param: "bodyType=Sedan" },
+  { name: "4x4 / Jeep",  icon: "/icons/suv.png",          param: "bodyType=SUV" },
   { name: "Double Cab",  icon: "/icons/pickup.png",        param: "bodyType=Pickup" },
   { name: "Hatchback",   icon: "/icons/hatchback.png",     param: "bodyType=Hatchback" },
-  { name: "Minibus",     icon: "/icons/minibus.png",       param: "bodyType=Minibus" },
+  { name: "Daladala",    icon: "/icons/minibus.png",       param: "bodyType=Minibus" },
   { name: "Bus",         icon: "/icons/minibus.png",       param: "bodyType=Bus" },
-  { name: "Truck",       icon: "/icons/truck.png",         param: "bodyType=Truck" },
+  { name: "Lorry",       icon: "/icons/truck.png",         param: "bodyType=Truck" },
   { name: "Van",         icon: "/icons/van.png",           param: "bodyType=Van" },
   { name: "Boda Boda",   icon: "/icons/bike-sports.png",   param: "bodyType=Motorcycle" },
-  { name: "Tuk-tuk",     icon: TUK_ICON,                  param: "bodyType=Tuk-tuk" },
+  { name: "Bajaji",      icon: TUK_ICON,                  param: "bodyType=Tuk-tuk" },
   { name: "Boat",        icon: BOAT_ICON,                  param: "bodyType=Boat" },
 ];
 
-const brandLogos: Record<string, string> = {
-  Toyota:      "https://icon.horse/icon/toyota.com",
-  Suzuki:      "https://icon.horse/icon/suzuki.com",
-  Honda:       "https://icon.horse/icon/honda.com",
-  Nissan:      "https://icon.horse/icon/nissan.com",
-  KIA:         "https://icon.horse/icon/kia.com",
-  Hyundai:     "https://icon.horse/icon/hyundai.com",
-  BMW:         "https://icon.horse/icon/bmw.com",
-  Ford:        "https://icon.horse/icon/ford.com",
-  Mitsubishi:  "https://icon.horse/icon/mitsubishi-motors.com",
-  Isuzu:       "https://icon.horse/icon/isuzu.com",
-  "Land Rover":"https://icon.horse/icon/landrover.com",
-  Mercedes:    "https://icon.horse/icon/mercedes-benz.com",
-};
-
-const brandColors: Record<string, string> = {
-  Toyota: "#EB0A1E", Suzuki: "#E8000D", Honda: "#E40521",
-  Nissan: "#C3002F", KIA: "#BB162B", Hyundai: "#002C5F",
-  BMW: "#0166B1", Ford: "#003893", Mitsubishi: "#E60026",
-  Isuzu: "#CF0A2C", "Land Rover": "#005A2B", Mercedes: "#222222",
-};
-
-function BrandCard({ brand, onClick }: { brand: string; onClick: () => void }) {
-  const [imgError, setImgError] = useState(false);
-  const color = brandColors[brand] || "#444";
-  return (
-    <button
-      onClick={onClick}
-      className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-card transition-all duration-200 hover:border-primary hover:shadow-sm active:scale-[0.97]"
-    >
-      <div className="w-full h-12 flex items-center justify-center bg-slate-100 rounded-md px-2">
-        {imgError ? (
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg"
-            style={{ background: color }}
-          >
-            {brand[0]}
-          </div>
-        ) : (
-          <img
-            src={brandLogos[brand]}
-            alt={brand}
-            className="max-h-9 max-w-full object-contain"
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        )}
-      </div>
-      <span className="text-[11px] font-semibold text-foreground text-center">{brand}</span>
-    </button>
-  );
-}
-
-const brandItems = Object.keys(brandLogos);
 
 const budgetItems = [
   { label: "Under 5M TZS",   value: "5000000" },
@@ -88,7 +34,7 @@ const budgetItems = [
 const modelItems = ["Corolla","Civic","Hilux","Fortuner","Alto","Vitz","Prado","CR-V","RAV4","Harrier","Premio","Aqua"];
 const cityItems  = ["Dar es Salaam","Arusha","Mwanza","Zanzibar","Dodoma","Mbeya","Moshi","Tanga"];
 
-const tabs = ["Category","Budget","Brand","Model","Cities"] as const;
+const tabs = ["Category","Budget","Model","Cities"] as const;
 type Tab = typeof tabs[number];
 
 export default function BrowseSection() {
@@ -161,19 +107,6 @@ export default function BrowseSection() {
               className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97]">
               {item.label}
             </button>
-          ))}
-        </div>
-      )}
-
-      {/* Brand Tab — real logos */}
-      {activeTab === "Brand" && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-3">
-          {brandItems.map((brand) => (
-            <BrandCard
-              key={brand}
-              brand={brand}
-              onClick={() => navigate(`/search?make=${encodeURIComponent(brand)}`)}
-            />
           ))}
         </div>
       )}
