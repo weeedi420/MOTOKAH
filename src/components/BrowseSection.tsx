@@ -15,7 +15,7 @@ const allCategories = [
   { name: "Lorry",       icon: "/icons/truck.png",         param: "bodyType=Truck" },
   { name: "Van",         icon: "/icons/van.png",           param: "bodyType=Van" },
   { name: "Boda Boda",   icon: "/icons/bike-sports.png",   param: "bodyType=Motorcycle" },
-  { name: "Bajaji",      icon: BAJAJI_ICON,               param: "bodyType=Tuk-tuk" },
+  { name: "Bajaji / Tuk-tuk", icon: BAJAJI_ICON,          param: "bodyType=Tuk-tuk" },
   { name: "Boat",        icon: BOAT_ICON,                  param: "bodyType=Boat" },
 ];
 
