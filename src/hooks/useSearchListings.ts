@@ -55,7 +55,13 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       const { data: rows, error } = await query.limit(100);
 
-      if (error) { console.error(error); setLoading(false); return; }
+      if (error) {
+        console.error(error);
+        // Supabase unavailable — show mock data
+        setListings(mockListings);
+        setLoading(false);
+        return;
+      }
 
       const sellerIds = [...new Set((rows || []).map((r) => r.seller_id))];
       const { data: profiles } = await supabase

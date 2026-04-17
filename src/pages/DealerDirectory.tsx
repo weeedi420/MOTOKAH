@@ -19,6 +19,15 @@ type DealerProfile = {
   listing_count?: number;
 };
 
+const mockDealers: DealerProfile[] = [
+  { user_id: "mock-dealer-1", display_name: "Premium Auto TZ",    avatar_url: null, city: "Dar es Salaam", phone: "+255 712 000 001", verified_at: new Date().toISOString(), listing_count: 52 },
+  { user_id: "mock-dealer-2", display_name: "Safari Motors",      avatar_url: null, city: "Arusha",        phone: "+255 712 000 002", verified_at: new Date().toISOString(), listing_count: 38 },
+  { user_id: "mock-dealer-3", display_name: "Karibu Motors",      avatar_url: null, city: "Dar es Salaam", phone: "+255 712 000 003", verified_at: new Date().toISOString(), listing_count: 24 },
+  { user_id: "mock-dealer-4", display_name: "Kilimanjaro Cars",   avatar_url: null, city: "Moshi",         phone: "+255 712 000 004", verified_at: null,                     listing_count: 17 },
+  { user_id: "mock-dealer-5", display_name: "Zanzibar Auto Hub",  avatar_url: null, city: "Zanzibar",      phone: "+255 712 000 005", verified_at: new Date().toISOString(), listing_count: 31 },
+  { user_id: "mock-dealer-6", display_name: "East Africa Motors", avatar_url: null, city: "Nairobi",       phone: "+254 712 000 006", verified_at: new Date().toISOString(), listing_count: 45 },
+];
+
 export default function DealerDirectory() {
   usePageTitle("Dealer Directory — Motokah");
   const [dealers, setDealers] = useState<DealerProfile[]>([]);
@@ -33,7 +42,7 @@ export default function DealerDirectory() {
         .select("user_id, display_name, avatar_url, city, phone, verified_at")
         .eq("seller_type", "dealer");
 
-      if (data) {
+      if (data && data.length > 0) {
         // Get listing counts for each dealer
         const dealersWithCounts = await Promise.all(
           data.map(async (dealer) => {
@@ -46,6 +55,9 @@ export default function DealerDirectory() {
           })
         );
         setDealers(dealersWithCounts);
+      } else {
+        // No dealers in DB yet — show mock dealers for demo
+        setDealers(mockDealers);
       }
       setLoading(false);
     })();
