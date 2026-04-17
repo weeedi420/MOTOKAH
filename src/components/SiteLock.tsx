@@ -2,9 +2,10 @@ import { useState } from "react";
 import { IconLock, IconEye, IconEyeOff } from "@tabler/icons-react";
 
 const PASSWORD = "MOTO2025";
+const SESSION_KEY = "motokah_unlocked";
 
 export default function SiteLock({ children }: { children: React.ReactNode }) {
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(SESSION_KEY) === "1");
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
   const [showPw, setShowPw] = useState(false);
@@ -12,6 +13,7 @@ export default function SiteLock({ children }: { children: React.ReactNode }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input === PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, "1");
       setUnlocked(true);
     } else {
       setError(true);

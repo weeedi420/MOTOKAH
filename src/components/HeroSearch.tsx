@@ -62,7 +62,7 @@ export default function HeroSearch() {
           </h1>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-card/95 backdrop-blur border border-border rounded-xl shadow-2xl overflow-hidden">
+        <div className="max-w-3xl mx-auto bg-card/95 backdrop-blur border border-border rounded-xl shadow-2xl">
           {/* Tabs */}
           <div className="flex border-b border-border">
             {(["cars", "bikes", "commercial"] as Tab[]).map((t) => (

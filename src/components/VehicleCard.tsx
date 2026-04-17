@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconSparkles, IconScale, IconBuildingStore, IconCar } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { type Listing } from "@/data/mockData";
@@ -55,7 +55,7 @@ export default function VehicleCard({ listing }: { listing: Listing }) {
   const badge = listing.badge ? badgeConfig[listing.badge] : null;
 
   return (
-    <a href={`/listing/${listing.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02] transition-all duration-300 block">
+    <Link to={`/listing/${listing.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02] transition-all duration-300 block">
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden">
         {listing.image ? (
@@ -135,6 +135,6 @@ export default function VehicleCard({ listing }: { listing: Listing }) {
           </span>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

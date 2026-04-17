@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { type Listing } from "@/data/mockData";
-
-const defaultImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop";
+import { type Listing, mockListings } from "@/data/mockData";
 
 export interface SearchFilters {
   make?: string;
@@ -70,7 +68,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         const profile = profileMap.get(r.seller_id);
         const imgs = (r.listing_images as { image_url: string; display_order: number }[]) || [];
         const sorted = [...imgs].sort((a, b) => a.display_order - b.display_order);
-        const mainImage = sorted[0]?.image_url || defaultImage;
+        const mainImage = sorted[0]?.image_url || "";
 
         return {
           id: r.id,
@@ -95,7 +93,28 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         };
       });
 
-      setListings(mapped);
+      if (mapped.length === 0) {
+        // No approved listings in DB yet — filter mock data against active filters
+        const hasFilters = Object.values(filters).some(v => v && (Array.isArray(v) ? v.length > 0 : true));
+        let mocks = [...mockListings];
+        if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
+        if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
+        if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
+        if (filters.city) mocks = mocks.filter(m => m.location === filters.city);
+        if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
+        if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));
+        if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
+        if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
+        if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
+        if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+        // Sort mocks
+        if (sort === "price-low") mocks.sort((a, b) => a.price - b.price);
+        else if (sort === "price-high") mocks.sort((a, b) => b.price - a.price);
+        else if (sort === "views") mocks.sort((a, b) => b.views - a.views);
+        setListings(hasFilters && mocks.length === 0 ? [] : mocks);
+      } else {
+        setListings(mapped);
+      }
       setLoading(false);
     };
 
