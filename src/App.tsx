@@ -43,6 +43,7 @@ import AdminNewsletter from "./pages/admin/AdminNewsletter.tsx";
 import AdminDealers from "./pages/admin/AdminDealers.tsx";
 import MarketingPlan from "./pages/MarketingPlan.tsx";
 import DutyCalculator from "./pages/DutyCalculator.tsx";
+import DealerLeads from "./pages/DealerLeads.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
@@ -100,6 +101,7 @@ function AnimatedRoutes() {
               </Route>
               <Route path="/marketing-plan" element={<MarketingPlan />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
+              <Route path="/dealer-leads" element={<DealerLeads />} />
               <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>

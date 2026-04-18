@@ -12,6 +12,7 @@ const columns = [
     { label: "Compare Vehicles", to: "/compare" },
     { label: "How It Works", to: "/how-it-works" },
     { label: "Duty Calculator", to: "/duty-calculator" },
+    { label: "Car Showrooms", to: "/dealer-leads" },
   ]},
   { title: "For Sellers", links: [
     { label: "Post Your Ad", to: "/sell" },
