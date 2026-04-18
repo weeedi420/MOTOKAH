@@ -52,6 +52,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // ─── Phone cleaning ───────────────────────────────────────────────────────────
 function cleanPhone(raw, defaultCountryCode) {
   if (!raw) return undefined;
+  // Geoapify sometimes returns arrays — take the first element
+  if (Array.isArray(raw)) raw = raw[0];
+  if (typeof raw !== "string") return undefined;
   let digits = raw.replace(/[^\d+]/g, "");
   const hasPlus = digits.startsWith("+");
   if (hasPlus) digits = digits.slice(1);
@@ -68,7 +71,7 @@ function cleanPhone(raw, defaultCountryCode) {
 // ─── Geoapify Places API ──────────────────────────────────────────────────────
 // Categories for car dealers / showrooms
 // Full category list: https://apidocs.geoapify.com/docs/places/#categories
-const CATEGORIES = "commercial.vehicle_dealer,commercial.car_dealer,commercial.car_parts";
+const CATEGORIES = "commercial.vehicle,rental.car";
 const RADIUS = 30000; // 30km
 const LIMIT = 500;    // max per request
 
