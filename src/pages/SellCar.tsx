@@ -48,6 +48,8 @@ export default function SellCar() {
   const navigate = useNavigate();
   const { toast } = useToast();
   usePageTitle("Sell Your Car");
+
+  const isEmailVerified = !!(user?.email_confirmed_at || (user as unknown as Record<string, unknown>)?.confirmed_at);
   const update = (key: keyof FormData, val: string) => {
     const next = { ...form, [key]: val };
     setForm(next);
@@ -144,6 +146,36 @@ export default function SellCar() {
       <Header />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <h1 className="text-2xl font-bold text-foreground mb-6">Sell Your Car</h1>
+
+        {!isEmailVerified && (
+          <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 mb-6 text-center">
+            <p className="text-sm text-destructive font-semibold">
+              Your email is not verified.
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              You must verify your email address before you can post an ad.
+              Check your inbox for the verification link.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={async () => {
+                const { error } = await supabase.auth.resend({
+                  type: "signup",
+                  email: user?.email || "",
+                });
+                if (error) {
+                  toast({ title: "Error", description: error.message, variant: "destructive" });
+                } else {
+                  toast({ title: "Verification email resent!", description: "Check your inbox." });
+                }
+              }}
+            >
+              Resend Verification Email
+            </Button>
+          </div>
+        )}
 
         {/* Progress */}
         <div className="flex items-center gap-1 mb-8">
@@ -307,9 +339,9 @@ export default function SellCar() {
             <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1">Back</Button>
           )}
           {step < 4 ? (
-            <Button onClick={() => setStep(step + 1)} disabled={!canNext()} className="flex-1">Next</Button>
+            <Button onClick={() => setStep(step + 1)} disabled={!canNext() || !isEmailVerified} className="flex-1">Next</Button>
           ) : (
-            <Button onClick={handleSubmit} disabled={submitting} className="flex-1">
+            <Button onClick={handleSubmit} disabled={submitting || !isEmailVerified} className="flex-1">
               {submitting ? "Submitting..." : "Submit Listing"}
             </Button>
           )}

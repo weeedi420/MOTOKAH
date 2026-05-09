@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function SearchResults() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
   const { user } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -39,6 +39,23 @@ export default function SearchResults() {
   }));
 
   const clearFilters = () => setFilters(defaultFilters);
+
+  // Keep URL in sync whenever filters change so searches are bookmarkable/shareable
+  useEffect(() => {
+    const p = new URLSearchParams();
+    if (filters.make)         p.set("make", filters.make);
+    if (filters.condition)    p.set("condition", filters.condition);
+    if (filters.transmission) p.set("transmission", filters.transmission);
+    if (filters.city)         p.set("city", filters.city);
+    if (filters.minPrice)     p.set("minPrice", filters.minPrice);
+    if (filters.maxPrice)     p.set("maxPrice", filters.maxPrice);
+    if (filters.yearFrom)     p.set("yearFrom", filters.yearFrom);
+    if (filters.yearTo)       p.set("yearTo", filters.yearTo);
+    if (filters.maxMileage)   p.set("maxMileage", filters.maxMileage);
+    filters.bodyType.forEach(v => p.append("bodyType", v));
+    filters.fuelType.forEach(v => p.append("fuelType", v));
+    setSearchParams(p, { replace: true });
+  }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Convert Filters to SearchFilters for the hook
   const searchFilters: SearchFilters = useMemo(() => ({

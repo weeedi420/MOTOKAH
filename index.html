@@ -4,17 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Motokah - Find Your Perfect Ride</title>
+
+    <!-- PWA / Theme -->
     <meta name="theme-color" content="#0066CC" />
-    <meta name="description" content="Motokah - Buy and sell cars, bikes & vehicles across Africa. Trusted marketplace with verified sellers.">
-    <meta name="author" content="Motokah" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Motokah - Find Your Perfect Ride">
-    <meta property="og:description" content="Motokah - Buy and sell cars, bikes & vehicles across Africa.">
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Motokah - Find Your Perfect Ride">
-    <meta name="twitter:description" content="Motokah - Buy and sell cars, bikes & vehicles across Africa.">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <meta name="application-name" content="Motokah" />
+
+    <!-- iOS PWA — these are what make it feel native on iPhone -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Motokah" />
+
+    <!-- iOS icons (different sizes for different devices) -->
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/pwa-192x192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+
+    <!-- SEO -->
+    <meta name="description" content="Motokah - Buy and sell cars, bikes & vehicles across Africa. Trusted marketplace with verified sellers." />
+    <meta name="author" content="Motokah" />
+    <meta name="keywords" content="cars for sale Africa, buy car Tanzania, sell car Kenya, motorcycle marketplace, vehicles" />
+    <link rel="canonical" href="https://www.motokah.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Motokah" />
+    <meta property="og:title" content="Motokah - Find Your Perfect Ride" />
+    <meta property="og:description" content="Buy and sell cars, bikes & vehicles across Africa. Trusted marketplace." />
+    <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
+    <meta property="og:url" content="https://www.motokah.com/" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Motokah - Find Your Perfect Ride" />
+    <meta name="twitter:description" content="Buy and sell cars, bikes & vehicles across Africa." />
+    <meta name="twitter:image" content="https://www.motokah.com/pwa-512x512.png" />
+
+    <!-- Theme bootstrap: runs synchronously before React, eliminates dark/light flash -->
+    <script>
+      (function () {
+        var t = localStorage.getItem("motokah-theme");
+        if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

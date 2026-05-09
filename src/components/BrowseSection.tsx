@@ -30,14 +30,25 @@ const categoryPages = [
   ],
   // Page 3 — special
   [
-    { name: "Electric",    icon: "/icons/electric.png",   url: "/search?fuelType=Electric" },
-    { name: "Motorcycle",  icon: "/icons/motorcycle.png", url: "/search?type=motorcycle" },
-    { name: "Scooter",     icon: "/icons/scooter.png",    url: "/search?type=scooter" },
-    { name: "Saloon",      icon: "/icons/saloon.png",     url: "/search?bodyType=Saloon" },
-    { name: "Micro / Kei", icon: "/icons/micro.png",      url: "/search?bodyType=Micro" },
-    { name: "Hummer / LWB",icon: "/icons/hummer.png",    url: "/search?bodyType=SUV&minSeats=7" },
-    { name: "Insured",     icon: "/icons/insured.png",    url: "/search?insured=true" },
-    { name: "4x4 Heavy",   icon: "/icons/4x4.png",        url: "/search?bodyType=4x4" },
+    { name: "Electric",       icon: "/icons/electric.png",   url: "/search?fuelType=Electric" },
+    { name: "Motorcycle",     icon: "/icons/motorcycle.png", url: "/search?type=motorcycle" },
+    { name: "Scooter",        icon: "/icons/scooter.png",    url: "/search?type=scooter" },
+    { name: "Saloon",         icon: "/icons/saloon.png",     url: "/search?bodyType=Saloon" },
+    { name: "Micro / Kei",    icon: "/icons/micro.png",      url: "/search?bodyType=Micro" },
+    { name: "Hummer / LWB",   icon: "/icons/hummer.png",     url: "/search?bodyType=SUV&minSeats=7" },
+    { name: "Insured",        icon: "/icons/insured.png",    url: "/search?insured=true" },
+    { name: "4x4 Heavy",      icon: "/icons/4x4.png",        url: "/search?bodyType=4x4" },
+  ],
+  // Page 4 — local vehicles
+  [
+    { name: "Bajaji / Tuk-tuk", icon: "/icons/rickshaw.png", url: "/search?bodyType=Tuk-tuk" },
+    { name: "Boat",             icon: "/icons/boat.png",     url: "/search?bodyType=Boat" },
+    { name: "Boda Boda",        icon: "/icons/motorcycle.png",url: "/search?type=boda-boda" },
+    { name: "Daladala",         icon: "/icons/minibus.png",  url: "/search?bodyType=Minibus" },
+    { name: "Lorry",            icon: "/icons/truck.png",    url: "/search?bodyType=Truck" },
+    { name: "Small Car",        icon: "/icons/city-car.png", url: "/search?bodyType=City+Car" },
+    { name: "Big Car",          icon: "/icons/suv.png",      url: "/search?bodyType=SUV" },
+    { name: "View All",         icon: "/icons/4x4.png",      url: "/search" },
   ],
 ];
 
@@ -107,13 +118,15 @@ function CategoryGrid() {
               hover:bg-[#1e4572] hover:border-[#2d5a8e]
               active:scale-95 transition-all duration-150 cursor-pointer"
           >
-            <img
-              src={cat.icon}
-              alt={cat.name}
-              className="w-10 h-10 object-contain"
-              style={{ filter: "invert(1) brightness(2)" }}
-              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.3"; }}
-            />
+            <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
+              <img
+                src={cat.icon}
+                alt={cat.name}
+                className="max-w-[85%] max-h-[85%] object-contain"
+                style={{ filter: "invert(1) brightness(2)" }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.3"; }}
+              />
+            </div>
             <span className="text-[10px] font-medium text-white text-center leading-tight line-clamp-2 px-0.5">
               {cat.name}
             </span>

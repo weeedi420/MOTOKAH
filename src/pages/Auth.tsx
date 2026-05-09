@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { lovable } from "@/integrations/lovable/index";
+import { auth } from "@/integrations/oauth/index";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,22 +55,8 @@ export default function Auth() {
     return null;
   }
 
-  const handleSocialLogin = async (provider: "google" | "apple") => {
-    setSocialLoading(provider);
-    try {
-      const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: window.location.origin,
-      });
-      if (result.error) {
-        toast({ title: "Error", description: (result.error as Error).message, variant: "destructive" });
-      }
-      if (result.redirected) return;
-    } catch (err: unknown) {
-      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
-    } finally {
-      setSocialLoading(null);
-    }
-  };
+  // Social login disabled — Supabase provider not enabled
+  // const handleSocialLogin = async (provider: "google" | "apple") => { ... }
 
   const handleOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,46 +141,12 @@ export default function Auth() {
             </>
           ) : (
             <>
-              {/* Social Login Buttons */}
-              <div className="space-y-2 mb-5">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full gap-2 font-medium"
-                  onClick={() => handleSocialLogin("google")}
-                  disabled={!!socialLoading}
-                >
-                  {socialLoading === "google" ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" />
-                  ) : (
-                    <IconBrandGoogle size={18} />
-                  )}
-                  Continue with Google
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full gap-2 font-medium"
-                  onClick={() => handleSocialLogin("apple")}
-                  disabled={!!socialLoading}
-                >
-                  {socialLoading === "apple" ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" />
-                  ) : (
-                    <IconBrandApple size={18} />
-                  )}
-                  Continue with Apple
-                </Button>
-              </div>
-
-              {/* Divider */}
-              <div className="relative mb-5">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-2 bg-card text-muted-foreground">or continue with email</span>
-                </div>
+              {/* Social login disabled until OAuth providers are configured in Supabase */}
+              <div className="bg-muted/50 border border-border rounded-lg p-3 mb-5 text-center">
+                <p className="text-xs text-muted-foreground">
+                  Quick login with Google/Apple is temporarily unavailable.
+                  Use your email below — we will send you a magic link or you can sign in with a password.
+                </p>
               </div>
 
               {/* Tabs */}

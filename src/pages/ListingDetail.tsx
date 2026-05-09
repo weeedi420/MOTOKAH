@@ -226,7 +226,8 @@ export default function ListingDetail() {
                       ))}
                       <Button className="w-full" disabled={!reportReason} onClick={async () => {
                         if (!user) { navigate("/auth"); return; }
-                        await supabase.from("reports").insert({ reporter_id: user.id, listing_id: id!, reason: reportReason });
+                        const { error: reportErr } = await supabase.from("reports").insert({ reporter_id: user.id, listing_id: id!, reason: reportReason });
+                        if (reportErr) { toast.error("Failed to submit report. Please try again."); return; }
                         toast.success("Report submitted. Thank you.");
                         setReportOpen(false);
                         setReportReason("");
