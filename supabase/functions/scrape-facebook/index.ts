@@ -28,14 +28,22 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const targetUrls: string[] = body.urls || [];
     const singleUrl: string | undefined = body.url;
+    const backfillMode: boolean = body.backfill === true;
 
     const urlsToScrape: string[] = [];
     if (singleUrl) urlsToScrape.push(singleUrl);
     if (targetUrls.length > 0) urlsToScrape.push(...targetUrls);
 
-    // Fallback default: Facebook Marketplace vehicles in Nairobi
-    if (urlsToScrape.length === 0) {
-      urlsToScrape.push("https://www.facebook.com/marketplace/nairobi/vehicles/");
+    // Default backfill URLs for EA vehicle marketplaces
+    if (urlsToScrape.length === 0 || backfillMode) {
+      urlsToScrape.push(
+        "https://www.facebook.com/marketplace/nairobi/vehicles/",
+        "https://www.facebook.com/marketplace/dar-es-salaam/vehicles/",
+        "https://www.facebook.com/marketplace/mombasa/vehicles/",
+        "https://www.facebook.com/marketplace/arusha/vehicles/",
+        "https://www.facebook.com/marketplace/kampala/vehicles/",
+        "https://www.facebook.com/marketplace/kigali/vehicles/",
+      );
     }
 
     // Get or create scraper user
@@ -103,7 +111,14 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           url,
           formats: ["markdown"],
-          waitFor: 3000,
+          waitFor: 4000,
+          actions: [
+            { type: "wait", milliseconds: 2000 },
+            { type: "scroll", direction: "down", amount: 800 },
+            { type: "wait", milliseconds: 1500 },
+            { type: "scroll", direction: "down", amount: 800 },
+            { type: "wait", milliseconds: 1500 },
+          ],
         }),
       });
 
