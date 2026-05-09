@@ -60,13 +60,19 @@ export default function Footer() {
     <footer className="bg-surface-2 border-t border-border pt-12 pb-6 safe-bottom">
       <div className="container mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-10">
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <span className="text-xl font-extrabold text-primary">Motokah</span>
             <p className="text-xs text-muted-foreground mt-2 mb-4">Find Your Perfect Ride</p>
             <p className="text-xs text-muted-foreground mb-2">Subscribe to newsletter</p>
-            <form onSubmit={handleSubscribe} className="flex gap-1">
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your email" className="h-8 rounded-md border border-input bg-surface-3 px-2 text-xs flex-1 text-foreground focus:ring-1 focus:ring-primary outline-none" />
-              <Button type="submit" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs h-8 px-3">Subscribe</Button>
+            <form onSubmit={handleSubscribe} className="flex gap-2 max-w-xs">
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Your email"
+                className="h-9 rounded-md border border-input bg-surface-3 px-3 text-sm flex-1 min-w-0 text-foreground focus:ring-1 focus:ring-primary outline-none"
+              />
+              <Button type="submit" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm h-9 px-4 shrink-0">Subscribe</Button>
             </form>
           </div>
 
