@@ -35,27 +35,28 @@ Deno.serve(async (req) => {
     if (targetUrls.length > 0) urlsToScrape.push(...targetUrls);
 
     // Default backfill URLs for EA vehicle marketplaces
+    // (Facebook is blocked by Firecrawl; use Jiji / Cheki / OLX instead)
     if (urlsToScrape.length === 0 || backfillMode) {
       urlsToScrape.push(
-        "https://www.facebook.com/marketplace/nairobi/vehicles/",
-        "https://www.facebook.com/marketplace/dar-es-salaam/vehicles/",
-        "https://www.facebook.com/marketplace/mombasa/vehicles/",
-        "https://www.facebook.com/marketplace/arusha/vehicles/",
-        "https://www.facebook.com/marketplace/kampala/vehicles/",
-        "https://www.facebook.com/marketplace/kigali/vehicles/",
+        "https://jiji.co.tz/cars",
+        "https://jiji.co.ke/cars",
+        "https://www.cheki.co.tz/",
+        "https://www.cheki.co.ke/",
+        "https://www.olx.co.tz/vehicles_c2001",
+        "https://www.olx.co.ke/vehicles_c2001",
       );
     }
 
     // Get or create scraper user
     let scraperId: string;
-    const { data: scraperProfile } = await supabase
+    const { data: scraperProfiles } = await supabase
       .from("profiles")
       .select("user_id")
       .eq("display_name", "Facebook Imports")
-      .single();
+      .limit(1);
 
-    if (scraperProfile) {
-      scraperId = scraperProfile.user_id;
+    if (scraperProfiles && scraperProfiles.length > 0) {
+      scraperId = scraperProfiles[0].user_id;
     } else {
       const { data: authUser, error: authErr } = await supabase.auth.admin.createUser({
         email: "facebook.scraper@motokah.internal",

@@ -22,13 +22,15 @@ if (!SUPABASE_SERVICE_ROLE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+// Facebook Marketplace is blocked by Firecrawl.
+// Fallback to EA car listing sites that Firecrawl supports.
 const urlsToScrape = [
-  "https://www.facebook.com/marketplace/nairobi/vehicles/",
-  "https://www.facebook.com/marketplace/dar-es-salaam/vehicles/",
-  "https://www.facebook.com/marketplace/mombasa/vehicles/",
-  "https://www.facebook.com/marketplace/arusha/vehicles/",
-  "https://www.facebook.com/marketplace/kampala/vehicles/",
-  "https://www.facebook.com/marketplace/kigali/vehicles/",
+  "https://jiji.co.tz/cars",
+  "https://jiji.co.ke/cars",
+  "https://www.cheki.co.tz/",
+  "https://www.cheki.co.ke/",
+  "https://www.olx.co.tz/vehicles_c2001",
+  "https://www.olx.co.ke/vehicles_c2001",
 ];
 
 const carBrands = [
@@ -47,14 +49,14 @@ async function scrapeFacebook() {
 
   // Get or create scraper user
   let scraperId;
-  const { data: scraperProfile } = await supabase
+  const { data: scraperProfiles, error: profileErr } = await supabase
     .from("profiles")
     .select("user_id")
     .eq("display_name", "Facebook Imports")
-    .single();
+    .limit(1);
 
-  if (scraperProfile) {
-    scraperId = scraperProfile.user_id;
+  if (scraperProfiles && scraperProfiles.length > 0) {
+    scraperId = scraperProfiles[0].user_id;
     console.log("✅ Using existing scraper user:", scraperId);
   } else {
     const { data: authUser, error: authErr } = await supabase.auth.admin.createUser({
@@ -63,10 +65,22 @@ async function scrapeFacebook() {
       email_confirm: true,
       user_metadata: { display_name: "Facebook Imports" },
     });
-    if (authErr) throw new Error(`Failed to create scraper user: ${authErr.message}`);
-    scraperId = authUser.user.id;
-    await supabase.from("profiles").update({ display_name: "Facebook Imports", seller_type: "dealer" }).eq("user_id", scraperId);
-    console.log("✅ Created scraper user:", scraperId);
+    if (authErr) {
+      if (authErr.message.includes("already been registered")) {
+        const { data: userList, error: listErr } = await supabase.auth.admin.listUsers();
+        if (listErr) throw new Error(`Failed to list users: ${listErr.message}`);
+        const existing = userList.users.find(u => u.email === "facebook.scraper@motokah.internal");
+        if (!existing) throw new Error("Could not find existing scraper user");
+        scraperId = existing.id;
+        console.log("✅ Found existing scraper user:", scraperId);
+      } else {
+        throw new Error(`Failed to create scraper user: ${authErr.message}`);
+      }
+    } else {
+      scraperId = authUser.user.id;
+      await supabase.from("profiles").update({ display_name: "Facebook Imports", seller_type: "dealer" }).eq("user_id", scraperId);
+      console.log("✅ Created scraper user:", scraperId);
+    }
   }
 
   const allCars = [];
