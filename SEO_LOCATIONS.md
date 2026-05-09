@@ -1,0 +1,728 @@
+# MOTOKAH SEO Location Coverage — East Africa
+
+## Tanzania (Primary Market)
+
+### Major Cities (Tier 1)
+- Dar es Salaam
+- Dodoma
+- Arusha
+- Mwanza
+- Zanzibar
+- Mbeya
+- Moshi
+- Morogoro
+- Tanga
+- Iringa
+
+### Secondary Cities (Tier 2)
+- Singida
+- Tabora
+- Kigoma
+- Sumbawanga
+- Lindi
+- Mtwara
+- Songea
+- Bukoba
+- Musoma
+- Shinyanga
+- Kahama
+- Bariadi
+- Mpanda
+- Babati
+- Tarime
+- Nzega
+- Uyole
+- Njombe
+- Mafinga
+- Kasulu
+- Geita
+- Chake Chake (Pemba)
+- Wete (Pemba)
+
+### Towns/Districts (Tier 3)
+- Bagamoyo
+- Kilwa
+- Mikindani
+- Ifakara
+- Mahenge
+- Liwale
+- Masasi
+- Nachingwea
+- Newala
+- Tunduru
+- Mbinga
+- Nyasa
+- Mkalama
+- Manyoni
+- Ikungi
+- Itigi
+- Kibondo
+- Urambo
+- Uvinza
+- Mlele
+- Nkasi
+- Kalambo
+- Sumbawanga
+- Rorya
+- Serengeti
+- Ngorongoro
+- Monduli
+- Longido
+- Kiteto
+- Simanjiro
+- Mbulu
+- Karatu
+- Hanang
+- Babati
+- Katesh
+- Turiani
+- Mvomero
+- Kilosa
+- Gairo
+- Malinyi
+- Ifakara
+- Mlimba
+- Mahenge
+- Kilombero
+- Ulanga
+- Mafinga
+- Makete
+- Wanging'ombe
+- Ludewa
+- Njombe
+- Makambako
+- Mbinga
+- Nyasa
+- Songea
+- Tunduru
+- Namtumbo
+- Madaba
+- Masasi
+- Newala
+- Tandahimba
+- Mtwara
+- Nanyumbu
+- Lindi
+- Liwale
+- Kilwa
+- Nachingwea
+- Ruangwa
+- Mbinga
+- Kyela
+- Busokelo
+- Rungwe
+- Mbozi
+- Momba
+- Kalambo
+- Sumbawanga
+- Nkasi
+- Mpanda
+- Mlele
+- Tanganyika
+- Kigoma
+- Uvinza
+- Kibondo
+- Kasulu
+- Buhigwe
+- Kakonko
+- Urambo
+- Sikonge
+- Tabora
+- Nzega
+- Igunga
+- Uyui
+- Kaliua
+- Manyoni
+- Ikungi
+- Singida
+- Mkalama
+- Itigi
+- Chamwino
+- Bahi
+- Chemba
+- Kondoa
+- Dodoma
+- Kongwa
+- Mpwapwa
+- Kilindi
+- Gairo
+- Malinyi
+- Kilosa
+- Mvomero
+- Morogoro
+- Ulanga
+- Kilombero
+- Ifakara
+- Mlimba
+- Mahenge
+- Musoma
+- Rorya
+- Tarime
+- Serengeti
+- Butiama
+- Bunda
+- Geita
+- Chato
+- Bukombe
+- Mbogwe
+- Nyamg'ele
+- Busega
+- Magu
+- Kwimba
+- Misungwi
+- Sengerema
+- Ukerewe
+- Mwanza
+- Ilemela
+- Nyamagana
+
+## Kenya (Secondary Market)
+
+### Major Cities
+- Nairobi
+- Mombasa
+- Kisumu
+- Nakuru
+- Eldoret
+- Thika
+- Malindi
+- Nyeri
+- Meru
+- Embu
+- Kitui
+- Machakos
+- Kajiado
+- Naivasha
+- Nanyuki
+- Kericho
+- Bungoma
+- Kakamega
+- Kisii
+- Homa Bay
+- Migori
+- Siaya
+- Busia
+- Vihiga
+- Bomet
+- Narok
+- Sotik
+- Litein
+- Kapenguria
+- Lodwar
+- Garissa
+- Wajir
+- Mandera
+- Marsabit
+- Isiolo
+- Moyale
+- Maralal
+- Kabarnet
+- Iten
+- Kapsabet
+- Webuye
+- Mumias
+- Kendu Bay
+- Oyugis
+- Rongo
+- Awendo
+- Uriri
+- Suna
+- Kuria
+- Trans Mara
+- Kilgoris
+- Loitokitok
+- Namanga
+- Magadi
+- Ngong
+- Kiserian
+- Ongata Rongai
+- Athi River
+- Mavoko
+- Tala
+- Kangundo
+- Matuu
+- Mwingi
+- Mbeere
+- Siakago
+- Runyenjes
+- Chuka
+- Igembe
+- Tigania
+- Imenti
+- Buuri
+- Laare
+- Maua
+- Nkubu
+- Timau
+- Naromoru
+- Karatina
+- Othaya
+- Mukurweini
+- Tetu
+- Mathira
+- Kieni
+- Kieni East
+- Kieni West
+- Mweiga
+- Mwea
+- Kirinyaga Central
+- Kirinyaga East
+- Kirinyaga West
+- Gichugu
+- Ndia
+- Mukurweini
+- Othaya
+- Nyeri Town
+- Nyeri South
+- Nyeri North
+- Kieni
+- Mathira
+- Tetu
+- Mukurweini
+- Othaya
+- Ndia
+- Kirinyaga
+- Mwea
+- Gichugu
+- Kerugoya
+- Kutus
+- Sagana
+- Murang'a
+- Kangema
+- Gatanga
+- Kiharu
+- Kigumo
+- Kahuro
+- Mathioya
+- Kandara
+- Maragua
+- Sabasaba
+- Makuyu
+- Kenol
+- Thika
+- Ruiru
+- Juja
+- Gatundu
+- Githunguri
+- Lari
+- Limuru
+- Kiambu
+- Kikuyu
+- Kabete
+- Kiambaa
+- Gatundu South
+- Gatundu North
+- Nyandaruwa
+- Ol Kalou
+- Ndaragwa
+- Kipipiri
+- Mirangine
+- Kinangop
+- Engineer
+- Wanjohi
+- North Kinangop
+- South Kinangop
+
+## Uganda (Tertiary Market)
+
+### Major Cities
+- Kampala
+- Entebbe
+- Jinja
+- Mbarara
+- Gulu
+- Mbale
+- Fort Portal
+- Arua
+- Lira
+- Soroti
+- Hoima
+- Masaka
+- Kabale
+- Kasese
+- Busia
+- Tororo
+- Malaba
+- Iganga
+- Kamuli
+- Mukono
+- Wakiso
+- Mpigi
+- Mityana
+- Mubende
+- Luweero
+- Nakasongola
+- Kayunga
+- Buikwe
+- Buvuma
+- Kalangala
+- Masaka
+- Bukomansimbi
+- Kalungu
+- Lwengo
+- Lyantonde
+- Rakai
+- Sembabule
+- Mbarara
+- Isingiro
+- Kiruhura
+- Kazo
+- Rwampara
+- Ntungamo
+- Bushenyi
+- Sheema
+- Buhweju
+- Rubirizi
+- Ibanda
+- Kamwenge
+- Kitagwenda
+- Kyegegwa
+- Kyenjojo
+- Kibaale
+- Kagadi
+- Kakumiro
+- Kikuube
+- Hoima
+- Buliisa
+- Masindi
+- Kiryandongo
+- Nakaseke
+- Luweero
+- Bombo
+- Wobulenzi
+- Nakasongola
+- Kiboga
+- Kyankwanzi
+- Mityana
+- Mubende
+- Kasanda
+- Gomba
+- Butambala
+- Mpigi
+- Wakiso
+- Nansana
+- Kira
+- Mukono
+- Buikwe
+- Buvuma
+- Kayunga
+- Jinja
+- Iganga
+- Mayuge
+- Bugiri
+- Namayingo
+- Busia
+- Tororo
+- Butaleja
+- Budaka
+- Kibuku
+- Pallisa
+- Kaliro
+- Namutumba
+- Luuka
+- Bugweri
+- Kampla
+- Kiboga
+- Kyankwanzi
+- Nakaseke
+- Luweero
+- Nakasongola
+- Masindi
+- Kiryandongo
+- Hoima
+- Kibaale
+- Kagadi
+- Kakumiro
+- Kikuube
+- Buliisa
+- Nebbi
+- Zombo
+- Pakwach
+- Nwoya
+- Amuru
+- Gulu
+- Omoro
+- Nwoya
+- Kiryandongo
+- Oyam
+- Apac
+- Kole
+- Lira
+- Dokolo
+- Alebtong
+- Otuke
+- Amolatar
+- Kaberamaido
+- Soroti
+- Serere
+- Ngora
+- Kumi
+- Bukedea
+- Mbale
+- Bududa
+- Manafwa
+- Namisindwa
+- Tororo
+- Busia
+- Butaleja
+- Pallisa
+- Kibuku
+- Budaka
+- Sironko
+- Bulambuli
+- Kapchorwa
+- Kween
+- Bukwo
+- Katakwi
+- Amuria
+- Soroti
+- Kumi
+- Ngora
+- Serere
+- Kaberamaido
+- Kalaki
+- Kapelebyong
+- Moroto
+- Napak
+- Nakapiripirit
+- Amudat
+- Kotido
+- Kaabong
+- Karenga
+- Abim
+- Kitgum
+- Lamwo
+- Agago
+- Pader
+- Lira
+- Oyam
+- Apac
+- Kole
+- Dokolo
+- Alebtong
+- Otuke
+- Amolatar
+- Kaberamaido
+
+## Rwanda (Tertiary Market)
+
+### Major Cities
+- Kigali
+- Butare (Huye)
+- Ruhengeri (Musanze)
+- Gisenyi (Rubavu)
+- Byumba (Gicumbi)
+- Gitarama (Muhanga)
+- Nyanza
+- Cyangugu (Rusizi)
+- Kibuye (Karongi)
+- Kibungo (Ngoma)
+- Rwamagana
+- Bugesera
+- Kayonza
+- Kirehe
+- Nyagatare
+- Gatsibo
+- Nyamasheke
+- Rulindo
+- Gakenke
+- Musanze
+- Burera
+- Gicumbi
+- Rulindo
+- Gakenke
+- Ngororero
+- Rutsiro
+- Karongi
+- Nyabihu
+- Rubavu
+- Nyamasheke
+- Rusizi
+- Nyamagabe
+- Huye
+- Nyanza
+- Ruhango
+- Muhanga
+- Kamonyi
+- Bugesera
+- Kayonza
+- Rwamagana
+- Ngoma
+- Kirehe
+- Nyagatare
+- Gatsibo
+
+## Burundi (Emerging Market)
+
+### Major Cities
+- Bujumbura
+- Gitega
+- Ngozi
+- Bururi
+- Makamba
+- Rutana
+- Ruyigi
+- Cankuzo
+- Muyinga
+- Karuzi
+- Kirundo
+- Bubanza
+- Muramvya
+- Kayanza
+- Cibitoke
+- Rumonge
+- Isale
+- Bugarama
+- Gihofi
+- Mwaro
+
+## South Sudan (Emerging Market)
+
+### Major Cities
+- Juba
+- Malakal
+- Wau
+- Rumbek
+- Yambio
+- Torit
+- Bor
+- Bentiu
+- Kuajok
+- Aweil
+- Maridi
+- Yei
+- Kajo Keji
+- Nimule
+- Kapoeta
+- Renk
+- Melut
+- Paloich
+- Maban
+
+## Ethiopia (Long-term Expansion)
+
+### Major Cities
+- Addis Ababa
+- Dire Dawa
+- Mek'ele
+- Gondar
+- Bahir Dar
+- Hawassa
+- Jimma
+- Dessie
+- Jijiga
+- Shashamane
+- Bishoftu
+- Adama
+- Arba Minch
+- Hosaena
+- Debre Markos
+- Debre Birhan
+- Kombolcha
+- Sodo
+- Wolaita Sodo
+- Axum
+- Adigrat
+
+## Democratic Republic of Congo (Long-term)
+
+### Major Cities (Eastern DRC)
+- Bukavu
+- Goma
+- Uvira
+- Butembo
+- Beni
+- Kindu
+- Lubumbashi
+- Kolwezi
+- Likasi
+- Kalemie
+- Mbandaka
+- Kisangani
+- Bunia
+- Aru
+- Mahagi
+- Watsa
+- Isiro
+- Buta
+
+## Zambia (Long-term)
+
+### Major Cities
+- Lusaka
+- Kitwe
+- Ndola
+- Kabwe
+- Chingola
+- Mufulira
+- Livingstone
+- Luanshya
+- Chipata
+- Solwezi
+- Kasama
+- Mansa
+- Mongu
+- Kaoma
+
+## Malawi (Long-term)
+
+### Major Cities
+- Lilongwe
+- Blantyre
+- Mzuzu
+- Zomba
+- Kasungu
+- Mangochi
+- Karonga
+- Salima
+- Nkhotakota
+- Liwonde
+- Dedza
+- Ntcheu
+
+---
+
+## SEO Strategy Notes
+
+### Priority Order (Traffic Potential)
+1. **Tanzania** — Dar es Salaam, Arusha, Mwanza, Dodoma, Zanzibar, Mbeya
+2. **Kenya** — Nairobi, Mombasa, Kisumu, Nakuru, Eldoret
+3. **Uganda** — Kampala, Entebbe, Jinja, Mbarara, Gulu
+4. **Rwanda** — Kigali, Huye, Musanze, Rubavu
+5. **Burundi** — Bujumbura, Gitega, Ngozi
+6. **Others** — Juba, Addis Ababa, Lubumbashi, Lusaka
+
+### Page Types to Create for Each Location
+- `/search?city=CityName` — Pre-filtered search results
+- `/cars-for-sale-in-[city]` — SEO landing page with local market info
+- `/used-cars-[city]` — Used cars specific
+- `/new-cars-[city]` — New cars specific
+- `/car-prices-[city]` — Price guide for city
+- `/car-dealers-[city]` — Dealer directory for city
+
+### Location Schema (Structured Data)
+Each city page should include:
+- LocalBusiness schema for dealers
+- VehicleListing schema for cars
+- BreadcrumbList with city hierarchy
+- AggregateRating if available
+- PriceRange for local market
+
+### Content Ideas per City
+- "Best selling cars in [City]"
+- "Average car prices in [City] 2026"
+- "Most reliable used cars in [City]"
+- "How to import a car to [City]"
+- "Car inspection centers in [City]"
+- "Traffic rules and driving tips for [City]"
+- "Fuel prices in [City]"
+
+---
+
+**Total locations: 500+ cities and towns across East Africa**
+**This gives us massive SEO coverage for long-tail keywords like:**
+- "used toyota hilux dar es salaam"
+- "cheap cars for sale nairobi"
+- "land rover discovery kampala"
+- "car dealers kigali"
+- "import duty calculator juba"

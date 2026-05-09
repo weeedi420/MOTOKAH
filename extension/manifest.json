@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Motokah Scraper",
+  "version": "1.0",
+  "description": "Scrape car listings from Jiji and export to CSV",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["*://jiji.co.tz/*", "*://jiji.co.ke/*", "*://www.jiji.co.tz/*", "*://www.jiji.co.ke/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://jiji.co.tz/*", "*://jiji.co.ke/*", "*://www.jiji.co.tz/*", "*://www.jiji.co.ke/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

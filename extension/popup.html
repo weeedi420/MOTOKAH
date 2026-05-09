@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { width: 320px; padding: 16px; font-family: Inter, system-ui, sans-serif; }
+    h1 { font-size: 16px; margin: 0 0 12px; color: #1a1a1a; }
+    .status { font-size: 13px; color: #666; margin-bottom: 12px; }
+    button {
+      width: 100%; padding: 10px; border: none; border-radius: 8px;
+      background: #0066cc; color: white; font-weight: 600; cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button:hover { background: #0055aa; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    .count { font-size: 24px; font-weight: 700; color: #0066cc; text-align: center; margin: 12px 0; }
+    .hint { font-size: 11px; color: #888; margin-top: 8px; }
+    .error { color: #dc2626; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Motokah Scraper</h1>
+  <div id="status" class="status">Open a Jiji cars page and click Scrape</div>
+  <button id="scrapeBtn">Scrape This Page</button>
+  <button id="downloadBtn" disabled>Download CSV</button>
+  <div id="count" class="count">0</div>
+  <div class="hint">Navigate to Jiji car listings, then click Scrape</div>
+  <script src="popup.js"></script>
+</body>
+</html>
