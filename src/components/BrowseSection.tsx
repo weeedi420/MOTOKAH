@@ -118,11 +118,15 @@ function CategoryGrid() {
               hover:bg-[#1e4572] hover:border-[#2d5a8e]
               active:scale-95 transition-all duration-150 cursor-pointer"
           >
-            <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
+            <div className="w-10 h-10 flex items-center justify-center">
               <img
                 src={cat.icon}
                 alt={cat.name}
-                className="max-w-[85%] max-h-[85%] object-contain"
+                className={`object-contain ${
+                  cat.icon.includes("boat") || cat.icon.includes("rickshaw")
+                    ? "w-5 h-5"
+                    : "w-8 h-8"
+                }`}
                 style={{ filter: "invert(1) brightness(2)" }}
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.3"; }}
               />
