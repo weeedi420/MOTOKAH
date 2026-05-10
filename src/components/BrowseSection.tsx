@@ -52,7 +52,7 @@ export default function BrowseSection() {
       <h2 className="text-lg font-semibold text-foreground mb-3 px-1">Browse Used Cars</h2>
 
       {/* Tab Bar */}
-      <div className="flex gap-5 mb-0 border-b border-border overflow-x-auto pb-0">
+      <div className="flex gap-5 mb-0 border-b border-border overflow-x-auto pb-0 w-full">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -72,10 +72,10 @@ export default function BrowseSection() {
       {/* Category Tab — single row horizontal swipe */}
       {activeTab === "Category" && (
         <div
-          className="mt-3 overflow-x-auto snap-x snap-mandatory"
+          className="mt-3 overflow-x-auto snap-x snap-mandatory w-full"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
         >
-          <div className="flex gap-2" style={{ width: "max-content" }}>
+          <div className="flex gap-2 w-max">
             {allCategories.map((cat) => (
               <button
                 key={cat.name}
