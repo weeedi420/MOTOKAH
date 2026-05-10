@@ -51,7 +51,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       let query = supabase
         .from("listings")
-        .select("*, listing_images(image_url, display_order)")
+        .select("id, title, price, currency, condition, year, mileage, transmission, city, views, seller_id, body_type, fuel_type, make, model, created_at, listing_images(image_url, display_order)")
         .eq("status", "approved");
 
       if (filters.make) query = query.eq("make", filters.make);

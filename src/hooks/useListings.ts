@@ -4,6 +4,13 @@ import { type Listing, mockListings } from "@/data/mockData";
 
 const defaultImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop";
 
+// Only select columns we actually need — much faster
+const LISTING_COLUMNS = [
+  "id", "title", "price", "currency", "condition", "year", "mileage",
+  "transmission", "city", "views", "seller_id", "body_type", "fuel_type",
+  "make", "model", "created_at"
+].join(",");
+
 export function useListings(options?: { limit?: number; orderBy?: string }) {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -12,22 +19,19 @@ export function useListings(options?: { limit?: number; orderBy?: string }) {
     const fetchListings = async () => {
       const limit = options?.limit || 20;
 
-      // Fetch listings with their images
       const { data: rows, error } = await supabase
         .from("listings")
-        .select("*, listing_images(image_url, display_order)")
+        .select(`${LISTING_COLUMNS}, listing_images(image_url, display_order)`)
         .eq("status", "approved")
         .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error || !rows || rows.length === 0) {
-        // Supabase unavailable or empty — fall back to real mock listings
         setListings(mockListings.slice(0, limit));
         setLoading(false);
         return;
       }
 
-      // Fetch seller profiles
       const sellerIds = [...new Set(rows.map((r) => r.seller_id))];
       const { data: profiles } = await supabase
         .from("profiles")
@@ -67,7 +71,6 @@ export function useListings(options?: { limit?: number; orderBy?: string }) {
         };
       });
 
-      // Merge: real DB listings first, then fill remaining slots with mock listings
       const dbIds = new Set(mapped.map((m) => m.id));
       const fillFrom = mockListings.filter((m) => !dbIds.has(m.id));
       const combined = [...mapped, ...fillFrom].slice(0, limit);

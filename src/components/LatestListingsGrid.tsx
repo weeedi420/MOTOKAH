@@ -23,8 +23,8 @@ export default function LatestListingsGrid() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {displayListings.map((l) => (
-            <VehicleCard key={l.id} listing={l} />
+          {displayListings.map((l, i) => (
+            <VehicleCard key={l.id} listing={l} priority={i < 3} />
           ))}
         </div>
       )}

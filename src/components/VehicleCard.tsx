@@ -6,7 +6,7 @@ import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 
-export default function VehicleCard({ listing }: { listing: Listing }) {
+export default function VehicleCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
   const { user } = useAuth();
   const { wishlistIds, toggle } = useWishlist();
   const navigate = useNavigate();
@@ -14,6 +14,8 @@ export default function VehicleCard({ listing }: { listing: Listing }) {
   const [isCompared, setIsCompared] = useState(() =>
     JSON.parse(localStorage.getItem("compareIds") || "[]").includes(listing.id)
   );
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   // Sync isCompared when other cards update localStorage
   useEffect(() => {
@@ -64,15 +66,31 @@ export default function VehicleCard({ listing }: { listing: Listing }) {
   };
 
   const badge = listing.badge ? badgeConfig[listing.badge] : null;
+  const showPlaceholder = !imgLoaded || imgError;
 
   return (
     <Link to={`/listing/${listing.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02] transition-all duration-300 block">
       {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden">
-        {listing.image ? (
-          <img src={listing.image} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        {/* Skeleton placeholder */}
+        {showPlaceholder && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <IconCar size={48} className="text-muted-foreground/30" stroke={1.5} />
+          </div>
+        )}
+        {listing.image && !imgError ? (
+          <img
+            src={listing.image}
+            alt={listing.title}
+            className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            fetchpriority={priority ? "high" : "low"}
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setImgError(true)}
+          />
         ) : (
-          <div className="w-full h-full bg-muted flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             <IconCar size={48} className="text-muted-foreground/40" stroke={1.5} />
           </div>
         )}
