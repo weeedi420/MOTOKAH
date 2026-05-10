@@ -14,13 +14,14 @@ export interface Filters {
   maxPrice: string;
   maxMileage: string;
   city: string;
+  country: string;
   dutyPaid: "" | "true" | "false";
 }
 
 export const defaultFilters: Filters = {
   make: "", model: "", condition: "", bodyType: [], transmission: "",
   fuelType: [], yearFrom: "", yearTo: "", minPrice: "", maxPrice: "",
-  maxMileage: "", city: "", dutyPaid: "",
+  maxMileage: "", city: "", country: "", dutyPaid: "",
 };
 
 interface FilterSidebarProps {

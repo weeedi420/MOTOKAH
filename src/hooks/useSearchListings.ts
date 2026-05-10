@@ -8,6 +8,7 @@ export interface SearchFilters {
   condition?: string;
   transmission?: string;
   city?: string;
+  country?: string;
   bodyType?: string[];
   fuelType?: string[];
   minPrice?: string;
@@ -17,6 +18,26 @@ export interface SearchFilters {
   maxMileage?: string;
   dutyPaid?: boolean;
 }
+
+const countryCurrencyMap: Record<string, string[]> = {
+  Tanzania: ["TZS"],
+  Kenya: ["KES"],
+  Uganda: ["UGX"],
+  Rwanda: ["RWF"],
+  Burundi: ["BIF"],
+  Ethiopia: ["ETB"],
+  Nigeria: ["NGN"],
+};
+
+const countryCitiesMap: Record<string, string[]> = {
+  Tanzania: ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma", "Mbeya", "Morogoro", "Tanga", "Kigoma", "Moshi", "Zanzibar", "Iringa", "Sumbawanga", "Songea", "Bukoba", "Lindi", "Musoma", "Shinyanga", "Tabhora", "Kahama"],
+  Kenya: ["Nairobi", "Mombasa", "Nakuru", "Kisumu", "Eldoret", "Ruiru", "Kikuyu", "Thika", "Kiambu", "Machakos", "Kajiado", "Meru", "Nanyuki", "Nyeri", "Kericho", "Kakamega", "Bungoma", "Busia", "Kitale"],
+  Uganda: ["Kampala", "Entebbe", "Jinja", "Mukono", "Mbarara", "Gulu", "Arua", "Lira", "Fort Portal"],
+  Rwanda: ["Kigali", "Butare", "Ruhengeri", "Byumba"],
+  Burundi: ["Bujumbura"],
+  Ethiopia: ["Addis Ababa", "Adama", "Bahir Dar", "Hawassa", "Dire Dawa"],
+  Nigeria: ["Lagos", "Abuja", "Ibadan", "Kano", "Port Harcourt", "Benin City", "Kaduna", "Ilorin", "Maiduguri", "Enugu"],
+};
 
 export type SortOption = "newest" | "price-low" | "price-high" | "views";
 
@@ -38,6 +59,12 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.condition) query = query.eq("condition", filters.condition);
       if (filters.transmission) query = query.eq("transmission", filters.transmission);
       if (filters.city) query = query.eq("city", filters.city);
+      if (filters.country && filters.country !== "All") {
+        const currencies = countryCurrencyMap[filters.country] || [];
+        if (currencies.length > 0) {
+          query = query.in("currency", currencies);
+        }
+      }
       if (filters.bodyType?.length) query = query.in("body_type", filters.bodyType);
       if (filters.fuelType?.length) query = query.in("fuel_type", filters.fuelType);
       if (filters.minPrice) query = query.gte("price", Number(filters.minPrice));
@@ -108,6 +135,10 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
         if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
         if (filters.city) mocks = mocks.filter(m => m.location === filters.city);
+        if (filters.country && filters.country !== "All") {
+          const cities = countryCitiesMap[filters.country] || [];
+          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+        }
         if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
         if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));
         if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));

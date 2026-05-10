@@ -195,13 +195,17 @@ async function main() {
     const imagesToInsert = [];
 
     for (const row of batch) {
+      // Normalize field names (extension CSV uses snake_case, old format used camelCase)
+      const imageUrl = row.image_url || row.imageUrl || '';
+      const priceVal = row.priceText || row.price || '';
+
       // Validate required fields
-      if (!row.title || !row.make || !row.imageUrl) {
+      if (!row.title || !row.make || !imageUrl) {
         invalid++;
         continue;
       }
 
-      const price = parsePrice(row.priceText) || parseFloat(row.price) || 0;
+      const price = parsePrice(priceVal) || parseFloat(row.price) || 0;
       if (price <= 0) {
         invalid++;
         continue;
@@ -240,8 +244,8 @@ async function main() {
         views: 0,
       });
 
-      if (row.imageUrl) {
-        imagesToInsert.push({ image_url: row.imageUrl, display_order: 0 });
+      if (imageUrl) {
+        imagesToInsert.push({ image_url: imageUrl, display_order: 0 });
       }
     }
 

@@ -32,6 +32,7 @@ export default function SearchResults() {
     make: searchParams.get("make") || "",
     condition: searchParams.get("condition") || "",
     city: searchParams.get("city") || "",
+    country: searchParams.get("country") || "",
     bodyType: searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : [],
     transmission: searchParams.get("transmission") || "",
     minPrice: searchParams.get("minPrice") || "",
@@ -46,6 +47,7 @@ export default function SearchResults() {
     condition: filters.condition || undefined,
     transmission: filters.transmission || undefined,
     city: filters.city || undefined,
+    country: filters.country || undefined,
     bodyType: filters.bodyType.length > 0 ? filters.bodyType : undefined,
     fuelType: filters.fuelType.length > 0 ? filters.fuelType : undefined,
     minPrice: filters.minPrice || undefined,
@@ -65,6 +67,7 @@ export default function SearchResults() {
     if (filters.condition) chips.push({ key: "condition", label: filters.condition });
     if (filters.transmission) chips.push({ key: "transmission", label: filters.transmission });
     if (filters.city) chips.push({ key: "city", label: filters.city });
+    if (filters.country) chips.push({ key: "country", label: filters.country });
     filters.bodyType.forEach(bt => chips.push({ key: `bodyType-${bt}`, label: bt }));
     filters.fuelType.forEach(ft => chips.push({ key: `fuelType-${ft}`, label: ft }));
     if (filters.minPrice) chips.push({ key: "minPrice", label: `Min: ${Number(filters.minPrice).toLocaleString()}` });

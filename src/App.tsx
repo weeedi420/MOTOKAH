@@ -45,10 +45,13 @@ import MarketingPlan from "./pages/MarketingPlan.tsx";
 import DutyCalculator from "./pages/DutyCalculator.tsx";
 import DealerLeads from "./pages/DealerLeads.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import CityLandingPage from "./pages/CityLandingPage.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
 import SiteLock from "@/components/SiteLock";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LocationProvider } from "@/contexts/LocationContext";
+import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient();
 
@@ -102,6 +105,7 @@ function AnimatedRoutes() {
               <Route path="/marketing-plan" element={<MarketingPlan />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
               <Route path="/dealer-leads" element={<DealerLeads />} />
+              <Route path="/city/:slug" element={<CityLandingPage />} />
               <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
@@ -111,25 +115,29 @@ function AnimatedRoutes() {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <LanguageProvider>
-      <SiteLock>
-        <AuthProvider>
-        <WishlistProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <PWAInstallBanner />
-            <BrowserRouter>
-              <BottomNav />
-              <AnimatedRoutes />
-            </BrowserRouter>
-          </TooltipProvider>
-        </WishlistProvider>
-        </AuthProvider>
-      </SiteLock>
-      </LanguageProvider>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <LocationProvider>
+            <SiteLock>
+              <AuthProvider>
+                <WishlistProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <PWAInstallBanner />
+                    <BrowserRouter>
+                      <BottomNav />
+                      <AnimatedRoutes />
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </WishlistProvider>
+              </AuthProvider>
+            </SiteLock>
+          </LocationProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 

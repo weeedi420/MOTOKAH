@@ -3,28 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    body { width: 320px; padding: 16px; font-family: Inter, system-ui, sans-serif; }
-    h1 { font-size: 16px; margin: 0 0 12px; color: #1a1a1a; }
-    .status { font-size: 13px; color: #666; margin-bottom: 12px; }
-    button {
-      width: 100%; padding: 10px; border: none; border-radius: 8px;
-      background: #0066cc; color: white; font-weight: 600; cursor: pointer;
-      margin-bottom: 8px;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { width: 360px; padding: 16px; font-family: Inter, system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+    h1 { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: #fff; }
+    .subtitle { font-size: 12px; color: #94a3b8; margin-bottom: 16px; }
+    
+    .section { margin-bottom: 16px; }
+    .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #64748b; margin-bottom: 8px; letter-spacing: 0.05em; }
+    
+    textarea {
+      width: 100%; height: 100px; padding: 10px; border-radius: 8px;
+      border: 1px solid #334155; background: #1e293b; color: #e2e8f0;
+      font-size: 12px; resize: vertical; font-family: monospace;
     }
-    button:hover { background: #0055aa; }
-    button:disabled { background: #ccc; cursor: not-allowed; }
-    .count { font-size: 24px; font-weight: 700; color: #0066cc; text-align: center; margin: 12px 0; }
-    .hint { font-size: 11px; color: #888; margin-top: 8px; }
-    .error { color: #dc2626; font-size: 12px; }
+    textarea::placeholder { color: #64748b; }
+    
+    .btn {
+      width: 100%; padding: 10px; border: none; border-radius: 8px;
+      font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    .btn-primary:disabled { background: #334155; cursor: not-allowed; color: #64748b; }
+    
+    .btn-secondary {
+      background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
+      margin-top: 8px;
+    }
+    .btn-secondary:hover { background: #334155; }
+    .btn-danger {
+      background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b;
+      margin-top: 8px;
+    }
+    .btn-danger:hover { background: #991b1b; }
+    .btn-sleep {
+      background: linear-gradient(135deg, #10b981, #059669); color: white;
+      margin-top: 8px;
+    }
+    .btn-sleep:hover { background: linear-gradient(135deg, #059669, #047857); }
+    
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+    .stat-box {
+      background: #1e293b; border: 1px solid #334155; border-radius: 8px;
+      padding: 10px; text-align: center;
+    }
+    .stat-number { font-size: 22px; font-weight: 800; color: #3b82f6; }
+    .stat-label { font-size: 10px; color: #94a3b8; margin-top: 2px; }
+    
+    .progress-bar {
+      width: 100%; height: 6px; background: #1e293b; border-radius: 3px;
+      margin: 8px 0; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      border-radius: 3px; transition: width 0.3s;
+    }
+    
+    .status { font-size: 12px; color: #94a3b8; margin: 8px 0; padding: 8px; background: #1e293b; border-radius: 6px; border: 1px solid #334155; }
+    .status.active { color: #4ade80; border-color: #166534; }
+    
+    .url-list { max-height: 120px; overflow-y: auto; font-size: 11px; }
+    .url-item {
+      padding: 6px 8px; border-radius: 4px; margin-bottom: 4px;
+      background: #1e293b; border: 1px solid #334155; display: flex; align-items: center; gap: 8px;
+    }
+    .url-item.done { border-color: #166534; background: #14532d; }
+    .url-item.current { border-color: #2563eb; background: #1e3a5f; }
+    .url-dot { width: 6px; height: 6px; border-radius: 50%; background: #64748b; flex-shrink: 0; }
+    .url-dot.done { background: #4ade80; }
+    .url-dot.current { background: #3b82f6; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .url-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #cbd5e1; }
+    
+    .hint { font-size: 11px; color: #64748b; margin-top: 8px; line-height: 1.5; }
   </style>
 </head>
 <body>
   <h1>Motokah Scraper</h1>
-  <div id="status" class="status">Open a Jiji cars page and click Scrape</div>
-  <button id="scrapeBtn">Scrape This Page</button>
-  <button id="downloadBtn" disabled>Download CSV</button>
-  <div id="count" class="count">0</div>
-  <div class="hint">Navigate to Jiji car listings, then click Scrape</div>
+  <p class="subtitle">Batch scrape Jiji car listings</p>
+  
+  <div class="section" id="urlSection">
+    <div class="section-title">Paste Jiji URLs (one per line)</div>
+    <textarea id="urlInput" placeholder="Paste URLs here or click 'Use Default URLs' below"></textarea>
+    <button class="btn btn-primary" id="startBtn">Start Scraping</button>
+    <button class="btn btn-secondary" id="defaultBtn">🌍 Use Default URLs (All East Africa)</button>
+    <button class="btn btn-sleep" id="sleepBtn">😴 Start & Sleep (Auto-Run All)</button>
+  </div>
+  
+  <div class="section" id="progressSection" style="display:none;">
+    <div class="section-title">Progress</div>
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-number" id="scrapedCount">0</div>
+        <div class="stat-label">Cars Scraped</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="urlCount">0/0</div>
+        <div class="stat-label">URLs Done</div>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="status" id="statusText">Waiting to start...</div>
+    <div class="url-list" id="urlList"></div>
+    <button class="btn btn-secondary" id="downloadBtn">Download CSV</button>
+    <button class="btn btn-danger" id="resetBtn">Reset All Data</button>
+  </div>
+  
+  <div class="hint">
+    <strong>Manual:</strong> Click "Use Default URLs" then press 🚀 on each page.<br><br>
+    <strong>Sleep mode:</strong> Click <strong>😴 Start & Sleep</strong> — it auto-runs all 6 countries while you sleep.
+    Wakes up to a finished CSV.<br><br>
+    Each page runs at least 1 min, scrapes up to 5000 cars, then chains to the next URL automatically.
+  </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>

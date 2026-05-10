@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { IconMenu2, IconSun, IconMoon, IconUser } from "@tabler/icons-react";
+import { IconMenu2, IconSun, IconMoon, IconUser, IconMapPin } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocation, type Country } from "@/contexts/LocationContext";
 import NotificationBell from "@/components/NotificationBell";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -18,10 +19,22 @@ const navLinks = [
   { key: "nav.blog", href: "/blog" },
 ];
 
+const countries: { code: Country; label: string; flag: string }[] = [
+  { code: "All", label: "All Africa", flag: "🌍" },
+  { code: "Tanzania", label: "Tanzania", flag: "🇹🇿" },
+  { code: "Kenya", label: "Kenya", flag: "🇰🇪" },
+  { code: "Uganda", label: "Uganda", flag: "🇺🇬" },
+  { code: "Rwanda", label: "Rwanda", flag: "🇷🇼" },
+  { code: "Burundi", label: "Burundi", flag: "🇧🇮" },
+  { code: "Ethiopia", label: "Ethiopia", flag: "🇪🇹" },
+  { code: "Nigeria", label: "Nigeria", flag: "🇳🇬" },
+];
+
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { country, setCountry } = useLocation();
   const navigate = useNavigate();
 
   return (
@@ -46,6 +59,26 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
+          {/* Country Selector */}
+          <div className="hidden md:flex items-center gap-1">
+            <IconMapPin size={16} className="text-muted-foreground" />
+            <select
+              value={country}
+              onChange={(e) => {
+                const c = e.target.value as Country;
+                setCountry(c);
+                navigate(`/search?country=${encodeURIComponent(c === "All" ? "" : c)}`);
+              }}
+              className="bg-transparent text-sm text-secondary-foreground hover:text-primary cursor-pointer border-none outline-none focus:ring-0"
+            >
+              {countries.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.flag} {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Language Switcher — desktop only; mobile uses sheet menu */}
           <div className="hidden sm:block">
             <LanguageSwitcher />
@@ -102,6 +135,26 @@ export default function Header() {
                     </SheetClose>
                   </>
                 )}
+                <hr className="border-border my-2" />
+                {/* Country selector in mobile menu */}
+                <div className="px-3 py-2">
+                  <label className="text-xs text-muted-foreground uppercase font-semibold">Location</label>
+                  <select
+                    value={country}
+                    onChange={(e) => {
+                      const c = e.target.value as Country;
+                      setCountry(c);
+                      navigate(`/search?country=${encodeURIComponent(c === "All" ? "" : c)}`);
+                    }}
+                    className="mt-1 w-full bg-secondary text-sm text-foreground rounded-md px-2 py-2 border border-border"
+                  >
+                    {countries.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.flag} {c.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <hr className="border-border my-2" />
                 {/* Language switcher in mobile menu */}
                 <LanguageSwitcher mobile />
