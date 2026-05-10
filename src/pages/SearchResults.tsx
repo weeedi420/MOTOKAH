@@ -148,6 +148,7 @@ export default function SearchResults() {
                 <option value="price-low">Price: Low → High</option>
                 <option value="price-high">Price: High → Low</option>
                 <option value="views">Most Viewed</option>
+                <option value="location">Location A→Z</option>
               </select>
             </div>
           </div>

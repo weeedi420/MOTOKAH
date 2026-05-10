@@ -12,17 +12,19 @@ import Testimonials from "@/components/Testimonials";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
 import SellCTA from "@/components/SellCTA";
 import StatsBar from "@/components/StatsBar";
+import LocationSection from "@/components/LocationSection";
 import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Index = () => {
-  usePageTitle("Find Your Perfect Ride in Tanzania");
+  usePageTitle("Cars for Sale in East Africa | Motokah");
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />
       <HeroSearch />
       <BrowseSection />
+      <LocationSection />
       <FeaturedListings />
       <LatestListingsGrid />
       <PromoBanner />

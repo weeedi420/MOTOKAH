@@ -37,6 +37,8 @@ export default function Header() {
   const { country, setCountry } = useLocation();
   const navigate = useNavigate();
 
+  const currentFlag = countries.find(c => c.code === country)?.flag || "🌍";
+
   return (
     <>
     <EmailVerificationBanner />
@@ -59,9 +61,8 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-          {/* Country Selector */}
-          <div className="hidden md:flex items-center gap-1">
-            <IconMapPin size={16} className="text-muted-foreground" />
+          {/* Country Selector — ALWAYS VISIBLE */}
+          <div className="flex items-center">
             <select
               value={country}
               onChange={(e) => {
@@ -69,7 +70,7 @@ export default function Header() {
                 setCountry(c);
                 navigate(`/search?country=${encodeURIComponent(c === "All" ? "" : c)}`);
               }}
-              className="bg-transparent text-sm text-secondary-foreground hover:text-primary cursor-pointer border-none outline-none focus:ring-0"
+              className="bg-secondary text-sm text-foreground cursor-pointer rounded-md px-2 py-1.5 border border-border hover:border-primary transition-colors"
             >
               {countries.map((c) => (
                 <option key={c.code} value={c.code}>

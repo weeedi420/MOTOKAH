@@ -39,7 +39,7 @@ const countryCitiesMap: Record<string, string[]> = {
   Nigeria: ["Lagos", "Abuja", "Ibadan", "Kano", "Port Harcourt", "Benin City", "Kaduna", "Ilorin", "Maiduguri", "Enugu"],
 };
 
-export type SortOption = "newest" | "price-low" | "price-high" | "views";
+export type SortOption = "newest" | "price-low" | "price-high" | "views" | "location";
 
 export function useSearchListings(filters: SearchFilters, sort: SortOption) {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -78,6 +78,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         case "price-low": query = query.order("price", { ascending: true }); break;
         case "price-high": query = query.order("price", { ascending: false }); break;
         case "views": query = query.order("views", { ascending: false }); break;
+        case "location": query = query.order("city", { ascending: true }); break;
         default: query = query.order("created_at", { ascending: false });
       }
 
