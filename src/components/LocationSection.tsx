@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import { IconMapPin } from "@tabler/icons-react";
 
 const locations = [
-  { city: "Dar es Salaam", country: "Tanzania", flag: "🇹🇿", count: "2,400+" },
-  { city: "Arusha", country: "Tanzania", flag: "🇹🇿", count: "800+" },
-  { city: "Mwanza", country: "Tanzania", flag: "🇹🇿", count: "600+" },
-  { city: "Nairobi", country: "Kenya", flag: "🇰🇪", count: "3,100+" },
-  { city: "Mombasa", country: "Kenya", flag: "🇰🇪", count: "900+" },
-  { city: "Kampala", country: "Uganda", flag: "🇺🇬", count: "1,200+" },
-  { city: "Kigali", country: "Rwanda", flag: "🇷🇼", count: "400+" },
-  { city: "Addis Ababa", country: "Ethiopia", flag: "🇪🇹", count: "700+" },
-  { city: "Lagos", country: "Nigeria", flag: "🇳🇬", count: "2,800+" },
-  { city: "Abuja", country: "Nigeria", flag: "🇳🇬", count: "1,500+" },
+  { city: "Dar es Salaam", country: "Tanzania", count: "2,400+" },
+  { city: "Arusha", country: "Tanzania", count: "800+" },
+  { city: "Mwanza", country: "Tanzania", count: "600+" },
+  { city: "Nairobi", country: "Kenya", count: "3,100+" },
+  { city: "Mombasa", country: "Kenya", count: "900+" },
+  { city: "Kampala", country: "Uganda", count: "1,200+" },
+  { city: "Kigali", country: "Rwanda", count: "400+" },
+  { city: "Addis Ababa", country: "Ethiopia", count: "700+" },
+  { city: "Lagos", country: "Nigeria", count: "2,800+" },
+  { city: "Abuja", country: "Nigeria", count: "1,500+" },
 ];
 
 export default function LocationSection() {
@@ -29,7 +29,6 @@ export default function LocationSection() {
               to={`/search?city=${encodeURIComponent(loc.city)}`}
               className="group p-4 bg-card border border-border rounded-xl hover:border-primary hover:shadow-md transition-all"
             >
-              <div className="text-2xl mb-2">{loc.flag}</div>
               <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
                 {loc.city}
               </div>

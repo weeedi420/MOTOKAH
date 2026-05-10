@@ -30,14 +30,14 @@ const modelItems = ["Corolla","Civic","Hilux","Fortuner","Alto","Vitz","Prado","
 const cityItems  = ["Dar es Salaam","Arusha","Mwanza","Zanzibar","Dodoma","Mbeya","Moshi","Tanga"];
 
 const locationItems = [
-  { name: "Tanzania", flag: "🇹🇿", param: "country=Tanzania" },
-  { name: "Kenya", flag: "🇰🇪", param: "country=Kenya" },
-  { name: "Uganda", flag: "🇺🇬", param: "country=Uganda" },
-  { name: "Rwanda", flag: "🇷🇼", param: "country=Rwanda" },
-  { name: "Burundi", flag: "🇧🇮", param: "country=Burundi" },
-  { name: "Ethiopia", flag: "🇪🇹", param: "country=Ethiopia" },
-  { name: "Nigeria", flag: "🇳🇬", param: "country=Nigeria" },
-  { name: "All Africa", flag: "🌍", param: "" },
+  { name: "Tanzania", param: "country=Tanzania" },
+  { name: "Kenya", param: "country=Kenya" },
+  { name: "Uganda", param: "country=Uganda" },
+  { name: "Rwanda", param: "country=Rwanda" },
+  { name: "Burundi", param: "country=Burundi" },
+  { name: "Ethiopia", param: "country=Ethiopia" },
+  { name: "Nigeria", param: "country=Nigeria" },
+  { name: "All Africa", param: "" },
 ];
 
 const tabs = ["Category","Budget","Model","Cities","Location"] as const;
@@ -140,9 +140,8 @@ export default function BrowseSection() {
           {locationItems.map((item) => (
             <button key={item.name}
               onClick={() => navigate(item.param ? `/search?${item.param}` : `/search`)}
-              className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97] flex items-center justify-center gap-2">
-              <span>{item.flag}</span>
-              <span>{item.name}</span>
+              className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97]">
+              {item.name}
             </button>
           ))}
         </div>

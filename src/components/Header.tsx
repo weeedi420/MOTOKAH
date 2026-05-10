@@ -24,8 +24,6 @@ export default function Header() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const currentFlag = countries.find(c => c.code === country)?.flag || "🌍";
-
   return (
     <>
     <EmailVerificationBanner />
