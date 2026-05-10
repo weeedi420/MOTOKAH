@@ -29,7 +29,18 @@ const budgetItems = [
 const modelItems = ["Corolla","Civic","Hilux","Fortuner","Alto","Vitz","Prado","CR-V","RAV4","Harrier","Premio","Aqua"];
 const cityItems  = ["Dar es Salaam","Arusha","Mwanza","Zanzibar","Dodoma","Mbeya","Moshi","Tanga"];
 
-const tabs = ["Category","Budget","Model","Cities"] as const;
+const locationItems = [
+  { name: "Tanzania", flag: "🇹🇿", param: "country=Tanzania" },
+  { name: "Kenya", flag: "🇰🇪", param: "country=Kenya" },
+  { name: "Uganda", flag: "🇺🇬", param: "country=Uganda" },
+  { name: "Rwanda", flag: "🇷🇼", param: "country=Rwanda" },
+  { name: "Burundi", flag: "🇧🇮", param: "country=Burundi" },
+  { name: "Ethiopia", flag: "🇪🇹", param: "country=Ethiopia" },
+  { name: "Nigeria", flag: "🇳🇬", param: "country=Nigeria" },
+  { name: "All Africa", flag: "🌍", param: "" },
+];
+
+const tabs = ["Category","Budget","Model","Cities","Location"] as const;
 type Tab = typeof tabs[number];
 
 export default function BrowseSection() {
@@ -118,6 +129,20 @@ export default function BrowseSection() {
               onClick={() => navigate(`/search?city=${encodeURIComponent(item)}`)}
               className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97]">
               {item}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Location Tab */}
+      {activeTab === "Location" && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
+          {locationItems.map((item) => (
+            <button key={item.name}
+              onClick={() => navigate(item.param ? `/search?${item.param}` : `/search`)}
+              className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97] flex items-center justify-center gap-2">
+              <span>{item.flag}</span>
+              <span>{item.name}</span>
             </button>
           ))}
         </div>
