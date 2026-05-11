@@ -234,18 +234,22 @@ export default function ListingDetail() {
               </div>
             </div>
 
-            {/* Description */}
-            {(listing.description || true) && (
-              <div className="rounded-xl border border-border bg-card p-5">
-                <h3 className="text-lg font-bold mb-3">Description</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                  {listing.description ||
-                    `${listing.year} ${listing.title} — ${listing.condition} · ${listing.transmission} · ${listing.fuelType || "Petrol"} · ${listing.mileage.toLocaleString()} km · ${listing.location}. Contact the seller for more details and to arrange a viewing.`}
-                </p>
-              </div>
-            )}
+            {/* Description & Specs - PakWheels Style Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Description - Left */}
+              {(listing.description || true) && (
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <h3 className="text-lg font-bold mb-3">Description</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                    {listing.description ||
+                      `${listing.year} ${listing.title} — ${listing.condition} · ${listing.transmission} · ${listing.fuelType || "Petrol"} · ${listing.mileage.toLocaleString()} km · ${listing.location}. Contact the seller for more details and to arrange a viewing.`}
+                  </p>
+                </div>
+              )}
 
-            <SpecsTable listing={listing} />
+              {/* Specs - Right */}
+              <SpecsTable listing={listing} />
+            </div>
 
             {/* Share Buttons */}
             <div className="flex items-center gap-3">

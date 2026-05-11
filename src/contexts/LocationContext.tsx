@@ -54,6 +54,18 @@ export function LocationProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CITY_KEY, c);
   };
 
+  // Listen for storage changes from Welcome page
+  useEffect(() => {
+    const handleStorage = () => {
+      const savedCountry = localStorage.getItem(COUNTRY_KEY) as Country;
+      const savedCity = localStorage.getItem(CITY_KEY);
+      if (savedCountry) setCountryState(savedCountry);
+      if (savedCity) setCityState(savedCity);
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   return (
     <LocationContext.Provider value={{ country, city, setCountry, setCity }}>
       {children}

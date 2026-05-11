@@ -17,6 +17,7 @@ export interface SearchFilters {
   yearTo?: string;
   maxMileage?: string;
   dutyPaid?: boolean;
+  vehicleType?: "car" | "bike" | "commercial" | "spare";
 }
 
 const countryCurrencyMap: Record<string, string[]> = {
@@ -72,6 +73,20 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.yearFrom) query = query.gte("year", Number(filters.yearFrom));
       if (filters.yearTo) query = query.lte("year", Number(filters.yearTo));
       if (filters.maxMileage) query = query.lte("mileage", Number(filters.maxMileage));
+      if (filters.dutyPaid !== undefined) query = query.eq("duty_paid", filters.dutyPaid);
+      
+      // Vehicle type filtering
+      if (filters.vehicleType) {
+        const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
+        const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
+        if (filters.vehicleType === "bike") {
+          query = query.in("body_type", bikeTypes);
+        } else if (filters.vehicleType === "commercial") {
+          query = query.in("body_type", commercialTypes);
+        } else if (filters.vehicleType === "car") {
+          query = query.not("body_type", "in", [...bikeTypes, ...commercialTypes]);
+        }
+      }
 
       // Sort
       switch (sort) {
@@ -128,11 +143,23 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         };
       });
 
+      // Validate listings - filter out invalid data
+      const validateListing = (l: Listing) => {
+        // Skip cars with 0 mileage unless condition is "New"
+        if (l.mileage === 0 && l.condition !== "New") return false;
+        // Skip listings with no price or 0 price
+        if (!l.price || l.price <= 0) return false;
+        // Skip listings without transmission
+        if (!l.transmission) return false;
+        return true;
+      };
+
       if (mapped.length === 0) {
         // No approved listings in DB yet — filter mock data against active filters
         const hasFilters = Object.values(filters).some(v => v && (Array.isArray(v) ? v.length > 0 : true));
         let mocks = [...mockListings];
         if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
+        if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
         if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
         if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
         if (filters.city) mocks = mocks.filter(m => m.location === filters.city);
@@ -147,13 +174,27 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
         if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
         if (filters.dutyPaid !== undefined) mocks = mocks.filter(m => (m.dutyPaid ?? true) === filters.dutyPaid);
+        // Vehicle type filtering for mocks
+        if (filters.vehicleType) {
+          const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
+          const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
+          if (filters.vehicleType === "bike") {
+            mocks = mocks.filter(m => bikeTypes.includes(m.bodyType || ""));
+          } else if (filters.vehicleType === "commercial") {
+            mocks = mocks.filter(m => commercialTypes.includes(m.bodyType || ""));
+          } else if (filters.vehicleType === "car") {
+            mocks = mocks.filter(m => !bikeTypes.includes(m.bodyType || "") && !commercialTypes.includes(m.bodyType || ""));
+          }
+        }
+        // Apply validation
+        mocks = mocks.filter(validateListing);
         // Sort mocks
         if (sort === "price-low") mocks.sort((a, b) => a.price - b.price);
         else if (sort === "price-high") mocks.sort((a, b) => b.price - a.price);
         else if (sort === "views") mocks.sort((a, b) => b.views - a.views);
         setListings(hasFilters && mocks.length === 0 ? [] : mocks);
       } else {
-        setListings(mapped);
+        setListings(mapped.filter(validateListing));
       }
       setLoading(false);
     };

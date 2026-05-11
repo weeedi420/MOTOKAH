@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { IconMenu2, IconSun, IconMoon, IconUser } from "@tabler/icons-react";
+import { IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocation } from "@/contexts/LocationContext";
 import NotificationBell from "@/components/NotificationBell";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -12,7 +13,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 const navLinks = [
   { key: "nav.usedCars", href: "/search" },
   { key: "nav.newCars", href: "/search?condition=New" },
-  { key: "nav.bikes", href: "/search?bodyType=Motorcycle" },
+  { key: "nav.bikes", href: "/search?vehicleType=bike" },
   { key: "nav.dealers", href: "/dealers" },
   { key: "nav.compare", href: "/compare" },
   { key: "nav.blog", href: "/blog" },
@@ -22,6 +23,7 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { city, country } = useLocation();
   const navigate = useNavigate();
 
   return (
@@ -46,6 +48,18 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
+          {/* Location Indicator */}
+          {city && (
+            <button 
+              onClick={() => navigate('/welcome')}
+              className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
+            >
+              <IconMapPin size={14} />
+              <span className="max-w-[100px] truncate">{city}</span>
+              <IconChevronDown size={12} />
+            </button>
+          )}
+
           {/* Language Switcher — desktop only; mobile uses sheet menu */}
           <div className="hidden sm:block">
             <LanguageSwitcher />

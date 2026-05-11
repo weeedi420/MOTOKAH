@@ -46,6 +46,7 @@ import DutyCalculator from "./pages/DutyCalculator.tsx";
 import DealerLeads from "./pages/DealerLeads.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import CityLandingPage from "./pages/CityLandingPage.tsx";
+import Welcome from "./pages/Welcome.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
 import SiteLock from "@/components/SiteLock";
@@ -69,6 +70,7 @@ function AnimatedRoutes() {
         className="overflow-x-hidden"
       >
         <Routes location={location}>
+              <Route path="/welcome" element={<Welcome />} />
               <Route path="/" element={<Index />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/search" element={<SearchResults />} />

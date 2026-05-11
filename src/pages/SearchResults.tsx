@@ -37,6 +37,7 @@ export default function SearchResults() {
     transmission: searchParams.get("transmission") || "",
     minPrice: searchParams.get("minPrice") || "",
     maxPrice: searchParams.get("maxPrice") || "",
+    vehicleType: (searchParams.get("vehicleType") as "car" | "bike" | "commercial" | "spare") || "",
   }));
 
   const clearFilters = () => setFilters(defaultFilters);
@@ -56,6 +57,7 @@ export default function SearchResults() {
     yearTo: filters.yearTo || undefined,
     maxMileage: filters.maxMileage || undefined,
     dutyPaid: filters.dutyPaid === "true" ? true : filters.dutyPaid === "false" ? false : undefined,
+    vehicleType: filters.vehicleType || undefined,
   }), [filters]);
 
   const { listings: filtered, loading } = useSearchListings(searchFilters, sort);
@@ -68,6 +70,7 @@ export default function SearchResults() {
     if (filters.transmission) chips.push({ key: "transmission", label: filters.transmission });
     if (filters.city) chips.push({ key: "city", label: filters.city });
     if (filters.country) chips.push({ key: "country", label: filters.country });
+    if (filters.vehicleType) chips.push({ key: "vehicleType", label: filters.vehicleType.charAt(0).toUpperCase() + filters.vehicleType.slice(1) });
     filters.bodyType.forEach(bt => chips.push({ key: `bodyType-${bt}`, label: bt }));
     filters.fuelType.forEach(ft => chips.push({ key: `fuelType-${ft}`, label: ft }));
     if (filters.minPrice) chips.push({ key: "minPrice", label: `Min: ${Number(filters.minPrice).toLocaleString()}` });

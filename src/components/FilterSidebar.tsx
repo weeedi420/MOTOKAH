@@ -16,12 +16,13 @@ export interface Filters {
   city: string;
   country: string;
   dutyPaid: "" | "true" | "false";
+  vehicleType: "" | "car" | "bike" | "commercial" | "spare";
 }
 
 export const defaultFilters: Filters = {
   make: "", model: "", condition: "", bodyType: [], transmission: "",
   fuelType: [], yearFrom: "", yearTo: "", minPrice: "", maxPrice: "",
-  maxMileage: "", city: "", country: "", dutyPaid: "",
+  maxMileage: "", city: "", country: "", dutyPaid: "", vehicleType: "",
 };
 
 interface FilterSidebarProps {
@@ -45,6 +46,18 @@ export default function FilterSidebar({ filters, onChange, onClear }: FilterSide
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-lg">Filters</h3>
         <button onClick={onClear} className="text-xs text-primary hover:underline">Clear All</button>
+      </div>
+
+      {/* Vehicle Type */}
+      <div>
+        <label className="text-sm font-medium mb-1 block">Vehicle Type</label>
+        <select value={filters.vehicleType} onChange={e => update("vehicleType", e.target.value)}
+          className="w-full h-9 rounded-md border border-input bg-background px-2 text-sm">
+          <option value="">All Types</option>
+          <option value="car">Cars</option>
+          <option value="bike">Motorcycles</option>
+          <option value="commercial">Commercial</option>
+        </select>
       </div>
 
       {/* Make */}
