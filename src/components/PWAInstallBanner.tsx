@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { IconDownload, IconX, IconShare } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 
@@ -19,6 +20,7 @@ function isInStandaloneMode() {
 }
 
 export default function PWAInstallBanner() {
+  const location = useLocation();
   const [androidPrompt, setAndroidPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showIOS, setShowIOS] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -53,7 +55,7 @@ export default function PWAInstallBanner() {
     localStorage.setItem("pwa-banner-dismissed", "true");
   };
 
-  if (dismissed) return null;
+  if (dismissed || location.pathname === "/welcome") return null;
 
   const bottomStyle = { bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 5rem))' };
 
