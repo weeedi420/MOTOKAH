@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   IconSearch, IconFilter, IconHeart, IconScale, IconShare, IconFlag,
-  IconBrandWhatsapp, IconPhone, IconMessage,
+  IconBrandWhatsapp, IconPhone, IconMessageCircle,
   IconUpload, IconCar, IconCheck, IconArrowRight,
   IconUser, IconShieldLock, IconQrcode, IconLayoutDashboard,
   IconBookmark, IconHelpCircle, IconX, IconChevronDown, IconChevronUp,
@@ -110,7 +110,7 @@ const translations: Record<LangCode, {
         bgColor: "bg-orange-500/10",
       },
       {
-        icon: IconMessage,
+        icon: IconMessageCircle,
         title: "Messages & Chat",
         description: "Communicate safely within the app",
         features: [
@@ -216,7 +216,7 @@ const translations: Record<LangCode, {
         bgColor: "bg-orange-500/10",
       },
       {
-        icon: IconMessage,
+        icon: IconMessageCircle,
         title: "Ujumbe & Mazungumzo",
         description: "Wasiliana kwa usalama ndani ya programu",
         features: [
@@ -322,7 +322,7 @@ const translations: Record<LangCode, {
         bgColor: "bg-orange-500/10",
       },
       {
-        icon: IconMessage,
+        icon: IconMessageCircle,
         title: "Messages & Chat",
         description: "Communiquez en toute sécurité dans l'application",
         features: [
@@ -428,7 +428,7 @@ const translations: Record<LangCode, {
         bgColor: "bg-orange-500/10",
       },
       {
-        icon: IconMessage,
+        icon: IconMessageCircle,
         title: "الرسائل والدردشة",
         description: "تواصل بأمان داخل التطبيق",
         features: [
@@ -626,7 +626,7 @@ function ContactDiagram() {
           {[
             { icon: IconBrandWhatsapp, label: "WhatsApp", color: "bg-green-500 text-white" },
             { icon: IconPhone, label: "Call", color: "bg-blue-500 text-white" },
-            { icon: IconMessage, label: "Message", color: "bg-primary text-primary-foreground" },
+            { icon: IconMessageCircle, label: "Message", color: "bg-primary text-primary-foreground" },
           ].map((btn, i) => (
             <motion.button
               key={btn.label}
@@ -831,7 +831,7 @@ function AccountDiagram() {
         {[
           { icon: IconCar, label: "Active", value: "5" },
           { icon: IconHeart, label: "Wishlist", value: "12" },
-          { icon: IconMessage, label: "Messages", value: "3" },
+          { icon: IconMessageCircle, label: "Messages", value: "3" },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
