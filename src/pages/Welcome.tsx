@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconMapPin, IconLanguage, IconChevronRight, IconCar, IconHeart, IconMessageCircle, IconFilter } from "@tabler/icons-react";
+import { IconMapPin, IconLanguage, IconChevronRight, IconSearch, IconCar, IconHeart, IconMessageCircle, IconFilter } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { type Country } from "@/contexts/LocationContext";
 import { type LangCode, LANGUAGES } from "@/contexts/LanguageContext";
