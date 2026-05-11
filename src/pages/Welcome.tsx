@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck, IconHelpCircle, IconSearch, IconShoppingCart, IconHeart, IconMessageCircle, IconX } from "@tabler/icons-react";
+import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck, IconHelpCircle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useLocationDetection, type Country } from "@/hooks/useLocationDetection";
 import { type LangCode, LANGUAGES } from "@/contexts/LanguageContext";
+import HelpGuide from "@/components/HelpGuide";
 
 const countries: { code: Country; name: string; flag: string }[] = [
   { code: "Tanzania", name: "Tanzania", flag: "🇹🇿" },
@@ -584,86 +585,8 @@ export default function Welcome() {
           </div>
         </div>
 
-        {/* How to Use Modal */}
-        <AnimatePresence>
-          {showHelp && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
-              onClick={() => setShowHelp(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="bg-background rounded-2xl shadow-2xl max-w-sm w-full max-h-[85vh] overflow-y-auto"
-                onClick={e => e.stopPropagation()}
-              >
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <IconHelpCircle size={22} className="text-primary" />
-                      </div>
-                      <h2 className="text-lg font-bold">{t.howToUseTitle}</h2>
-                    </div>
-                    <button
-                      onClick={() => setShowHelp(false)}
-                      className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
-                    >
-                      <IconX size={16} />
-                    </button>
-                  </div>
-
-                  <p className="text-sm text-muted-foreground mb-6">{t.howToUseDesc}</p>
-
-                  <motion.div
-                    variants={staggerVariants}
-                    initial="initial"
-                    animate="animate"
-                    className="space-y-4"
-                  >
-                    {[
-                      { icon: IconMapPin, title: t.step1Title, desc: t.step1Desc, color: "bg-blue-500/10 text-blue-500" },
-                      { icon: IconGlobe, title: t.step2Title, desc: t.step2Desc, color: "bg-green-500/10 text-green-500" },
-                      { icon: IconSearch, title: t.step3Title, desc: t.step3Desc, color: "bg-purple-500/10 text-purple-500" },
-                      { icon: IconMessageCircle, title: t.step4Title, desc: t.step4Desc, color: "bg-orange-500/10 text-orange-500" },
-                    ].map((item, i) => (
-                      <motion.div
-                        key={i}
-                        variants={itemVariants}
-                        className="flex gap-4 p-4 rounded-xl border border-border bg-card"
-                      >
-                        <div className={`w-12 h-12 rounded-xl ${item.color} flex items-center justify-center shrink-0`}>
-                          <item.icon size={24} />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
-                              {i + 1}
-                            </span>
-                            <h3 className="font-semibold">{item.title}</h3>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{item.desc}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-
-                  <Button
-                    onClick={() => setShowHelp(false)}
-                    className="w-full mt-6 h-12 font-semibold"
-                  >
-                    {t.gotIt}
-                  </Button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* How to Use Guide */}
+        <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={selectedLang} />
       </div>
     </div>
   );

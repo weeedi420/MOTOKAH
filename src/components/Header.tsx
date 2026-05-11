@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown } from "@tabler/icons-react";
+import { IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown, IconHelpCircle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -9,6 +10,7 @@ import { useLocation } from "@/contexts/LocationContext";
 import NotificationBell from "@/components/NotificationBell";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import HelpGuide from "@/components/HelpGuide";
 
 const navLinks = [
   { key: "nav.usedCars", href: "/search" },
@@ -23,9 +25,10 @@ const navLinks = [
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { city, country } = useLocation();
   const navigate = useNavigate();
+  const [showHelp, setShowHelp] = useState(false);
 
   return (
     <>
@@ -127,6 +130,13 @@ export default function Header() {
                     {theme === "dark" ? t("nav.lightMode") : t("nav.darkMode")}
                   </button>
                 </SheetClose>
+                <button 
+                  onClick={() => setShowHelp(true)} 
+                  className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors"
+                >
+                  <IconHelpCircle size={18} stroke={2.5} />
+                  How to Use
+                </button>
                 {user ? null : (
                   <SheetClose asChild>
                     <Link to="/auth"><Button variant="outline" className="border-border text-foreground w-full">{t("nav.signIn")}</Button></Link>
@@ -141,6 +151,7 @@ export default function Header() {
         </div>
       </div>
     </header>
+    <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={lang} />
     </>
   );
 }
