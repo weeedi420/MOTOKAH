@@ -49,7 +49,7 @@ import CityLandingPage from "./pages/CityLandingPage.tsx";
 import Welcome from "./pages/Welcome.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
-import SiteLock from "@/components/SiteLock";
+
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LocationProvider } from "@/contexts/LocationContext";
 import { HelmetProvider } from "react-helmet-async";
@@ -122,21 +122,19 @@ const App = () => (
       <ThemeProvider>
         <LanguageProvider>
           <LocationProvider>
-            <SiteLock>
-              <AuthProvider>
-                <WishlistProvider>
-                  <TooltipProvider>
-                    <Toaster />
-                    <Sonner />
-                    <PWAInstallBanner />
-                    <BrowserRouter>
-                      <BottomNav />
-                      <AnimatedRoutes />
-                    </BrowserRouter>
-                  </TooltipProvider>
-                </WishlistProvider>
-              </AuthProvider>
-            </SiteLock>
+            <AuthProvider>
+              <WishlistProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <PWAInstallBanner />
+                  <BrowserRouter>
+                    <BottomNav />
+                    <AnimatedRoutes />
+                  </BrowserRouter>
+                </TooltipProvider>
+              </WishlistProvider>
+            </AuthProvider>
           </LocationProvider>
         </LanguageProvider>
       </ThemeProvider>
