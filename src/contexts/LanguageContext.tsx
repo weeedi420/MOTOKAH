@@ -21,6 +21,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     // Nav
     "nav.usedCars": "Used Cars",
     "nav.newCars": "New Cars",
+    "nav.commercial": "Commercial",
     "nav.bikes": "Bikes",
     "nav.dealers": "Dealers",
     "nav.compare": "Compare",
@@ -65,6 +66,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     // Nav
     "nav.usedCars": "Magari ya Kutumika",
     "nav.newCars": "Magari Mapya",
+    "nav.commercial": "Biashara",
     "nav.bikes": "Pikipiki",
     "nav.dealers": "Wauza Magari",
     "nav.compare": "Linganisha",
@@ -109,6 +111,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     // Nav
     "nav.usedCars": "Voitures d'Occasion",
     "nav.newCars": "Voitures Neuves",
+    "nav.commercial": "Commercial",
     "nav.bikes": "Motos",
     "nav.dealers": "Concessionnaires",
     "nav.compare": "Comparer",
@@ -153,6 +156,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     // Nav
     "nav.usedCars": "سيارات مستعملة",
     "nav.newCars": "سيارات جديدة",
+    "nav.commercial": "تجاري",
     "nav.bikes": "دراجات نارية",
     "nav.dealers": "الوكلاء",
     "nav.compare": "مقارنة",

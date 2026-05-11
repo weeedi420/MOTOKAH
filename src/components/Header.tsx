@@ -13,6 +13,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 const navLinks = [
   { key: "nav.usedCars", href: "/search" },
   { key: "nav.newCars", href: "/search?condition=New" },
+  { key: "nav.commercial", href: "/search?vehicleType=commercial" },
   { key: "nav.bikes", href: "/search?vehicleType=bike" },
   { key: "nav.dealers", href: "/dealers" },
   { key: "nav.compare", href: "/compare" },
