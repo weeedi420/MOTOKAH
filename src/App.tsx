@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -58,6 +58,8 @@ const queryClient = new QueryClient();
 
 function AnimatedRoutes() {
   const location = useLocation();
+  const welcomeCompleted = localStorage.getItem("motokah_welcome_completed");
+  
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
@@ -71,7 +73,10 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
               <Route path="/welcome" element={<Welcome />} />
-              <Route path="/" element={<Index />} />
+              <Route 
+                path="/" 
+                element={welcomeCompleted ? <Index /> : <Navigate to="/welcome" replace />} 
+              />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/auth" element={<Auth />} />

@@ -183,53 +183,61 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         return true;
       };
 
-      if (mapped.length === 0) {
-        // No approved listings in DB yet — filter mock data against active filters
-        const hasFilters = Object.values(filters).some(v => v && (Array.isArray(v) ? v.length > 0 : true));
-        let mocks = [...mockListings];
-        if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
-        if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
-        if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
-        if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
-        if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
-        if (filters.country && filters.country !== "All") {
-          const cities = countryCitiesMap[filters.country] || [];
-          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
-        }
-        if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
-        if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));
-        if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
-        if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
-        if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
-        if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
-        if (filters.dutyPaid !== undefined) mocks = mocks.filter(m => (m.dutyPaid ?? true) === filters.dutyPaid);
-        // Vehicle type filtering for mocks
-        if (filters.vehicleType) {
-          const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
-          const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
-          if (filters.vehicleType === "bike") {
-            mocks = mocks.filter(m => bikeTypes.includes(m.bodyType || ""));
-          } else if (filters.vehicleType === "commercial") {
-            mocks = mocks.filter(m => commercialTypes.includes(m.bodyType || ""));
-          } else if (filters.vehicleType === "car") {
-            mocks = mocks.filter(m => !bikeTypes.includes(m.bodyType || "") && !commercialTypes.includes(m.bodyType || ""));
-          }
-        }
-        if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
-        if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
-        if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
-        if (filters.dutyPaid !== undefined) mocks = mocks.filter(m => (m.dutyPaid ?? true) === filters.dutyPaid);
-        if (filters.fuelType?.length) mocks = mocks.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
-        // Apply validation
-        mocks = mocks.filter(validateListing);
-        // Sort mocks
-        if (sort === "price-low") mocks.sort((a, b) => a.price - b.price);
-        else if (sort === "price-high") mocks.sort((a, b) => b.price - a.price);
-        else if (sort === "views") mocks.sort((a, b) => b.views - a.views);
-        setListings(mocks);
-      } else {
-        setListings(mapped.filter(validateListing));
+      // Always merge mock data with Supabase data so we don't lose listings
+      let mocks = [...mockListings];
+      
+      // Filter mock data with same filters
+      if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
+      if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
+      if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
+      if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
+      if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
+      if (filters.country && filters.country !== "All") {
+        const cities = countryCitiesMap[filters.country] || [];
+        mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
       }
+      if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
+      if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));
+      if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
+      if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
+      if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
+      if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+      if (filters.dutyPaid !== undefined) mocks = mocks.filter(m => (m.dutyPaid ?? true) === filters.dutyPaid);
+      if (filters.fuelType?.length) mocks = mocks.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
+      // Vehicle type filtering for mocks
+      if (filters.vehicleType) {
+        const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
+        const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
+        if (filters.vehicleType === "bike") {
+          mocks = mocks.filter(m => bikeTypes.includes(m.bodyType || ""));
+        } else if (filters.vehicleType === "commercial") {
+          mocks = mocks.filter(m => commercialTypes.includes(m.bodyType || ""));
+        } else if (filters.vehicleType === "car") {
+          mocks = mocks.filter(m => !bikeTypes.includes(m.bodyType || "") && !commercialTypes.includes(m.bodyType || ""));
+        }
+      }
+      
+      // Apply validation to mock data
+      mocks = mocks.filter(validateListing);
+
+      // Merge: use Supabase data + add mock data that isn't already in Supabase
+      const realIds = new Set(mapped.map(r => r.id));
+      const uniqueMocks = mocks.filter(m => !realIds.has(m.id));
+      const combined = [...mapped.filter(validateListing), ...uniqueMocks];
+      
+      // Sort combined results
+      if (sort === "price-low") combined.sort((a, b) => a.price - b.price);
+      else if (sort === "price-high") combined.sort((a, b) => b.price - a.price);
+      else if (sort === "views") combined.sort((a, b) => b.views - a.views);
+      else if (sort === "location") combined.sort((a, b) => (a.location || "").localeCompare(b.location || ""));
+      else combined.sort((a, b) => {
+        // Newest first - use a fallback date if created_at doesn't exist
+        const dateA = (a as any).created_at ? new Date((a as any).created_at).getTime() : 0;
+        const dateB = (b as any).created_at ? new Date((b as any).created_at).getTime() : 0;
+        return dateB - dateA;
+      });
+      
+      setListings(combined);
       setLoading(false);
     };
 

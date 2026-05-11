@@ -163,6 +163,19 @@
     transition: none !important;
     animation: none !important;
   }
+
+  /* Safari/iOS specific fixes */
+  @supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices */
+    body {
+      -webkit-text-size-adjust: 100%;
+    }
+    
+    /* Fix for iOS momentum scrolling */
+    .overflow-y-auto {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
 
 @layer utilities {
