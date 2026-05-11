@@ -7,10 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { IconUser, IconEdit, IconTrash, IconEye, IconCheck, IconCamera, IconShieldLock, IconQrcode, IconBookmark, IconAlertTriangle, IconRefresh, IconLayoutDashboard, IconCar, IconHeart, IconMessageCircle, IconChevronRight, IconBuildingStore } from "@tabler/icons-react";
+import { IconUser, IconEdit, IconTrash, IconEye, IconCheck, IconCamera, IconShieldLock, IconQrcode, IconBookmark, IconAlertTriangle, IconRefresh, IconLayoutDashboard, IconCar, IconHeart, IconMessageCircle, IconChevronRight, IconBuildingStore, IconHelpCircle } from "@tabler/icons-react";
 import ReviewsSection from "@/components/ReviewsSection";
 import { Link, useNavigate } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useLanguage } from "@/contexts/LanguageContext";
+import HelpGuide from "@/components/HelpGuide";
 import { format, parseISO } from "date-fns";
 
 type ProfileData = {
@@ -142,11 +144,13 @@ export default function Profile() {
   const { wishlistIds } = useWishlist();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { lang } = useLanguage();
   const [tab, setTab] = useState<"dashboard" | "listings" | "reviews" | "settings" | "security" | "saved">("dashboard");
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [listings, setListings] = useState<ListingRow[]>([]);
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
   const [editing, setEditing] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   usePageTitle("My Profile");
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
@@ -520,19 +524,38 @@ export default function Profile() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-2 text-sm">
-                <p><span className="font-semibold text-foreground">Email:</span> <span className="text-muted-foreground">{user?.email}</span></p>
-                <p><span className="font-semibold text-foreground">Name:</span> <span className="text-muted-foreground">{profile?.display_name || "—"}</span></p>
-                <p><span className="font-semibold text-foreground">Phone:</span> <span className="text-muted-foreground">{profile?.phone || "—"}</span></p>
-                <p><span className="font-semibold text-foreground">City:</span> <span className="text-muted-foreground">{profile?.city || "—"}</span></p>
+               <div className="space-y-2 text-sm">
+                 <p><span className="font-semibold text-foreground">Email:</span> <span className="text-muted-foreground">{user?.email}</span></p>
+                 <p><span className="font-semibold text-foreground">Name:</span> <span className="text-muted-foreground">{profile?.display_name || "—"}</span></p>
+                 <p><span className="font-semibold text-foreground">Phone:</span> <span className="text-muted-foreground">{profile?.phone || "—"}</span></p>
+                 <p><span className="font-semibold text-foreground">City:</span> <span className="text-muted-foreground">{profile?.city || "—"}</span></p>
+               </div>
+              )}
+              
+              {/* Help & Support */}
+              <div className="border-t border-border pt-4 mt-4">
+                <h3 className="text-sm font-semibold text-foreground mb-3">Help & Support</h3>
+                <button
+                  onClick={() => setShowHelp(true)}
+                  className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-muted/30 transition-all"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <IconHelpCircle size={20} className="text-primary" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-sm">How to Use Motokah</div>
+                    <div className="text-xs text-muted-foreground">Learn how to search, post, and use all features</div>
+                  </div>
+                  <IconChevronRight size={18} className="ml-auto text-muted-foreground" />
+                </button>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
 
         {tab === "security" && <MfaSection />}
       </div>
       <Footer />
+      <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={lang} />
     </div>
   );
 }
