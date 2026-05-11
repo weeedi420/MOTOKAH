@@ -94,7 +94,7 @@ export default function Welcome() {
   const [lang, setLang] = useState<LangCode>("en");
   const [showTutorial, setShowTutorial] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const t = translations[lang];
   const selectedCountry = countries.find(c => c.code === country);
@@ -102,8 +102,9 @@ export default function Welcome() {
   useEffect(() => {
     const seen = localStorage.getItem("motokah_welcome_seen");
     if (seen) {
-      setHasSeenWelcome(true);
       navigate("/");
+    } else {
+      setIsLoading(false);
     }
   }, [navigate]);
 
@@ -121,7 +122,13 @@ export default function Welcome() {
     window.location.href = "/";
   };
 
-  if (hasSeenWelcome) return null;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
