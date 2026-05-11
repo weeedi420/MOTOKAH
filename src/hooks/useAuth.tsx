@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getAppUrl } from "@/lib/app-url";
 import type { User, Session } from "@supabase/supabase-js";
 
 // ─── Demo accounts (bypass Supabase — no env vars needed) ─────────────────────
@@ -161,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
         options: {
           data: { display_name: displayName || email },
-          emailRedirectTo: `${window.location.origin}/auth?verified=1`,
+          emailRedirectTo: getAppUrl('/auth?verified=1'),
         },
       });
       if (error) return { error: new Error(error.message) };
@@ -186,7 +187,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const resetPassword = async (email: string) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: getAppUrl('/reset-password'),
       });
       return { error: error as Error | null };
     } catch (err) {
