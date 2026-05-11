@@ -145,9 +145,9 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
         </div>
 
         <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-          <span className="flex items-center gap-1"><IconGauge size={14} stroke={2.5} />{listing.mileage > 0 ? `${(listing.mileage / 1000).toFixed(0)}k km` : "0 km"}</span>
+          <span className="flex items-center gap-1"><IconGauge size={14} stroke={2.5} />{listing.mileage > 0 ? `${listing.mileage.toLocaleString()} km` : listing.condition === "New" ? "0 km" : "N/A"}</span>
           <span className="flex items-center gap-1"><IconCalendar size={14} stroke={2.5} />{listing.year}</span>
-          <span className="flex items-center gap-1"><IconManualGearbox size={14} stroke={2.5} />{listing.transmission}</span>
+          <span className="flex items-center gap-1"><IconManualGearbox size={14} stroke={2.5} />{listing.transmission || "N/A"}</span>
         </div>
 
         {listing.cc && (

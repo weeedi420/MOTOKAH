@@ -9,7 +9,7 @@ const specs = (l: SpecsTableProps["listing"]) => [
   { icon: IconCar, label: "Make", value: l.make },
   { icon: IconCar, label: "Model", value: l.model },
   { icon: IconCalendar, label: "Year", value: l.year.toString() },
-  { icon: IconGauge, label: "Mileage", value: l.mileage > 0 ? `${l.mileage.toLocaleString()} km` : "0 km (New)" },
+  { icon: IconGauge, label: "Mileage", value: l.mileage > 0 ? `${l.mileage.toLocaleString()} km` : l.condition === "New" ? "0 km (New)" : "N/A" },
   { icon: IconManualGearbox, label: "Transmission", value: l.transmission },
   { icon: IconGasStation, label: "Fuel Type", value: l.fuelType || "Petrol" },
   { icon: IconPaint, label: "Body Type", value: l.bodyType || "Sedan" },
