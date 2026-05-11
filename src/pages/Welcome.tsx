@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2 } from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useLocationDetection, type Country } from "@/hooks/useLocationDetection";
 import { type LangCode, LANGUAGES } from "@/contexts/LanguageContext";
@@ -26,6 +26,10 @@ const translations: Record<LangCode, {
   detected: string;
   continue: string;
   change: string;
+  step: string;
+  of: string;
+  location: string;
+  language: string;
 }> = {
   en: {
     welcome: "Welcome to Motokah",
@@ -37,6 +41,10 @@ const translations: Record<LangCode, {
     detected: "Detected",
     continue: "Continue",
     change: "Change",
+    step: "Step",
+    of: "of",
+    location: "Location",
+    language: "Language",
   },
   sw: {
     welcome: "Karibu Motokah",
@@ -48,6 +56,10 @@ const translations: Record<LangCode, {
     detected: "Imegunduliwa",
     continue: "Endelea",
     change: "Badilisha",
+    step: "Hatua",
+    of: "kati ya",
+    location: "Mahali",
+    language: "Lugha",
   },
   fr: {
     welcome: "Bienvenue sur Motokah",
@@ -59,6 +71,10 @@ const translations: Record<LangCode, {
     detected: "Détecté",
     continue: "Continuer",
     change: "Changer",
+    step: "Étape",
+    of: "sur",
+    location: "Emplacement",
+    language: "Langue",
   },
   ar: {
     welcome: "مرحباً بك في موتوكاه",
@@ -70,7 +86,42 @@ const translations: Record<LangCode, {
     detected: "تم التحديد",
     continue: "متابعة",
     change: "تغيير",
+    step: "خطوة",
+    of: "من",
+    location: "الموقع",
+    language: "اللغة",
   },
+};
+
+const stepNames: Record<LangCode, string[]> = {
+  en: ["Location", "City", "Language"],
+  sw: ["Mahali", "Mji", "Lugha"],
+  fr: ["Emplacement", "Ville", "Langue"],
+  ar: ["الموقع", "المدينة", "اللغة"],
+};
+
+const getStepIndex = (step: string): number => {
+  if (step === "country") return 0;
+  if (step === "city") return 1;
+  if (step === "language") return 2;
+  return -1;
+};
+
+const containerVariants = {
+  initial: { opacity: 0, x: 40 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  exit: { opacity: 0, x: -40, transition: { duration: 0.2, ease: "easeIn" } },
+};
+
+const staggerVariants = {
+  animate: {
+    transition: { staggerChildren: 0.06, delayChildren: 0.08 },
+  },
+};
+
+const itemVariants = {
+  initial: { opacity: 0, y: 16, scale: 0.95 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
 export default function Welcome() {
@@ -81,12 +132,11 @@ export default function Welcome() {
   const [selectedCountry, setSelectedCountry] = useState<Country>("Tanzania");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedLang, setSelectedLang] = useState<LangCode>("en");
-  const [showWelcome, setShowWelcome] = useState(true);
 
   const t = translations[selectedLang];
   const cities = countryCitiesMap[selectedCountry] || [];
+  const stepNamesList = stepNames[selectedLang];
 
-  // Check if user has already completed setup
   useEffect(() => {
     const completed = localStorage.getItem("motokah_welcome_completed");
     if (completed) {
@@ -94,7 +144,6 @@ export default function Welcome() {
     }
   }, [navigate]);
 
-  // Auto-advance when location is detected
   useEffect(() => {
     if (location && detecting === false && step === "detecting") {
       setSelectedCountry(location.country);
@@ -103,7 +152,6 @@ export default function Welcome() {
     }
   }, [location, detecting, step]);
 
-  // Update city when country changes
   useEffect(() => {
     if (cities.length > 0 && !selectedCity) {
       setSelectedCity(cities[0]);
@@ -117,179 +165,350 @@ export default function Welcome() {
     navigate("/");
   };
 
-  if (!showWelcome) {
-    return null;
-  }
+  const currentStepIndex = getStepIndex(step);
+  const totalSteps = 3;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background">
-      <div className="h-full flex flex-col">
-        {/* Header */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 max-w-md mx-auto w-full">
+    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-background to-muted/30 overflow-y-auto overscroll-contain">
+      <div className="min-h-full min-h-dvh flex flex-col">
+        {/* Progress Bar */}
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50">
+          <div className="max-w-md mx-auto px-6 py-4">
+            <div className="flex items-center gap-2 mb-3">
+              {currentStepIndex >= 0 && (
+                <span className="text-xs font-medium text-muted-foreground">
+                  {t.step} {currentStepIndex + 1} {t.of} {totalSteps}: {stepNamesList[currentStepIndex]}
+                </span>
+              )}
+              {step === "detecting" && (
+                <span className="text-xs font-medium text-muted-foreground">
+                  {t.detecting}
+                </span>
+              )}
+            </div>
+            {currentStepIndex >= 0 && (
+              <div className="flex gap-1.5">
+                {Array.from({ length: totalSteps }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
+                      i < currentStepIndex
+                        ? "bg-primary"
+                        : i === currentStepIndex
+                        ? "bg-primary/70"
+                        : "bg-muted"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 flex flex-col px-6 py-6 max-w-md mx-auto w-full">
+          {/* Logo + Title */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-center mb-8"
           >
-            <div className="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+              className="w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20"
+            >
               <span className="text-3xl font-black text-primary-foreground">M</span>
-            </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{t.welcome}</h1>
-            <p className="text-muted-foreground">{t.subtitle}</p>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="text-3xl font-bold text-foreground mb-2"
+            >
+              {t.welcome}
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="text-muted-foreground text-sm"
+            >
+              {t.subtitle}
+            </motion.p>
           </motion.div>
 
-          {/* Step 1: Detecting */}
-          {step === "detecting" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center gap-4"
-            >
-              <IconLoader2 size={32} className="animate-spin text-primary" />
-              <p className="text-muted-foreground">{t.detecting}</p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setStep("country")}
-                className="text-xs"
-              >
-                {t.selectCountry} {t.change}
-              </Button>
-            </motion.div>
-          )}
-
-          {/* Step 2: Country Selection */}
-          {step === "country" && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="w-full space-y-4"
-            >
-              <h2 className="text-lg font-semibold text-center">{t.selectCountry}</h2>
-              <div className="grid grid-cols-2 gap-3">
-                {countries.map((c) => (
-                  <button
-                    key={c.code}
-                    onClick={() => {
-                      setSelectedCountry(c.code);
-                      setSelectedCity("");
-                      setStep("city");
-                    }}
-                    className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                      selectedCountry === c.code
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    <span className="text-2xl">{c.flag}</span>
-                    <span className="font-medium">{c.name}</span>
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Step 3: City Selection */}
-          {step === "city" && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="w-full space-y-4"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <button
-                  onClick={() => setStep("country")}
-                  className="text-sm text-muted-foreground hover:text-foreground"
+          {/* Step Content */}
+          <div className="flex-1">
+            <AnimatePresence mode="wait">
+              {/* Step 0: Detecting */}
+              {step === "detecting" && (
+                <motion.div
+                  key="detecting"
+                  variants={containerVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="flex flex-col items-center gap-6 py-8"
                 >
-                  ← {t.change}
-                </button>
-              </div>
-              
-              <h2 className="text-lg font-semibold text-center">{t.selectCity}</h2>
-              <p className="text-center text-muted-foreground text-sm">
-                {countries.find(c => c.code === selectedCountry)?.flag} {selectedCountry}
-              </p>
-              
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {cities.map((city) => (
-                  <button
-                    key={city}
-                    onClick={() => {
-                      setSelectedCity(city);
-                      setStep("language");
-                    }}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                      selectedCity === city
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    }`}
+                  <div className="relative">
+                    <IconLoader2 size={40} className="animate-spin text-primary" />
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute inset-0 rounded-full bg-primary/10"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-muted-foreground mb-1">{t.detecting}</p>
+                    <p className="text-xs text-muted-foreground/60">
+                      Using GPS or network...
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStep("country")}
+                    className="text-xs gap-1"
                   >
-                    <IconMapPin size={18} className="text-muted-foreground" />
-                    <span>{city}</span>
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
+                    <IconMapPin size={14} />
+                    {t.selectCountry} {t.change}
+                  </Button>
+                </motion.div>
+              )}
 
-          {/* Step 4: Language Selection */}
-          {step === "language" && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="w-full space-y-4"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <button
-                  onClick={() => setStep("city")}
-                  className="text-sm text-muted-foreground hover:text-foreground"
+              {/* Step 1: Country Selection */}
+              {step === "country" && (
+                <motion.div
+                  key="country"
+                  variants={containerVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="space-y-4"
                 >
-                  ← {t.change}
-                </button>
-              </div>
-
-              <div className="bg-muted/50 rounded-xl p-4 mb-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <IconGlobe size={16} />
-                  <span>{countries.find(c => c.code === selectedCountry)?.flag} {selectedCity}, {selectedCountry}</span>
-                </div>
-              </div>
-              
-              <h2 className="text-lg font-semibold text-center">{t.selectLanguage}</h2>
-              <div className="space-y-2">
-                {LANGUAGES.map((l) => (
-                  <button
-                    key={l.code}
-                    onClick={() => setSelectedLang(l.code)}
-                    className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                      selectedLang === l.code
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    }`}
+                  <motion.h2
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-lg font-semibold text-center"
                   >
-                    <span className="text-2xl">{l.flag}</span>
-                    <div className="text-left">
-                      <div className="font-medium">{l.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {l.code === "en" && "English"}
-                        {l.code === "sw" && "Kiswahili"}
-                        {l.code === "fr" && "Français"}
-                        {l.code === "ar" && "العربية"}
-                      </div>
+                    {t.selectCountry}
+                  </motion.h2>
+                  <motion.div
+                    variants={staggerVariants}
+                    initial="initial"
+                    animate="animate"
+                    className="grid grid-cols-2 gap-3 pb-4"
+                  >
+                    {countries.map((c) => (
+                      <motion.button
+                        key={c.code}
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => {
+                          setSelectedCountry(c.code);
+                          setSelectedCity("");
+                          setStep("city");
+                        }}
+                        className={`relative flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
+                          selectedCountry === c.code
+                            ? "border-primary bg-primary/5 shadow-sm shadow-primary/10"
+                            : "border-border hover:border-primary/50 hover:bg-muted/30"
+                        }`}
+                      >
+                        <span className="text-2xl">{c.flag}</span>
+                        <span className="font-medium text-sm">{c.name}</span>
+                        {selectedCountry === c.code && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center"
+                          >
+                            <IconCheck size={12} className="text-primary-foreground" />
+                          </motion.div>
+                        )}
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Step 2: City Selection */}
+              {step === "city" && (
+                <motion.div
+                  key="city"
+                  variants={containerVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="space-y-4"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <button
+                      onClick={() => setStep("country")}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                    >
+                      ← {t.change}
+                    </button>
+                    <span className="text-sm text-muted-foreground">
+                      {countries.find(c => c.code === selectedCountry)?.flag} {selectedCountry}
+                    </span>
+                  </div>
+                  
+                  <motion.h2
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-lg font-semibold text-center"
+                  >
+                    {t.selectCity}
+                  </motion.h2>
+                  
+                  <motion.div
+                    variants={staggerVariants}
+                    initial="initial"
+                    animate="animate"
+                    className="space-y-2 pb-4"
+                  >
+                    {cities.map((city) => (
+                      <motion.button
+                        key={city}
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.01, x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setSelectedCity(city);
+                          setStep("language");
+                        }}
+                        className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
+                          selectedCity === city
+                            ? "border-primary bg-primary/5 shadow-sm shadow-primary/10"
+                            : "border-border hover:border-primary/50 hover:bg-muted/30"
+                        }`}
+                      >
+                        <div className={`p-1.5 rounded-lg ${
+                          selectedCity === city ? "bg-primary/10" : "bg-muted"
+                        }`}>
+                          <IconMapPin size={18} className={
+                            selectedCity === city ? "text-primary" : "text-muted-foreground"
+                          } />
+                        </div>
+                        <span className="font-medium">{city}</span>
+                        {selectedCity === city && (
+                          <IconCheck size={18} className="ml-auto text-primary" />
+                        )}
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Step 3: Language Selection */}
+              {step === "language" && (
+                <motion.div
+                  key="language"
+                  variants={containerVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="space-y-4 pb-6"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <button
+                      onClick={() => setStep("city")}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                    >
+                      ← {t.change}
+                    </button>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-4 border border-primary/10"
+                  >
+                    <div className="flex items-center gap-2 text-sm">
+                      <IconGlobe size={16} className="text-primary" />
+                      <span className="font-medium text-foreground">
+                        {countries.find(c => c.code === selectedCountry)?.flag} {selectedCity}, {selectedCountry}
+                      </span>
                     </div>
-                  </button>
-                ))}
-              </div>
+                  </motion.div>
+                  
+                  <motion.h2
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-lg font-semibold text-center"
+                  >
+                    {t.selectLanguage}
+                  </motion.h2>
 
-              <Button
-                onClick={handleComplete}
-                className="w-full h-14 text-lg font-semibold mt-4"
-              >
-                {t.continue}
-                <IconChevronRight size={20} className="ml-2" />
-              </Button>
-            </motion.div>
-          )}
+                  <motion.div
+                    variants={staggerVariants}
+                    initial="initial"
+                    animate="animate"
+                    className="space-y-2"
+                  >
+                    {LANGUAGES.map((l) => (
+                      <motion.button
+                        key={l.code}
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedLang(l.code)}
+                        className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
+                          selectedLang === l.code
+                            ? "border-primary bg-primary/5 shadow-sm shadow-primary/10"
+                            : "border-border hover:border-primary/50 hover:bg-muted/30"
+                        }`}
+                      >
+                        <span className="text-2xl">{l.flag}</span>
+                        <div className="text-left flex-1">
+                          <div className="font-medium">{l.name}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {l.code === "en" && "English"}
+                            {l.code === "sw" && "Kiswahili"}
+                            {l.code === "fr" && "Français"}
+                            {l.code === "ar" && "العربية"}
+                          </div>
+                        </div>
+                        {selectedLang === l.code && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="w-6 h-6 bg-primary rounded-full flex items-center justify-center"
+                          >
+                            <IconCheck size={14} className="text-primary-foreground" />
+                          </motion.div>
+                        )}
+                      </motion.button>
+                    ))}
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="pt-4"
+                  >
+                    <Button
+                      onClick={handleComplete}
+                      className="w-full h-14 text-lg font-semibold shadow-lg shadow-primary/20"
+                    >
+                      {t.continue}
+                      <IconChevronRight size={20} className="ml-2" />
+                    </Button>
+                    <p className="text-center text-xs text-muted-foreground mt-3">
+                      {t.welcome} — {t.subtitle}
+                    </p>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>
