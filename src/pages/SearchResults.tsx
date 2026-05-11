@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function SearchResults() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
   const { user } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -40,7 +40,36 @@ export default function SearchResults() {
     vehicleType: (searchParams.get("vehicleType") as "car" | "bike" | "commercial" | "spare") || "",
   }));
 
-  const clearFilters = () => setFilters(defaultFilters);
+  // Sync URL params when filters change
+  const updateFilters = (newFilters: Filters) => {
+    setFilters(newFilters);
+    setPage(1);
+    
+    // Update URL to reflect current filters
+    const params = new URLSearchParams();
+    if (newFilters.make) params.set("make", newFilters.make);
+    if (newFilters.condition) params.set("condition", newFilters.condition);
+    if (newFilters.city) params.set("city", newFilters.city);
+    if (newFilters.country) params.set("country", newFilters.country);
+    if (newFilters.transmission) params.set("transmission", newFilters.transmission);
+    if (newFilters.vehicleType) params.set("vehicleType", newFilters.vehicleType);
+    if (newFilters.minPrice) params.set("minPrice", newFilters.minPrice);
+    if (newFilters.maxPrice) params.set("maxPrice", newFilters.maxPrice);
+    if (newFilters.yearFrom) params.set("yearFrom", newFilters.yearFrom);
+    if (newFilters.yearTo) params.set("yearTo", newFilters.yearTo);
+    if (newFilters.maxMileage) params.set("maxMileage", newFilters.maxMileage);
+    if (newFilters.dutyPaid) params.set("dutyPaid", newFilters.dutyPaid);
+    newFilters.bodyType.forEach(bt => params.append("bodyType", bt));
+    newFilters.fuelType.forEach(ft => params.append("fuelType", ft));
+    
+    setSearchParams(params);
+  };
+
+  const clearFilters = () => {
+    setFilters(defaultFilters);
+    setPage(1);
+    setSearchParams(new URLSearchParams());
+  };
 
   // Convert Filters to SearchFilters for the hook
   const searchFilters: SearchFilters = useMemo(() => ({
@@ -82,15 +111,17 @@ export default function SearchResults() {
   }, [filters]);
 
   const removeChip = (key: string) => {
+    let newFilters;
     if (key.startsWith("bodyType-")) {
       const val = key.replace("bodyType-", "");
-      setFilters(f => ({ ...f, bodyType: f.bodyType.filter(v => v !== val) }));
+      newFilters = { ...filters, bodyType: filters.bodyType.filter(v => v !== val) };
     } else if (key.startsWith("fuelType-")) {
       const val = key.replace("fuelType-", "");
-      setFilters(f => ({ ...f, fuelType: f.fuelType.filter(v => v !== val) }));
+      newFilters = { ...filters, fuelType: filters.fuelType.filter(v => v !== val) };
     } else {
-      setFilters(f => ({ ...f, [key]: key === "bodyType" || key === "fuelType" ? [] : "" }));
+      newFilters = { ...filters, [key]: key === "bodyType" || key === "fuelType" ? [] : "" };
     }
+    updateFilters(newFilters);
   };
 
   const hasActiveFilters = activeChips.length > 0;
@@ -201,7 +232,7 @@ export default function SearchResults() {
           {!isMobile && (
             <aside className="w-64 shrink-0">
               <div className="sticky top-4 rounded-xl border border-border bg-card p-4">
-                <FilterSidebar filters={filters} onChange={f => { setFilters(f); setPage(1); }} onClear={clearFilters} />
+                <FilterSidebar filters={filters} onChange={updateFilters} onClear={clearFilters} />
               </div>
             </aside>
           )}
@@ -254,7 +285,7 @@ export default function SearchResults() {
 
       {/* Mobile filter drawer */}
       <MobileFilterDrawer open={drawerOpen} onOpenChange={setDrawerOpen}
-        filters={filters} onChange={f => { setFilters(f); setPage(1); }} onClear={clearFilters} />
+        filters={filters} onChange={updateFilters} onClear={clearFilters} />
 
       <Footer />
     </div>

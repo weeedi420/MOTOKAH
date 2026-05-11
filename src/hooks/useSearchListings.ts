@@ -59,7 +59,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.model) query = query.eq("model", filters.model);
       if (filters.condition) query = query.eq("condition", filters.condition);
       if (filters.transmission) query = query.eq("transmission", filters.transmission);
-      if (filters.city) query = query.eq("city", filters.city);
+      if (filters.city) query = query.ilike("city", `%${filters.city}%`);
       if (filters.country && filters.country !== "All") {
         const currencies = countryCurrencyMap[filters.country] || [];
         if (currencies.length > 0) {
@@ -97,12 +97,41 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         default: query = query.order("created_at", { ascending: false });
       }
 
-      const { data: rows, error } = await query.limit(100);
+      // Add timeout to prevent hanging queries
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Query timeout')), 5000)
+      );
+      
+      let rows;
+      let error;
+      try {
+        const result = await Promise.race([
+          query.limit(100),
+          timeoutPromise
+        ]) as any;
+        rows = result.data;
+        error = result.error;
+      } catch (timeoutErr) {
+        console.warn('Query timeout, using mock data');
+        rows = null;
+        error = timeoutErr;
+      }
 
       if (error) {
         console.error(error);
-        // Supabase unavailable — show mock data
-        setListings(mockListings);
+        // Supabase unavailable or timeout — show mock data
+        let mocks = [...mockListings];
+        // Apply URL filters to mock data even on error
+        if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
+        if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
+        if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
+        if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
+        if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
+        if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+        if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
+        if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));
+        mocks = mocks.filter(validateListing);
+        setListings(mocks);
         setLoading(false);
         return;
       }
@@ -162,7 +191,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
         if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
         if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
-        if (filters.city) mocks = mocks.filter(m => m.location === filters.city);
+        if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
         if (filters.country && filters.country !== "All") {
           const cities = countryCitiesMap[filters.country] || [];
           mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
@@ -186,13 +215,18 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
             mocks = mocks.filter(m => !bikeTypes.includes(m.bodyType || "") && !commercialTypes.includes(m.bodyType || ""));
           }
         }
+        if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
+        if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
+        if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
+        if (filters.dutyPaid !== undefined) mocks = mocks.filter(m => (m.dutyPaid ?? true) === filters.dutyPaid);
+        if (filters.fuelType?.length) mocks = mocks.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
         // Apply validation
         mocks = mocks.filter(validateListing);
         // Sort mocks
         if (sort === "price-low") mocks.sort((a, b) => a.price - b.price);
         else if (sort === "price-high") mocks.sort((a, b) => b.price - a.price);
         else if (sort === "views") mocks.sort((a, b) => b.views - a.views);
-        setListings(hasFilters && mocks.length === 0 ? [] : mocks);
+        setListings(mocks);
       } else {
         setListings(mapped.filter(validateListing));
       }

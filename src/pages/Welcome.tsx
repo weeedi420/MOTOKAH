@@ -100,16 +100,17 @@ export default function Welcome() {
   const selectedCountry = countries.find(c => c.code === country);
 
   useEffect(() => {
-    // Always show welcome on mobile first visit, but check if user completed it
+    // For development/testing: always show welcome screen
+    // In production, uncomment the lines below to skip welcome after first visit
+    /*
     const hasCountry = localStorage.getItem("motokah_country");
     const hasCity = localStorage.getItem("motokah_city");
-    
-    // Only skip if they have BOTH country AND city selected
     if (hasCountry && hasCity) {
       navigate("/");
-    } else {
-      setIsLoading(false);
+      return;
     }
+    */
+    setIsLoading(false);
   }, [navigate]);
 
   useEffect(() => {
