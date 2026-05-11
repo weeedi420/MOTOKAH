@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconMapPin, IconLanguage, IconChevronRight, IconSearch, IconCar, IconHeart, IconMessageCircle, IconFilter, IconX, IconArrowRight } from "@tabler/icons-react";
+import { IconMapPin, IconLanguage, IconChevronRight, IconCar, IconHeart, IconMessageCircle, IconFilter } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { type Country } from "@/contexts/LocationContext";
 import { type LangCode, LANGUAGES } from "@/contexts/LanguageContext";
@@ -203,24 +203,6 @@ export default function Welcome() {
                   <span>{l.name}</span>
                 </button>
               ))}
-            </div>
-          </div>
-
-          {/* Preview */}
-          <div className="rounded-xl border border-border bg-muted/30 p-4">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-              <IconArrowRight size={16} className="text-primary" />
-              {t.preview}
-            </h3>
-            <div className="space-y-2">
-              <div className="h-8 bg-background rounded-md border border-border flex items-center px-3 text-sm text-muted-foreground">
-                <IconSearch size={14} className="mr-2" />
-                {lang === "sw" ? "Tafuta magari..." : lang === "fr" ? "Rechercher des voitures..." : lang === "ar" ? "ابحث عن سيارات..." : "Search cars..."}
-              </div>
-              <div className="flex gap-2">
-                <div className="flex-1 h-20 bg-background rounded-md border border-border" />
-                <div className="flex-1 h-20 bg-background rounded-md border border-border" />
-              </div>
             </div>
           </div>
 
