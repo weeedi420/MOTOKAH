@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck } from "@tabler/icons-react";
+import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck, IconHelpCircle, IconSearch, IconShoppingCart, IconHeart, IconMessageCircle, IconX } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useLocationDetection, type Country } from "@/hooks/useLocationDetection";
 import { type LangCode, LANGUAGES } from "@/contexts/LanguageContext";
@@ -30,6 +30,18 @@ const translations: Record<LangCode, {
   of: string;
   location: string;
   language: string;
+  howToUse: string;
+  howToUseTitle: string;
+  howToUseDesc: string;
+  step1Title: string;
+  step1Desc: string;
+  step2Title: string;
+  step2Desc: string;
+  step3Title: string;
+  step3Desc: string;
+  step4Title: string;
+  step4Desc: string;
+  gotIt: string;
 }> = {
   en: {
     welcome: "Welcome to Motokah",
@@ -45,6 +57,18 @@ const translations: Record<LangCode, {
     of: "of",
     location: "Location",
     language: "Language",
+    howToUse: "How to Use",
+    howToUseTitle: "How to Use Motokah",
+    howToUseDesc: "Follow these simple steps to get started:",
+    step1Title: "Set Your Location",
+    step1Desc: "Select your country and city to see listings near you",
+    step2Title: "Choose Language",
+    step2Desc: "Pick your preferred language for the app interface",
+    step3Title: "Browse & Search",
+    step3Desc: "Explore thousands of vehicles, filter by make, model, price & more",
+    step4Title: "Connect & Buy",
+    step4Desc: "Message sellers directly, save favorites, and compare listings",
+    gotIt: "Got it!",
   },
   sw: {
     welcome: "Karibu Motokah",
@@ -60,6 +84,18 @@ const translations: Record<LangCode, {
     of: "kati ya",
     location: "Mahali",
     language: "Lugha",
+    howToUse: "Jinsi ya Kutumia",
+    howToUseTitle: "Jinsi ya Kutumia Motokah",
+    howToUseDesc: "Fuata hatua hizi rahisi kuanza:",
+    step1Title: "Weka Mahali Pako",
+    step1Desc: "Chagua nchi na mji wako kuona matangazo karibu nawe",
+    step2Title: "Chagua Lugha",
+    step2Desc: "Chagua lugha unayopendelea kwa ajili ya muundo wa programu",
+    step3Title: "Vinjari na Tafuta",
+    step3Desc: "Chunguza maelfu ya magari, chuja kwa chapa, mfano, bei na zaidi",
+    step4Title: "Ungana na Nunua",
+    step4Desc: "Wasiliana na wauzaji moja kwa moja, hifadhi vipendwa, na linganisha matangazo",
+    gotIt: "Nimeelewa!",
   },
   fr: {
     welcome: "Bienvenue sur Motokah",
@@ -75,6 +111,18 @@ const translations: Record<LangCode, {
     of: "sur",
     location: "Emplacement",
     language: "Langue",
+    howToUse: "Comment Utiliser",
+    howToUseTitle: "Comment Utiliser Motokah",
+    howToUseDesc: "Suivez ces étapes simples pour commencer:",
+    step1Title: "Définir Votre Emplacement",
+    step1Desc: "Sélectionnez votre pays et ville pour voir les annonces près de chez vous",
+    step2Title: "Choisir la Langue",
+    step2Desc: "Choisissez votre langue préférée pour l'interface de l'application",
+    step3Title: "Parcourir et Rechercher",
+    step3Desc: "Explorez des milliers de véhicules, filtrez par marque, modèle, prix et plus",
+    step4Title: "Connectez-vous et Achetez",
+    step4Desc: "Envoyez un message aux vendeurs, sauvegardez vos favoris et comparez les annonces",
+    gotIt: "Compris!",
   },
   ar: {
     welcome: "مرحباً بك في موتوكاه",
@@ -90,6 +138,18 @@ const translations: Record<LangCode, {
     of: "من",
     location: "الموقع",
     language: "اللغة",
+    howToUse: "كيفية الاستخدام",
+    howToUseTitle: "كيفية استخدام موتوكاه",
+    howToUseDesc: "اتبع هذه الخطوات البسيطة للبدء:",
+    step1Title: "تعيين موقعك",
+    step1Desc: "اختر بلدك ومدينتك لرؤية الإعلانات القريبة منك",
+    step2Title: "اختر اللغة",
+    step2Desc: "اختر لغتك المفضلة لواجهة التطبيق",
+    step3Title: "تصفح وابحث",
+    step3Desc: "استكشف آلاف المركبات، وصنّف حسب الماركة والموديل والسعر والمزيد",
+    step4Title: "تواصل واشتر",
+    step4Desc: "راسل البائعين مباشرة، واحفظ المفضلة، وقارن بين الإعلانات",
+    gotIt: "فهمت!",
   },
 };
 
@@ -132,6 +192,7 @@ export default function Welcome() {
   const [selectedCountry, setSelectedCountry] = useState<Country>("Tanzania");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedLang, setSelectedLang] = useState<LangCode>("en");
+  const [showHelp, setShowHelp] = useState(false);
 
   const t = translations[selectedLang];
   const cities = countryCitiesMap[selectedCountry] || [];
@@ -162,6 +223,9 @@ export default function Welcome() {
     setManualLocation(selectedCountry, selectedCity);
     localStorage.setItem("motokah_lang", selectedLang);
     localStorage.setItem("motokah_welcome_completed", "true");
+    // Also save to LocationContext format
+    localStorage.setItem("motokah_country", selectedCountry);
+    localStorage.setItem("motokah_city", selectedCity);
     navigate("/");
   };
 
@@ -171,20 +235,29 @@ export default function Welcome() {
   return (
     <div className="fixed inset-0 z-[100] bg-gradient-to-b from-background to-muted/30 overflow-y-auto overscroll-contain">
       <div className="min-h-full min-h-dvh flex flex-col">
-        {/* Progress Bar */}
+        {/* Progress Bar + Help */}
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50">
           <div className="max-w-md mx-auto px-6 py-4">
-            <div className="flex items-center gap-2 mb-3">
-              {currentStepIndex >= 0 && (
-                <span className="text-xs font-medium text-muted-foreground">
-                  {t.step} {currentStepIndex + 1} {t.of} {totalSteps}: {stepNamesList[currentStepIndex]}
-                </span>
-              )}
-              {step === "detecting" && (
-                <span className="text-xs font-medium text-muted-foreground">
-                  {t.detecting}
-                </span>
-              )}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                {currentStepIndex >= 0 && (
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {t.step} {currentStepIndex + 1} {t.of} {totalSteps}: {stepNamesList[currentStepIndex]}
+                  </span>
+                )}
+                {step === "detecting" && (
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {t.detecting}
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => setShowHelp(true)}
+                className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors bg-primary/5 hover:bg-primary/10 px-2.5 py-1.5 rounded-full"
+              >
+                <IconHelpCircle size={14} />
+                {t.howToUse}
+              </button>
             </div>
             {currentStepIndex >= 0 && (
               <div className="flex gap-1.5">
@@ -510,6 +583,87 @@ export default function Welcome() {
             </AnimatePresence>
           </div>
         </div>
+
+        {/* How to Use Modal */}
+        <AnimatePresence>
+          {showHelp && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+              onClick={() => setShowHelp(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="bg-background rounded-2xl shadow-2xl max-w-sm w-full max-h-[85vh] overflow-y-auto"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <IconHelpCircle size={22} className="text-primary" />
+                      </div>
+                      <h2 className="text-lg font-bold">{t.howToUseTitle}</h2>
+                    </div>
+                    <button
+                      onClick={() => setShowHelp(false)}
+                      className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+                    >
+                      <IconX size={16} />
+                    </button>
+                  </div>
+
+                  <p className="text-sm text-muted-foreground mb-6">{t.howToUseDesc}</p>
+
+                  <motion.div
+                    variants={staggerVariants}
+                    initial="initial"
+                    animate="animate"
+                    className="space-y-4"
+                  >
+                    {[
+                      { icon: IconMapPin, title: t.step1Title, desc: t.step1Desc, color: "bg-blue-500/10 text-blue-500" },
+                      { icon: IconGlobe, title: t.step2Title, desc: t.step2Desc, color: "bg-green-500/10 text-green-500" },
+                      { icon: IconSearch, title: t.step3Title, desc: t.step3Desc, color: "bg-purple-500/10 text-purple-500" },
+                      { icon: IconMessageCircle, title: t.step4Title, desc: t.step4Desc, color: "bg-orange-500/10 text-orange-500" },
+                    ].map((item, i) => (
+                      <motion.div
+                        key={i}
+                        variants={itemVariants}
+                        className="flex gap-4 p-4 rounded-xl border border-border bg-card"
+                      >
+                        <div className={`w-12 h-12 rounded-xl ${item.color} flex items-center justify-center shrink-0`}>
+                          <item.icon size={24} />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
+                              {i + 1}
+                            </span>
+                            <h3 className="font-semibold">{item.title}</h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{item.desc}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+
+                  <Button
+                    onClick={() => setShowHelp(false)}
+                    className="w-full mt-6 h-12 font-semibold"
+                  >
+                    {t.gotIt}
+                  </Button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

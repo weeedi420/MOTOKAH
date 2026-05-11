@@ -4,9 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 import VehicleCard from "./VehicleCard";
 import { type Listing } from "@/data/mockData";
 import { bikeTypes } from "@/data/mockData";
+import { useLocation } from "@/contexts/LocationContext";
 import { Link } from "react-router-dom";
 
 const defaultImage = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop";
+
+const countryCurrencyMap: Record<string, string[]> = {
+  Tanzania: ["TZS"],
+  Kenya: ["KES"],
+  Uganda: ["UGX"],
+  Rwanda: ["RWF"],
+  Burundi: ["BIF"],
+  Ethiopia: ["ETB"],
+  Nigeria: ["NGN"],
+};
 
 export default function BikesSection() {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -14,6 +25,7 @@ export default function BikesSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const { country } = useLocation();
 
   const checkScroll = () => {
     const el = scrollRef.current;
@@ -37,13 +49,22 @@ export default function BikesSection() {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data: rows } = await supabase
+      let query = supabase
         .from("listings")
         .select("*, listing_images(image_url, display_order)")
         .eq("status", "approved")
         .in("body_type", bikeTypes)
         .order("created_at", { ascending: false })
         .limit(10);
+      
+      if (country && country !== "All") {
+        const currencies = countryCurrencyMap[country] || [];
+        if (currencies.length > 0) {
+          query = query.in("currency", currencies);
+        }
+      }
+      
+      const { data: rows } = await query;
 
       if (!rows || rows.length === 0) { setLoading(false); return; }
 
@@ -86,7 +107,7 @@ export default function BikesSection() {
       setLoading(false);
     };
     fetch();
-  }, []);
+  }, [country]);
 
   if (!loading && listings.length === 0) return null;
 

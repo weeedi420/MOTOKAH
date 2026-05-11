@@ -11,23 +11,60 @@ const LISTING_COLUMNS = [
   "make", "model", "created_at"
 ].join(",");
 
-export function useListings(options?: { limit?: number; orderBy?: string }) {
+const countryCurrencyMap: Record<string, string[]> = {
+  Tanzania: ["TZS"],
+  Kenya: ["KES"],
+  Uganda: ["UGX"],
+  Rwanda: ["RWF"],
+  Burundi: ["BIF"],
+  Ethiopia: ["ETB"],
+  Nigeria: ["NGN"],
+};
+
+const countryCitiesMap: Record<string, string[]> = {
+  Tanzania: ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma", "Mbeya", "Morogoro", "Tanga", "Kigoma", "Moshi", "Zanzibar", "Iringa", "Sumbawanga", "Songea", "Bukoba", "Lindi", "Musoma", "Shinyanga", "Tabhora", "Kahama"],
+  Kenya: ["Nairobi", "Mombasa", "Nakuru", "Kisumu", "Eldoret", "Ruiru", "Kikuyu", "Thika", "Kiambu", "Machakos", "Kajiado", "Meru", "Nanyuki", "Nyeri", "Kericho", "Kakamega", "Bungoma", "Busia", "Kitale"],
+  Uganda: ["Kampala", "Entebbe", "Jinja", "Mukono", "Mbarara", "Gulu", "Arua", "Lira", "Fort Portal"],
+  Rwanda: ["Kigali", "Butare", "Ruhengeri", "Byumba"],
+  Burundi: ["Bujumbura"],
+  Ethiopia: ["Addis Ababa", "Adama", "Bahir Dar", "Hawassa", "Dire Dawa"],
+  Nigeria: ["Lagos", "Abuja", "Ibadan", "Kano", "Port Harcourt", "Benin City", "Kaduna", "Ilorin", "Maiduguri", "Enugu"],
+};
+
+export function useListings(options?: { limit?: number; orderBy?: string; country?: string }) {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchListings = async () => {
       const limit = options?.limit || 20;
+      const country = options?.country;
 
-      const { data: rows, error } = await supabase
+      let query = supabase
         .from("listings")
         .select(`${LISTING_COLUMNS}, listing_images(image_url, display_order)`)
         .eq("status", "approved")
         .order("created_at", { ascending: false })
         .limit(limit);
 
+      // Filter by country if specified
+      if (country && country !== "All") {
+        const currencies = countryCurrencyMap[country] || [];
+        if (currencies.length > 0) {
+          query = query.in("currency", currencies);
+        }
+      }
+
+      const { data: rows, error } = await query;
+
       if (error || !rows || rows.length === 0) {
-        setListings(mockListings.slice(0, limit));
+        let mocks = [...mockListings];
+        // Filter mock data by country if specified
+        if (country && country !== "All") {
+          const cities = countryCitiesMap[country] || [];
+          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+        }
+        setListings(mocks.slice(0, limit));
         setLoading(false);
         return;
       }
@@ -72,7 +109,14 @@ export function useListings(options?: { limit?: number; orderBy?: string }) {
       });
 
       const dbIds = new Set(mapped.map((m) => m.id));
-      const fillFrom = mockListings.filter((m) => !dbIds.has(m.id));
+      let fillFrom = mockListings.filter((m) => !dbIds.has(m.id));
+      
+      // Filter mock fill by country if specified
+      if (country && country !== "All") {
+        const cities = countryCitiesMap[country] || [];
+        fillFrom = fillFrom.filter(m => cities.some(c => m.location?.includes(c)));
+      }
+      
       const combined = [...mapped, ...fillFrom].slice(0, limit);
 
       setListings(combined);
@@ -80,10 +124,15 @@ export function useListings(options?: { limit?: number; orderBy?: string }) {
     };
 
     fetchListings().catch(() => {
-      setListings(mockListings.slice(0, options?.limit || 20));
+      let mocks = [...mockListings];
+      if (country && country !== "All") {
+        const cities = countryCitiesMap[country] || [];
+        mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+      }
+      setListings(mocks.slice(0, options?.limit || 20));
       setLoading(false);
     });
-  }, [options?.limit, options?.orderBy]);
+  }, [options?.limit, options?.orderBy, options?.country]);
 
   return { listings, loading };
 }

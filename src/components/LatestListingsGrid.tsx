@@ -1,10 +1,12 @@
 import { IconClock } from "@tabler/icons-react";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
+import { useLocation } from "@/contexts/LocationContext";
 import { mockListings } from "@/data/mockData";
 
 export default function LatestListingsGrid() {
-  const { listings, loading } = useListings({ limit: 12 });
+  const { country } = useLocation();
+  const { listings, loading } = useListings({ limit: 12, country });
   const displayListings = listings.length > 0 ? listings : (!loading ? mockListings : []);
 
   return (

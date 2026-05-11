@@ -7,7 +7,7 @@ import { useState } from "react";
 const selectCls = "h-10 rounded-md border border-input bg-surface-3 px-3 text-sm text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors w-full";
 const years = Array.from({ length: 27 }, (_, i) => String(2000 + i));
 
-type Tab = "cars" | "bikes" | "commercial";
+type Tab = "cars" | "commercial" | "bikes";
 
 export default function HeroSearch() {
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ export default function HeroSearch() {
         <div className="max-w-3xl mx-auto bg-card/95 backdrop-blur border border-border rounded-xl shadow-2xl">
           {/* Tabs */}
           <div className="flex border-b border-border">
-            {(["cars", "bikes", "commercial"] as Tab[]).map((t) => (
+            {(["cars", "commercial", "bikes"] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}

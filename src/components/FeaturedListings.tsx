@@ -1,6 +1,7 @@
 import { IconFlame, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
+import { useLocation } from "@/contexts/LocationContext";
 import { mockListings } from "@/data/mockData";
 import { useRef, useState, useEffect } from "react";
 
@@ -8,7 +9,8 @@ export default function FeaturedListings() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const { listings, loading } = useListings({ limit: 10 });
+  const { country } = useLocation();
+  const { listings, loading } = useListings({ limit: 10, country });
 
   const checkScroll = () => {
     const el = scrollRef.current;
