@@ -119,7 +119,7 @@ export default function Welcome() {
     localStorage.setItem("motokah_city", city);
     localStorage.setItem("motokah_lang", lang);
     localStorage.setItem("motokah_welcome_seen", "true");
-    window.location.href = "/";
+    navigate("/");
   };
 
   if (isLoading) {

@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import HeroSearch from "@/components/HeroSearch";
 import BrowseSection from "@/components/BrowseSection";
@@ -19,15 +17,7 @@ import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Index = () => {
-  const navigate = useNavigate();
   usePageTitle("Cars for Sale in East Africa | Motokah");
-
-  useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem("motokah_welcome_seen");
-    if (!hasSeenWelcome) {
-      navigate("/welcome");
-    }
-  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
