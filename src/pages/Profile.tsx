@@ -13,7 +13,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HelpGuide from "@/components/HelpGuide";
-import { format, parseISO } from "date-fns";
+// date-fns kept for future use
+import { mockListings } from "@/data/mockData";
 
 type ProfileData = {
   display_name: string | null;
@@ -149,6 +150,7 @@ export default function Profile() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [listings, setListings] = useState<ListingRow[]>([]);
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
+  const [wishlistListings, setWishlistListings] = useState<Array<{ id: string; title: string; price: number; currency: string; year: number; image: string; location?: string }>>([]);
   const [editing, setEditing] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   usePageTitle("My Profile");
@@ -186,6 +188,28 @@ export default function Profile() {
     }
     // saved_searches table not yet created - skip for now
   }, [user]);
+
+  useEffect(() => {
+    if (wishlistIds.size === 0) { setWishlistListings([]); return; }
+    // Find mock listings first
+    const ids = Array.from(wishlistIds);
+    const fromMock = mockListings
+      .filter((l) => ids.includes(l.id))
+      .map((l) => ({ id: l.id, title: l.title, price: l.price, currency: l.currency, year: l.year, image: l.image, location: l.location }));
+    const mockIds = new Set(fromMock.map((l) => l.id));
+    const remainingIds = ids.filter((id) => !mockIds.has(id));
+
+    if (remainingIds.length === 0) { setWishlistListings(fromMock); return; }
+
+    // Fetch remaining from Supabase
+    supabase.from("listings").select("id, title, price, currency, year, city").in("id", remainingIds).then(({ data }) => {
+      const fromDb = (data || []).map((l: { id: string; title: string; price: number; currency: string; year: number; city: string | null }) => ({
+        id: l.id, title: l.title, price: l.price, currency: l.currency, year: l.year,
+        image: "/placeholder.svg", location: l.city || undefined,
+      }));
+      setWishlistListings([...fromMock, ...fromDb]);
+    });
+  }, [wishlistIds]);
 
   const saveProfile = async () => {
     if (!user) return;
@@ -291,7 +315,7 @@ export default function Profile() {
             My Listings ({listings.length})
           </button>
           <button onClick={() => setTab("saved")} className={`px-4 pb-3 text-sm font-semibold flex items-center gap-1 ${tab === "saved" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            <IconBookmark size={14} /> Saved Searches {savedSearches.length > 0 && `(${savedSearches.length})`}
+            <IconHeart size={14} /> Saved Cars {wishlistListings.length > 0 && `(${wishlistListings.length})`}
           </button>
           <button onClick={() => setTab("reviews")} className={`px-4 pb-3 text-sm font-semibold ${tab === "reviews" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
             Reviews
@@ -460,32 +484,26 @@ export default function Profile() {
 
         {tab === "saved" && (
           <div className="space-y-3">
-            {savedSearches.length === 0 ? (
+            {wishlistListings.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
-                <IconBookmark size={36} className="mx-auto mb-3 opacity-30" />
-                <p className="mb-2">No saved searches yet.</p>
-                <p className="text-xs">When browsing, use the <strong>Save Search</strong> button to bookmark your filters here.</p>
+                <IconHeart size={36} className="mx-auto mb-3 opacity-30" />
+                <p className="mb-2">No saved cars yet.</p>
+                <p className="text-xs">Tap the heart icon on any listing to save it here.</p>
+                <Button variant="outline" size="sm" className="mt-4" onClick={() => navigate("/search")}>Browse Cars</Button>
               </div>
             ) : (
-              savedSearches.map(s => (
-                <div key={s.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-foreground">{s.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Saved {format(parseISO(s.created_at), "MMM d, yyyy")}
-                      {" · "}
-                      {Object.entries(s.filters).filter(([, v]) => v && (Array.isArray(v) ? v.length > 0 : true)).map(([k]) => k).join(", ") || "No filters"}
-                    </p>
+              wishlistListings.map((l) => (
+                <Link key={l.id} to={`/listing/${l.id}`}>
+                  <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-3 hover:shadow-sm transition-shadow">
+                    <img src={l.image} alt={l.title} className="w-16 h-16 rounded-lg object-cover shrink-0 bg-muted" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-foreground truncate">{l.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{l.year} · {l.currency} {l.price.toLocaleString()}</p>
+                      {l.location && <p className="text-xs text-muted-foreground">{l.location}</p>}
+                    </div>
+                    <IconChevronRight size={16} className="text-muted-foreground shrink-0" />
                   </div>
-                  <div className="flex gap-1 shrink-0">
-                    <Button size="sm" variant="outline" onClick={() => navigate(`/search?${filtersToQuery(s.filters)}`)}>
-                      Search
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => deleteSavedSearch(s.id)} title="Remove">
-                      <IconTrash size={16} className="text-destructive" />
-                    </Button>
-                  </div>
-                </div>
+                </Link>
               ))
             )}
           </div>

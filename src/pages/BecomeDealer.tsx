@@ -21,7 +21,18 @@ export default function BecomeDealer() {
     registration_number: "",
     city: "",
     phone: "",
+    whatsapp: "",
+    instagram: "",
+    dealer_type: "dealer",
+    description: "",
+    website: "",
   });
+  const dealerTypes = [
+    { value: "dealer", label: "Car Dealer / Lot" },
+    { value: "importer", label: "Importer (Japan/UK/UAE)" },
+    { value: "individual", label: "Private Seller (High Volume)" },
+    { value: "franchise", label: "Franchise / Authorized Dealer" },
+  ];
 
   if (!user) return <Navigate to="/auth" replace />;
 
@@ -101,12 +112,19 @@ export default function BecomeDealer() {
           {/* Application Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <Label htmlFor="business_name">Business Name *</Label>
-              <Input id="business_name" value={form.business_name} onChange={e => setForm(f => ({ ...f, business_name: e.target.value }))} placeholder="e.g. AutoWorld Tanzania" required />
+              <Label htmlFor="dealer_type">Dealer Type *</Label>
+              <select
+                id="dealer_type"
+                value={form.dealer_type}
+                onChange={e => setForm(f => ({ ...f, dealer_type: e.target.value }))}
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm focus:ring-2 focus:ring-ring"
+              >
+                {dealerTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+              </select>
             </div>
             <div>
-              <Label htmlFor="registration_number">Business Registration Number</Label>
-              <Input id="registration_number" value={form.registration_number} onChange={e => setForm(f => ({ ...f, registration_number: e.target.value }))} placeholder="Optional" />
+              <Label htmlFor="business_name">Business Name *</Label>
+              <Input id="business_name" value={form.business_name} onChange={e => setForm(f => ({ ...f, business_name: e.target.value }))} placeholder="e.g. AutoWorld Tanzania" required />
             </div>
             <div>
               <Label htmlFor="city">City *</Label>
@@ -115,6 +133,33 @@ export default function BecomeDealer() {
             <div>
               <Label htmlFor="phone">Phone Number *</Label>
               <Input id="phone" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+255 xxx xxx xxx" required />
+            </div>
+            <div>
+              <Label htmlFor="whatsapp">WhatsApp Number</Label>
+              <Input id="whatsapp" value={form.whatsapp} onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))} placeholder="+255 xxx xxx xxx (if different)" />
+            </div>
+            <div>
+              <Label htmlFor="instagram">Instagram Handle</Label>
+              <Input id="instagram" value={form.instagram} onChange={e => setForm(f => ({ ...f, instagram: e.target.value }))} placeholder="@yourhandle (optional)" />
+            </div>
+            <div>
+              <Label htmlFor="website">Website</Label>
+              <Input id="website" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://yourwebsite.com (optional)" />
+            </div>
+            <div>
+              <Label htmlFor="registration_number">Business Registration Number</Label>
+              <Input id="registration_number" value={form.registration_number} onChange={e => setForm(f => ({ ...f, registration_number: e.target.value }))} placeholder="Optional" />
+            </div>
+            <div>
+              <Label htmlFor="description">About Your Business</Label>
+              <textarea
+                id="description"
+                value={form.description}
+                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                placeholder="Tell us about your dealership, specialties, and how long you've been in business..."
+                rows={3}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-ring resize-none"
+              />
             </div>
             <Button type="submit" className="w-full" disabled={submitting}>
               {submitting ? <><IconLoader size={16} className="animate-spin mr-2" /> Submitting...</> : "Submit Application"}

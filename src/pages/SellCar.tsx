@@ -7,36 +7,39 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { IconUpload, IconX, IconCheck } from "@tabler/icons-react";
+import { IconX, IconCheck, IconCamera, IconChevronRight, IconBrandWhatsapp, IconPhone } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { africanCities, carMakes } from "@/data/mockData";
 
 const tanzaniaCities = africanCities;
 const carBrands = carMakes;
-
-const steps = ["Basic Info", "Details", "Photos", "Price & Location", "Review"];
-
-const bodyTypes = ["Sedan", "SUV / 4x4", "Hatchback", "Double Cab / Pickup", "Van", "Minibus", "Bus", "Truck", "Tuk-tuk / Rickshaw", "Boat", "Coupe", "Wagon", "Convertible"];
+const bodyTypes = ["Sedan", "SUV / 4x4", "Hatchback", "Double Cab / Pickup", "Van", "Minibus", "Bus", "Truck", "Coupe", "Wagon", "Convertible"];
 const transmissions = ["Automatic", "Manual", "CVT"];
 const fuelTypes = ["Petrol", "Diesel", "Hybrid", "Electric"];
-const conditions = ["New", "Used", "Certified Pre-owned"];
+const conditions = ["Used", "New", "Certified Pre-owned"];
+const colors = ["White", "Black", "Silver", "Grey", "Red", "Blue", "Green", "Brown", "Gold", "Orange", "Yellow", "Maroon", "Other"];
+const assemblies = ["Local", "Imported (Japan)", "Imported (UK)", "Imported (UAE)", "Imported (Other)"];
 
 interface FormData {
   make: string; model: string; year: string; bodyType: string;
-  transmission: string; fuelType: string; color: string; mileage: string; condition: string;
-  title: string; description: string;
-  price: string; currency: string; city: string;
+  transmission: string; fuelType: string; color: string; mileage: string;
+  condition: string; title: string; description: string; assembly: string;
+  price: string; currency: string; city: string; registeredIn: string;
+  allowWhatsapp: boolean;
 }
 
 const defaultForm: FormData = {
   make: "", model: "", year: new Date().getFullYear().toString(), bodyType: "",
   transmission: "", fuelType: "", color: "", mileage: "", condition: "Used",
-  title: "", description: "",
-  price: "", currency: "TZS", city: "",
+  title: "", description: "", assembly: "",
+  price: "", currency: "TZS", city: "", registeredIn: "", allowWhatsapp: true,
 };
 
+type SheetKey = "make" | "bodyType" | "transmission" | "fuelType" | "color" | "condition" | "city" | "registeredIn" | "assembly" | null;
+
 export default function SellCar() {
-  const [step, setStep] = useState(0);
+  usePageTitle("Sell Your Car");
+  const [plan, setPlan] = useState<"self" | "agent" | null>(null);
   const [form, setForm] = useState<FormData>(() => {
     const saved = localStorage.getItem("sellCarDraft");
     return saved ? JSON.parse(saved) : defaultForm;
@@ -44,11 +47,12 @@ export default function SellCar() {
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [sheet, setSheet] = useState<SheetKey>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  usePageTitle("Sell Your Car");
-  const update = (key: keyof FormData, val: string) => {
+
+  const update = (key: keyof FormData, val: string | boolean) => {
     const next = { ...form, [key]: val };
     setForm(next);
     localStorage.setItem("sellCarDraft", JSON.stringify(next));
@@ -57,11 +61,8 @@ export default function SellCar() {
   const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     const MAX_SIZE_MB = 5;
     const selected = Array.from(e.target.files || []);
-    const oversized = selected.filter((f) => f.size > MAX_SIZE_MB * 1024 * 1024);
-    if (oversized.length > 0) {
-      toast({ title: "File too large", description: `Each image must be under ${MAX_SIZE_MB}MB. ${oversized.length} file(s) skipped.`, variant: "destructive" });
-    }
     const valid = selected.filter((f) => f.size <= MAX_SIZE_MB * 1024 * 1024).slice(0, 10 - images.length);
+    if (valid.length < selected.length) toast({ title: "File too large", description: "Each image must be under 5MB.", variant: "destructive" });
     setImages((prev) => [...prev, ...valid]);
     valid.forEach((f) => {
       const reader = new FileReader();
@@ -76,55 +77,43 @@ export default function SellCar() {
   };
 
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user) { navigate("/auth"); return; }
+    if (!form.make || !form.model) { toast({ title: "Required", description: "Please fill in Make and Model.", variant: "destructive" }); return; }
+    if (!form.price) { toast({ title: "Required", description: "Please enter a price.", variant: "destructive" }); return; }
+
     const isVerified = user.email_confirmed_at || user.confirmed_at;
     if (!isVerified) {
-      toast({ title: "Email not verified", description: "Please verify your email address before listing a vehicle.", variant: "destructive" });
+      toast({ title: "Email not verified", description: "Please verify your email before listing.", variant: "destructive" });
       return;
     }
     setSubmitting(true);
     try {
       const title = form.title || `${form.year} ${form.make} ${form.model}`;
       const { data: listing, error } = await supabase.from("listings").insert({
-        seller_id: user.id,
-        title,
-        make: form.make,
-        model: form.model,
-        year: parseInt(form.year),
-        price: parseFloat(form.price),
-        currency: form.currency,
+        seller_id: user.id, title, make: form.make, model: form.model,
+        year: parseInt(form.year), price: parseFloat(form.price), currency: form.currency,
         mileage: form.mileage ? parseInt(form.mileage) : null,
-        transmission: form.transmission || null,
-        fuel_type: form.fuelType || null,
-        body_type: form.bodyType || null,
-        color: form.color || null,
-        condition: form.condition,
-        description: form.description || null,
-        city: form.city || null,
-        status: "pending" as const,
+        transmission: form.transmission || null, fuel_type: form.fuelType || null,
+        body_type: form.bodyType || null, color: form.color || null,
+        condition: form.condition, description: form.description || null,
+        city: form.city || null, status: "pending" as const,
       }).select().single();
 
       if (error) throw error;
 
-      // Upload images
       for (let i = 0; i < images.length; i++) {
         const file = images[i];
         const path = `${user.id}/${listing.id}/${i}-${file.name}`;
         const { error: uploadErr } = await supabase.storage.from("listing-images").upload(path, file);
         if (uploadErr) continue;
         const { data: urlData } = supabase.storage.from("listing-images").getPublicUrl(path);
-        await supabase.from("listing_images").insert({
-          listing_id: listing.id,
-          image_url: urlData.publicUrl,
-          display_order: i,
-        });
+        await supabase.from("listing_images").insert({ listing_id: listing.id, image_url: urlData.publicUrl, display_order: i });
       }
 
       localStorage.removeItem("sellCarDraft");
-      toast({ title: "Listing submitted!", description: "Your listing is pending review." });
+      toast({ title: "Listing submitted!", description: "Your listing is pending review and will go live once approved." });
       navigate("/profile");
     } catch {
-      // Demo mode — no real DB, always simulate success
       localStorage.removeItem("sellCarDraft");
       toast({ title: "Listing submitted!", description: "Your listing is pending review." });
       navigate("/profile");
@@ -133,191 +122,436 @@ export default function SellCar() {
     }
   };
 
-  const canNext = () => {
-    if (step === 0) return form.make && form.model && form.year;
-    if (step === 1) return form.condition;
-    if (step === 3) return form.price;
-    return true;
+  // Plan selection screen
+  if (!plan) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto max-w-lg px-4 py-10">
+          <h1 className="text-2xl font-extrabold text-foreground mb-1">How do you want to sell your car?</h1>
+          <p className="text-sm text-muted-foreground mb-8">Choose the option that works best for you</p>
+
+          {/* Sell Myself */}
+          <div className="bg-card border border-border rounded-2xl p-5 mb-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <h2 className="font-bold text-foreground text-lg mb-3">Sell it Myself!</h2>
+                <ul className="space-y-2 text-sm text-muted-foreground mb-5">
+                  {["Post an Ad in 2 minutes", "Reach thousands of buyers", "Connect Directly with Buyers"].map((t) => (
+                    <li key={t} className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center shrink-0">
+                        <IconCheck size={12} className="text-success" />
+                      </span>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+                <Button className="w-full" onClick={() => setPlan("self")}>Post your ad</Button>
+              </div>
+              <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <IconCamera size={36} className="text-primary" />
+              </div>
+            </div>
+          </div>
+
+          {/* Sell It For Me */}
+          <div className="bg-card border border-border rounded-2xl p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <h2 className="font-bold text-foreground text-lg">Sell It For Me</h2>
+                  <span className="text-xs text-primary font-medium cursor-pointer hover:underline">Learn more</span>
+                </div>
+                <ul className="space-y-2 text-sm text-muted-foreground mb-2">
+                  {["Sell your car without hassle", "Free Inspection & Featured Ad", "Maximize offer with sales agent"].map((t) => (
+                    <li key={t} className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center shrink-0">
+                        <IconCheck size={12} className="text-success" />
+                      </span>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-[11px] text-muted-foreground mb-4">*Available in select cities</p>
+                <Button variant="outline" className="w-full" onClick={() => setPlan("agent")}>Help me sell my car!</Button>
+              </div>
+              <div className="w-20 h-20 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                <IconBrandWhatsapp size={36} className="text-accent" />
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Agent / concierge plan
+  if (plan === "agent") {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto max-w-md px-4 py-10 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <IconBrandWhatsapp size={32} className="text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Sell It For Me</h1>
+          <p className="text-muted-foreground text-sm mb-8">Contact our team — we'll handle photos, listing, and negotiation for you.</p>
+          <div className="space-y-3">
+            <a href="https://wa.me/255712000000?text=Hi, I'd like help selling my car through Motokah" target="_blank" rel="noopener noreferrer">
+              <Button className="w-full bg-[#25D366] hover:bg-[#1ebe5a] text-white gap-2">
+                <IconBrandWhatsapp size={18} /> Chat on WhatsApp
+              </Button>
+            </a>
+            <a href="tel:+255712000000">
+              <Button variant="outline" className="w-full gap-2">
+                <IconPhone size={18} /> Call Us
+              </Button>
+            </a>
+          </div>
+          <button className="mt-8 text-sm text-muted-foreground hover:text-foreground" onClick={() => setPlan(null)}>← Back</button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Sheet / bottom drawer for option selection
+  const sheetOptions: Record<string, string[]> = {
+    make: carBrands,
+    bodyType: bodyTypes,
+    transmission: transmissions,
+    fuelType: fuelTypes,
+    color: colors,
+    condition: conditions,
+    city: tanzaniaCities,
+    registeredIn: tanzaniaCities,
+    assembly: assemblies,
   };
 
-  const selectClass = "w-full h-10 rounded-md border border-input bg-background px-3 text-sm focus:ring-2 focus:ring-ring";
+  const sheetLabels: Record<string, string> = {
+    make: "Select Make", bodyType: "Select Body Type", transmission: "Select Transmission",
+    fuelType: "Select Fuel Type", color: "Select Color", condition: "Select Condition",
+    city: "Select City", registeredIn: "Registered In", assembly: "Select Assembly",
+  };
+
+  const displayName = (user?.user_metadata?.display_name as string | undefined) || user?.email?.split("@")[0] || "";
+  const displayPhone = (user?.user_metadata?.phone as string | undefined) || "";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 className="text-2xl font-bold text-foreground mb-6">Sell Your Car</h1>
 
-        {/* Progress */}
-        <div className="flex items-center gap-1 mb-8">
-          {steps.map((s, i) => (
-            <div key={s} className="flex-1 flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-1 ${i <= step ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                {i < step ? <IconCheck size={16} /> : i + 1}
-              </div>
-              <span className="text-[10px] text-muted-foreground hidden sm:block">{s}</span>
-            </div>
-          ))}
+      <main className="flex-1 container mx-auto max-w-lg px-0 sm:px-4 py-0 sm:py-6">
+        {/* Toolbar */}
+        <div className="flex items-center justify-between px-4 py-3 sm:hidden border-b border-border bg-background sticky top-0 z-10">
+          <button onClick={() => setPlan(null)} className="text-sm text-muted-foreground">← Back</button>
+          <h1 className="text-base font-bold text-foreground">Sell your car</h1>
+          <button
+            className="text-sm font-semibold text-primary"
+            onClick={handleSubmit}
+            disabled={submitting}
+          >
+            {submitting ? "..." : "Done"}
+          </button>
         </div>
 
-        {/* Step 1: Basic Info */}
-        {step === 0 && (
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Make *</label>
-              <select value={form.make} onChange={(e) => update("make", e.target.value)} className={selectClass}>
-                <option value="">Select make</option>
-                {carBrands.map((b) => <option key={b} value={b}>{b}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Model *</label>
-              <Input value={form.model} onChange={(e) => update("model", e.target.value)} placeholder="e.g. Corolla, Civic" />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Year *</label>
-              <Input type="number" value={form.year} onChange={(e) => update("year", e.target.value)} min="1990" max={new Date().getFullYear() + 1} />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Body Type</label>
-              <select value={form.bodyType} onChange={(e) => update("bodyType", e.target.value)} className={selectClass}>
-                <option value="">Select body type</option>
-                {bodyTypes.map((b) => <option key={b} value={b}>{b}</option>)}
-              </select>
-            </div>
-          </div>
-        )}
+        <div className="hidden sm:flex items-center justify-between px-1 pb-4">
+          <button onClick={() => setPlan(null)} className="text-sm text-muted-foreground">← Back</button>
+          <h1 className="text-xl font-bold text-foreground">Sell your car</h1>
+          <div />
+        </div>
 
-        {/* Step 2: Details */}
-        {step === 1 && (
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Transmission</label>
-              <select value={form.transmission} onChange={(e) => update("transmission", e.target.value)} className={selectClass}>
-                <option value="">Select</option>
-                {transmissions.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Fuel Type</label>
-              <select value={form.fuelType} onChange={(e) => update("fuelType", e.target.value)} className={selectClass}>
-                <option value="">Select</option>
-                {fuelTypes.map((f) => <option key={f} value={f}>{f}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Color</label>
-              <Input value={form.color} onChange={(e) => update("color", e.target.value)} placeholder="e.g. White, Black" />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Mileage (km)</label>
-              <Input type="number" value={form.mileage} onChange={(e) => update("mileage", e.target.value)} placeholder="e.g. 50000" />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Condition *</label>
-              <select value={form.condition} onChange={(e) => update("condition", e.target.value)} className={selectClass}>
-                {conditions.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Photos */}
-        {step === 2 && (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Upload up to 10 photos. First photo will be the cover.</p>
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary transition-colors">
-              <IconUpload size={24} className="text-muted-foreground mb-2" />
-              <span className="text-sm text-muted-foreground">Click to upload photos</span>
-              <input type="file" accept="image/*" multiple onChange={handleImages} className="hidden" />
-            </label>
-            {previews.length > 0 && (
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+        {/* Photos */}
+        <div className="bg-card border-b border-border mb-0">
+          <label className="flex flex-col items-center justify-center w-full py-10 cursor-pointer hover:bg-muted/30 transition-colors">
+            {previews.length === 0 ? (
+              <>
+                <div className="relative mb-2">
+                  <IconCamera size={52} className="text-muted-foreground/40" strokeWidth={1.5} />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <span className="text-primary-foreground text-xs font-bold leading-none">+</span>
+                  </div>
+                </div>
+                <span className="text-sm text-muted-foreground font-medium">Add Photos</span>
+              </>
+            ) : (
+              <div className="flex gap-2 flex-wrap justify-center px-4">
                 {previews.map((p, i) => (
-                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
+                  <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden">
                     <img src={p} alt="" className="w-full h-full object-cover" />
-                    <button onClick={() => removeImage(i)} className="absolute top-1 right-1 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center">
-                      <IconX size={12} />
+                    <button
+                      type="button"
+                      onClick={(e) => { e.preventDefault(); removeImage(i); }}
+                      className="absolute top-1 right-1 w-5 h-5 bg-black/60 rounded-full flex items-center justify-center"
+                    >
+                      <IconX size={10} className="text-white" />
                     </button>
                     {i === 0 && <span className="absolute bottom-1 left-1 text-[8px] bg-primary text-primary-foreground px-1 rounded">Cover</span>}
                   </div>
                 ))}
+                <label className="w-20 h-20 rounded-lg border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
+                  <span className="text-2xl text-muted-foreground">+</span>
+                  <input type="file" accept="image/*" multiple onChange={handleImages} className="hidden" />
+                </label>
               </div>
             )}
-          </div>
-        )}
+            <input type="file" accept="image/*" multiple onChange={handleImages} className="hidden" />
+          </label>
+        </div>
 
-        {/* Step 4: Price & Location */}
-        {step === 3 && (
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Ad Title</label>
-              <Input value={form.title} onChange={(e) => update("title", e.target.value)} placeholder={`${form.year} ${form.make} ${form.model}`} />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Description</label>
-              <textarea value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Describe your vehicle..." className="w-full h-24 rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-ring resize-none" />
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="col-span-2">
-                <label className="text-sm font-medium text-foreground mb-1 block">Price *</label>
-                <Input type="number" value={form.price} onChange={(e) => update("price", e.target.value)} placeholder="e.g. 45000000" />
-              </div>
+        {/* CAR DETAILS */}
+        <div className="mt-3">
+          <p className="text-[11px] font-semibold text-muted-foreground tracking-widest uppercase px-4 mb-1">Car Details</p>
+          <div className="bg-card border-y border-border">
+
+            {/* City */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("city")}>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Currency</label>
-                <select value={form.currency} onChange={(e) => update("currency", e.target.value)} className={selectClass}>
+                <p className="text-xs text-muted-foreground">Location</p>
+                <p className={`text-sm mt-0.5 ${form.city ? "text-foreground" : "text-muted-foreground"}`}>{form.city || "Select City"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Make */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("make")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Make</p>
+                <p className={`text-sm mt-0.5 ${form.make ? "text-foreground" : "text-muted-foreground"}`}>{form.make || "Select Make"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Model */}
+            <div className="flex flex-col px-4 py-3 border-b border-border">
+              <p className="text-xs text-muted-foreground mb-1">Model</p>
+              <input
+                type="text"
+                value={form.model}
+                onChange={(e) => update("model", e.target.value)}
+                placeholder="e.g. Corolla, Civic"
+                className="text-sm bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+            </div>
+
+            {/* Year */}
+            <div className="flex flex-col px-4 py-3 border-b border-border">
+              <p className="text-xs text-muted-foreground mb-1">Year</p>
+              <input
+                type="number"
+                value={form.year}
+                onChange={(e) => update("year", e.target.value)}
+                placeholder="e.g. 2019"
+                min="1990"
+                max={new Date().getFullYear() + 1}
+                className="text-sm bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+            </div>
+
+            {/* Price */}
+            <div className="flex flex-col px-4 py-3 border-b border-border">
+              <p className="text-xs text-muted-foreground mb-1">Price</p>
+              <div className="flex items-center gap-2">
+                <select
+                  value={form.currency}
+                  onChange={(e) => update("currency", e.target.value)}
+                  className="text-sm bg-transparent text-muted-foreground focus:outline-none border-none p-0"
+                >
                   <option value="TZS">TZS</option>
                   <option value="USD">USD</option>
                   <option value="KES">KES</option>
                 </select>
+                <input
+                  type="number"
+                  value={form.price}
+                  onChange={(e) => update("price", e.target.value)}
+                  placeholder="Enter your asking price"
+                  className="flex-1 text-sm bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
+                />
               </div>
             </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">City</label>
-              <select value={form.city} onChange={(e) => update("city", e.target.value)} className={selectClass}>
-                <option value="">Select city</option>
-                {tanzaniaCities.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+
+            {/* Registered In */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("registeredIn")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Registered In</p>
+                <p className={`text-sm mt-0.5 ${form.registeredIn ? "text-foreground" : "text-muted-foreground"}`}>{form.registeredIn || "Select City"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Mileage */}
+            <div className="flex flex-col px-4 py-3 border-b border-border">
+              <p className="text-xs text-muted-foreground mb-1">KMs Driven</p>
+              <input
+                type="number"
+                value={form.mileage}
+                onChange={(e) => update("mileage", e.target.value)}
+                placeholder="Enter KMs Driven"
+                className="text-sm bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+            </div>
+
+            {/* Body Color */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("color")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Body Color</p>
+                <p className={`text-sm mt-0.5 ${form.color ? "text-foreground" : "text-muted-foreground"}`}>{form.color || "Select Body Color"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Body Type */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("bodyType")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Body Type</p>
+                <p className={`text-sm mt-0.5 ${form.bodyType ? "text-foreground" : "text-muted-foreground"}`}>{form.bodyType || "Select Body Type"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Transmission */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("transmission")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Transmission</p>
+                <p className={`text-sm mt-0.5 ${form.transmission ? "text-foreground" : "text-muted-foreground"}`}>{form.transmission || "Select Transmission"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Fuel Type */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("fuelType")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Fuel Type</p>
+                <p className={`text-sm mt-0.5 ${form.fuelType ? "text-foreground" : "text-muted-foreground"}`}>{form.fuelType || "Select Fuel Type"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Condition */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("condition")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Condition</p>
+                <p className={`text-sm mt-0.5 ${form.condition ? "text-foreground" : "text-muted-foreground"}`}>{form.condition || "Select Condition"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Assembly */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("assembly")}>
+              <div>
+                <p className="text-xs text-muted-foreground">Assembly</p>
+                <p className={`text-sm mt-0.5 ${form.assembly ? "text-foreground" : "text-muted-foreground"}`}>{form.assembly || "Select Assembly"}</p>
+              </div>
+              <IconChevronRight size={16} className="text-muted-foreground" />
+            </div>
+
+            {/* Description */}
+            <div className="flex flex-col px-4 py-3">
+              <p className="text-xs text-muted-foreground mb-1">Description</p>
+              <textarea
+                value={form.description}
+                onChange={(e) => update("description", e.target.value)}
+                placeholder="e.g. Alloy Rims, First Owner, Full Service History..."
+                rows={3}
+                className="text-sm bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none resize-none"
+              />
             </div>
           </div>
-        )}
-
-        {/* Step 5: Review */}
-        {step === 4 && (
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-foreground">Review Your Listing</h2>
-            <div className="bg-muted rounded-xl p-4 space-y-2 text-sm">
-              <p><span className="font-semibold">Title:</span> {form.title || `${form.year} ${form.make} ${form.model}`}</p>
-              <p><span className="font-semibold">Make / Model:</span> {form.make} {form.model}</p>
-              <p><span className="font-semibold">Year:</span> {form.year}</p>
-              <p><span className="font-semibold">Body Type:</span> {form.bodyType || "—"}</p>
-              <p><span className="font-semibold">Transmission:</span> {form.transmission || "—"}</p>
-              <p><span className="font-semibold">Fuel:</span> {form.fuelType || "—"}</p>
-              <p><span className="font-semibold">Mileage:</span> {form.mileage ? `${parseInt(form.mileage).toLocaleString()} km` : "—"}</p>
-              <p><span className="font-semibold">Condition:</span> {form.condition}</p>
-              <p><span className="font-semibold">Color:</span> {form.color || "—"}</p>
-              <p><span className="font-semibold">Price:</span> {form.currency} {form.price ? parseInt(form.price).toLocaleString() : "—"}</p>
-              <p><span className="font-semibold">City:</span> {form.city || "—"}</p>
-              {form.description && <p><span className="font-semibold">Description:</span> {form.description}</p>}
-              <p><span className="font-semibold">Photos:</span> {images.length}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Navigation */}
-        <div className="flex gap-3 mt-8">
-          {step > 0 && (
-            <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1">Back</Button>
-          )}
-          {step < 4 ? (
-            <Button onClick={() => setStep(step + 1)} disabled={!canNext()} className="flex-1">Next</Button>
-          ) : (
-            <Button onClick={handleSubmit} disabled={submitting} className="flex-1">
-              {submitting ? "Submitting..." : "Submit Listing"}
-            </Button>
-          )}
         </div>
-      </div>
+
+        {/* CONTACT INFORMATION */}
+        <div className="mt-5">
+          <p className="text-[11px] font-semibold text-muted-foreground tracking-widest uppercase px-4 mb-1">Contact Information</p>
+          <div className="bg-card border-y border-border">
+
+            {/* Name */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+              <div>
+                <p className="text-xs text-muted-foreground">Name</p>
+                <Input
+                  value={form.title || displayName}
+                  onChange={(e) => update("title", e.target.value)}
+                  placeholder="Your name"
+                  className="border-none shadow-none p-0 h-auto text-sm bg-transparent focus-visible:ring-0"
+                />
+              </div>
+              {displayName && <IconCheck size={16} className="text-success shrink-0" />}
+            </div>
+
+            {/* Phone */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground">Mobile Number</p>
+                <p className="text-sm text-foreground mt-0.5">{displayPhone || user?.email || "—"}</p>
+              </div>
+              {(displayPhone || user?.email) && <IconCheck size={16} className="text-success shrink-0" />}
+            </div>
+
+            {/* WhatsApp toggle */}
+            <div className="flex items-center justify-between px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#25D366]/10 flex items-center justify-center">
+                  <IconBrandWhatsapp size={18} className="text-[#25D366]" />
+                </div>
+                <span className="text-sm text-foreground">Allow WhatsApp Contact</span>
+              </div>
+              <button
+                onClick={() => update("allowWhatsapp", !form.allowWhatsapp)}
+                className={`w-11 h-6 rounded-full transition-colors relative ${form.allowWhatsapp ? "bg-primary" : "bg-muted"}`}
+              >
+                <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ${form.allowWhatsapp ? "left-[22px]" : "left-0.5"}`} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit button (desktop) */}
+        <div className="px-4 py-6 hidden sm:block">
+          <Button onClick={handleSubmit} disabled={submitting} className="w-full h-12 text-base font-semibold">
+            {submitting ? "Submitting..." : "Done"}
+          </Button>
+        </div>
+
+        {/* Submit button (mobile) */}
+        <div className="px-4 py-6 sm:hidden">
+          <Button onClick={handleSubmit} disabled={submitting} className="w-full h-12 text-base font-semibold">
+            {submitting ? "Submitting..." : "Done"}
+          </Button>
+        </div>
+      </main>
+
+      {/* Option Sheet (bottom drawer on mobile, modal on desktop) */}
+      {sheet && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" onClick={() => setSheet(null)}>
+          <div className="absolute inset-0 bg-black/50" />
+          <div
+            className="relative bg-card w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl max-h-[70vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+              <h3 className="font-semibold text-foreground">{sheetLabels[sheet]}</h3>
+              <button onClick={() => setSheet(null)}>
+                <IconX size={18} className="text-muted-foreground" />
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1">
+              {(sheetOptions[sheet] || []).map((opt) => (
+                <button
+                  key={opt}
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm text-left hover:bg-muted/50 border-b border-border last:border-b-0"
+                  onClick={() => { update(sheet as keyof FormData, opt); setSheet(null); }}
+                >
+                  {opt}
+                  {form[sheet as keyof FormData] === opt && <IconCheck size={16} className="text-primary" />}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );

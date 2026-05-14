@@ -107,7 +107,7 @@ export default function SellerCard({ listing }: SellerCardProps) {
 
       {isDealer && (
         <Link
-          to={`/dealer/${listing.sellerId || "mock-dealer-ibaraki"}`}
+          to={`/dealer/${listing.sellerId || "mock-dealer-mgayamotors"}`}
           className="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/5 transition-colors"
         >
           <IconBuildingStore size={14} stroke={2} />
