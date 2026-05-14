@@ -41,36 +41,90 @@ const SHOWROOMS: Record<string, DealerData> = {
   mgayamotors: mgayamotorsData as DealerData,
 };
 
+const EMOJI_RE = /[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{1F900}-\u{1F9FF}☎️▶️📍🤝💸🇹🇿🇯🇵👇✅⛽🔥🥷🏻🙌]/gu;
+const CAR_BRANDS = ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi","ford","range rover","land rover","jaguar","volkswagen","vw","lexus","hyundai","kia","suzuki","isuzu","volvo","maserati","bentley","porsche","yamaha","bajaj"];
+
+function cleanText(s: string) {
+  return s.replace(EMOJI_RE, "").replace(/[*#]/g, "").trim();
+}
+
 function parseCaption(caption: string) {
   const lines = caption.split("\n").map((l) => l.trim()).filter(Boolean);
 
-  const get = (key: string) => {
-    const re = new RegExp(`^${key}[:\\s]*(.+)`, "i");
-    for (const line of lines) {
-      const m = line.match(re);
-      if (m) return m[1].replace(/[*✅]/g, "").trim();
+  const get = (...keys: string[]) => {
+    for (const key of keys) {
+      const re = new RegExp(`^${key}[:\\s]+(.+)`, "i");
+      for (const line of lines) {
+        const m = line.match(re);
+        if (m) return cleanText(m[1]);
+      }
     }
     return null;
   };
 
-  const make = get("make") || get("brand");
+  const make = get("make", "brand");
   const model = get("model");
-  const year = get("year of manufacture") || get("year of manufacture?rer") || get("year");
-  const price = get("price");
+  // year: handles "Year:", "Year of manufacture:", "Year Model:"
+  const year = get("year of manufacture", "year model", "year");
+  // price: handles "Price:", "Bei:", "Bei/Price:", "PRICE/BEI:"
+  const rawPrice = get("price", "bei", "price/bei", "bei/price", "bei:") ||
+    (() => {
+      for (const line of lines) {
+        const m = line.match(/(?:price|bei)[:/\s]+([0-9,.]+\s*(?:M|m|Million|TZS|TSH)?)/i);
+        if (m) return cleanText(m[1]);
+      }
+      return null;
+    })();
+  // Format price — append "M" if it looks like a bare number ≥ 10
+  let price = rawPrice;
+  if (price) {
+    const bare = price.replace(/[,\s]/g, "");
+    if (/^\d+(\.\d+)?$/.test(bare) && parseFloat(bare) >= 10) {
+      price = `${bare}M TZS`;
+    } else if (/\d+,\d{3},\d{3}/.test(price)) {
+      price = price + " TZS";
+    }
+  }
+
   const fuel = get("fuel");
-  const mileage = get("mileage") || get("km");
-  const color = get("color") || get("colour");
+  const mileage = get("mileage", "km", "kms", "kilometer", "kilometres");
+  const color = get("color", "colour");
   const transmission = get("transmission");
+  const cc = get("cc", "engine", "engine capacity");
 
-  // Derive title: first non-empty line that looks like a car name (if make/model not found)
-  const title =
-    make && model
-      ? `${make} ${model}`
-      : lines[0].length < 60
-      ? lines[0].replace(/[🔥✅🤝💸🇹🇿🛻]/g, "").trim()
-      : "Vehicle";
+  // Title: prefer explicit make+model, fall back to first line stripped of emoji
+  let title: string;
+  if (make && model) {
+    title = `${make} ${model}`;
+  } else {
+    const firstLine = cleanText(lines[0]);
+    title = firstLine.length > 2 && firstLine.length < 80 ? firstLine : (make || model || "Vehicle");
+  }
+  // Capitalize title
+  title = title.replace(/\b\w/g, (c) => c.toUpperCase());
 
-  return { title, make, model, year, price, fuel, mileage, color, transmission };
+  return { title, make, model, year, price, fuel, mileage, color, transmission, cc };
+}
+
+// Returns true if the post is a real car listing (not a promo/selfie post)
+function isCarPost(caption: string): boolean {
+  const low = caption.toLowerCase();
+  const hasBrand = CAR_BRANDS.some((b) => low.includes(b));
+  const hasYear = /\b(19|20)\d{2}\b/.test(caption);
+  const hasPrice = /(?:price|bei)[:\s]/i.test(caption) || /\d+[,.]?\d*\s*(?:m|million)/i.test(caption);
+  const hasCarField = /(?:fuel|cc|engine|transmission|mileage|km|color|colour|make|model)\s*[:/]/i.test(caption);
+  return hasBrand || hasYear || hasPrice || hasCarField;
+}
+
+// Deduplicate by caption content (same car posted twice)
+function dedupePosts(posts: Post[]): Post[] {
+  const seen = new Set<string>();
+  return posts.filter((p) => {
+    const key = p.caption.slice(0, 120).replace(/\s+/g, " ").trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function formatFollowers(n: number) {
@@ -158,17 +212,17 @@ function CarCard({ post }: { post: Post }) {
 
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
             {info.year && <span>{info.year}</span>}
+            {info.mileage && <span>{info.mileage} km</span>}
             {info.fuel && <span>{info.fuel}</span>}
+            {info.cc && <span>{info.cc} cc</span>}
             {info.transmission && <span>{info.transmission}</span>}
             {info.color && <span>{info.color}</span>}
           </div>
 
-          {info.price && (
-            <div className="text-sm font-bold text-primary">
-              {info.price.includes("M") || info.price.includes("m") || info.price.includes(",")
-                ? info.price
-                : `${info.price} TZS`}
-            </div>
+          {info.price ? (
+            <div className="text-sm font-bold text-primary">{info.price}</div>
+          ) : (
+            <div className="text-xs text-muted-foreground italic">Contact for price</div>
           )}
 
           <div className="flex gap-2 pt-1">
@@ -283,26 +337,32 @@ export default function InstagramShowroom() {
 
       {/* Listings grid */}
       <main className="flex-1 container mx-auto max-w-5xl px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-foreground">
-            Available Cars
-            <span className="ml-2 text-sm font-normal text-muted-foreground">({dealer.posts.length} listings)</span>
-          </h2>
-          <a
-            href={`https://www.instagram.com/${dealer.username}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-          >
-            <IconBrandInstagram size={14} /> View on Instagram
-          </a>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {dealer.posts.map((post) => (
-            <CarCard key={post.shortcode} post={post} />
-          ))}
-        </div>
+        {(() => {
+          const filtered = dedupePosts(dealer.posts.filter((p) => isCarPost(p.caption)));
+          return (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-bold text-foreground">
+                  Available Cars
+                  <span className="ml-2 text-sm font-normal text-muted-foreground">({filtered.length} listings)</span>
+                </h2>
+                <a
+                  href={`https://www.instagram.com/${dealer.username}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <IconBrandInstagram size={14} /> View on Instagram
+                </a>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filtered.map((post) => (
+                  <CarCard key={post.shortcode} post={post} />
+                ))}
+              </div>
+            </>
+          );
+        })()}
       </main>
 
       <Footer />
