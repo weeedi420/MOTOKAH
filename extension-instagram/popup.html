@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 340px; padding: 16px;
+      font-family: Inter, system-ui, sans-serif;
+      background: #0f172a; color: #e2e8f0;
+    }
+
+    h1 { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+    .subtitle { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .stat-box {
+      background: #1e293b; border: 1px solid #334155; border-radius: 8px;
+      padding: 10px; text-align: center;
+    }
+    .stat-number { font-size: 24px; font-weight: 800; color: #e879f9; }
+    .stat-label { font-size: 10px; color: #94a3b8; margin-top: 2px; }
+
+    .section { margin-bottom: 14px; }
+    .section-title {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      color: #64748b; margin-bottom: 8px; letter-spacing: 0.05em;
+    }
+
+    .tag-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      margin-bottom: 8px;
+    }
+    .tag-btn {
+      padding: 7px 6px; border: 1px solid #334155; border-radius: 6px;
+      background: #1e293b; color: #cbd5e1; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .tag-btn:hover { background: #334155; color: #fff; border-color: #9333ea; }
+
+    .custom-row { display: flex; gap: 6px; }
+    .custom-input {
+      flex: 1; padding: 7px 10px; border-radius: 6px;
+      border: 1px solid #334155; background: #1e293b; color: #e2e8f0;
+      font-size: 12px;
+    }
+    .custom-input::placeholder { color: #475569; }
+    .go-btn {
+      padding: 7px 12px; border: none; border-radius: 6px;
+      background: #9333ea; color: white; font-size: 12px; font-weight: 700;
+      cursor: pointer;
+    }
+    .go-btn:hover { background: #7c3aed; }
+
+    .btn {
+      width: 100%; padding: 10px; border: none; border-radius: 8px;
+      font-weight: 600; font-size: 13px; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    .btn-secondary {
+      background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
+    }
+    .btn-secondary:hover { background: #334155; }
+    .btn-danger { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; }
+    .btn-danger:hover { background: #991b1b; }
+
+    .status { font-size: 11px; color: #4ade80; padding: 6px 8px; background: #14532d; border-radius: 6px; display: none; }
+    .status.show { display: block; }
+  </style>
+</head>
+<body>
+  <h1>📸 Motokah Instagram</h1>
+  <p class="subtitle">Scrape car listings — photos, captions, contacts</p>
+
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-number" id="totalCount">0</div>
+      <div class="stat-label">Cars Scraped</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="phoneCount">0</div>
+      <div class="stat-label">With Phone</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Quick Hashtags (grid mode)</div>
+    <div class="tag-grid">
+      <button class="tag-btn" data-tag="carsforsale">carsforsale</button>
+      <button class="tag-btn" data-tag="usedcars">usedcars</button>
+      <button class="tag-btn" data-tag="carsofinstagram">carsofinstagram</button>
+      <button class="tag-btn" data-tag="africancars">africancars</button>
+      <button class="tag-btn" data-tag="nairobicars">nairobicars</button>
+      <button class="tag-btn" data-tag="tanzaniacars">tanzaniacars</button>
+      <button class="tag-btn" data-tag="nigeriacars">nigeriacars</button>
+      <button class="tag-btn" data-tag="ugandacars">ugandacars</button>
+    </div>
+    <div class="custom-row">
+      <input id="customTag" class="custom-input" placeholder="Custom hashtag or username…" />
+      <button id="goBtn" class="go-btn">Go</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Actions</div>
+    <button class="btn btn-primary" id="openFeedBtn">Open Instagram Feed</button>
+    <button class="btn btn-secondary" id="downloadBtn">⬇ Download CSV</button>
+    <button class="btn btn-secondary" id="downloadJsonBtn">⬇ Download JSON</button>
+    <button class="btn btn-danger" id="clearBtn">✕ Clear All Data</button>
+  </div>
+
+  <div class="status" id="statusMsg"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
