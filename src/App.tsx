@@ -47,6 +47,7 @@ import DealerLeads from "./pages/DealerLeads.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import CityLandingPage from "./pages/CityLandingPage.tsx";
 import Welcome from "./pages/Welcome.tsx";
+import InstagramShowroom from "./pages/InstagramShowroom.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
 
@@ -114,6 +115,7 @@ function AnimatedRoutes() {
               <Route path="/duty-calculator" element={<DutyCalculator />} />
               <Route path="/dealer-leads" element={<DealerLeads />} />
               <Route path="/city/:slug" element={<CityLandingPage />} />
+              <Route path="/showroom/:username" element={<InstagramShowroom />} />
               <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>

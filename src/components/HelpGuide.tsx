@@ -599,6 +599,64 @@ function FilterDiagram() {
   );
 }
 
+function WishlistDiagram() {
+  const cars = [
+    { name: "Toyota Harrier", price: "85M", year: "2021", saved: true },
+    { name: "Nissan X-Trail", price: "55M", year: "2019", saved: true },
+    { name: "Toyota RAV4", price: "72M", year: "2020", saved: false },
+  ];
+
+  return (
+    <div className="w-full max-w-xs mx-auto space-y-2">
+      {cars.map((car, i) => (
+        <motion.div
+          key={car.name}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ delay: i * 0.15 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-3 bg-card border border-border rounded-xl p-3"
+        >
+          <div className="w-12 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
+            <IconCar size={20} className="text-muted-foreground" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-semibold truncate">{car.name}</div>
+            <div className="text-[10px] text-muted-foreground">{car.year} · {car.price} TZS</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <motion.div
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              transition={{ delay: 0.3 + i * 0.15, type: "spring" }}
+              viewport={{ once: true }}
+              className={`w-7 h-7 rounded-full flex items-center justify-center ${car.saved ? "bg-red-500/10" : "bg-muted"}`}
+            >
+              <IconHeart size={14} className={car.saved ? "text-red-500 fill-red-500" : "text-muted-foreground"} />
+            </motion.div>
+            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${i < 2 ? "border-primary bg-primary" : "border-border"}`}>
+              {i < 2 && <IconCheck size={10} className="text-primary-foreground" />}
+            </div>
+          </div>
+        </motion.div>
+      ))}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        viewport={{ once: true }}
+        className="flex items-center justify-between bg-primary/5 border border-primary/20 rounded-xl px-3 py-2"
+      >
+        <span className="text-xs text-primary font-medium">Compare 2 selected</span>
+        <div className="flex items-center gap-1 text-xs text-primary font-semibold">
+          <IconScale size={14} />
+          Compare
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 function ContactDiagram() {
   return (
     <div className="w-full max-w-xs mx-auto space-y-3">
@@ -865,7 +923,7 @@ function AccountDiagram() {
   );
 }
 
-const diagrams = [SearchDiagram, FilterDiagram, ContactDiagram, PostAdDiagram, ChatDiagram, AccountDiagram];
+const diagrams = [SearchDiagram, FilterDiagram, WishlistDiagram, ContactDiagram, PostAdDiagram, ChatDiagram, AccountDiagram];
 
 export default function HelpGuide({ isOpen, onClose, lang }: HelpGuideProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
