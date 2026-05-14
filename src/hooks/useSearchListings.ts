@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings } from "@/data/mockData";
+import { getJijiListings } from "@/data/jijiListings";
 
 export interface SearchFilters {
   make?: string;
@@ -119,18 +120,25 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       if (error) {
         console.error(error);
-        // Supabase unavailable or timeout — show mock data
-        let mocks = [...mockListings];
-        // Apply URL filters to mock data even on error
+        const jiji = await getJijiListings().catch(() => []);
+        let mocks = [...mockListings, ...jiji];
         if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
         if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
         if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
-        if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
+        if (filters.transmission) mocks = mocks.filter(m => !m.transmission || m.transmission === filters.transmission);
         if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
         if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
         if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
         if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));
-        mocks = mocks.filter(validateListing);
+        if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
+        if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
+        if (filters.country && filters.country !== "All") {
+          const cities = countryCitiesMap[filters.country] || [];
+          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+        }
+        mocks = mocks.filter(l => l.price > 0);
+        if (sort === "price-low") mocks.sort((a, b) => a.price - b.price);
+        else if (sort === "price-high") mocks.sort((a, b) => b.price - a.price);
         setListings(mocks);
         setLoading(false);
         return;
@@ -172,16 +180,31 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         };
       });
 
-      // Validate listings - filter out invalid data
       const validateListing = (l: Listing) => {
-        // Skip cars with 0 mileage unless condition is "New"
-        if (l.mileage === 0 && l.condition !== "New") return false;
-        // Skip listings with no price or 0 price
         if (!l.price || l.price <= 0) return false;
-        // Skip listings without transmission
+        // For Jiji listings (external), be less strict
+        if (l.id?.startsWith("jiji-")) return true;
+        if (l.mileage === 0 && l.condition !== "New") return false;
         if (!l.transmission) return false;
         return true;
       };
+
+      const jiji = await getJijiListings().catch(() => []);
+      let jijiFiltered = [...jiji];
+      if (filters.make) jijiFiltered = jijiFiltered.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
+      if (filters.model) jijiFiltered = jijiFiltered.filter(m => m.model?.toLowerCase().includes(filters.model!.toLowerCase()));
+      if (filters.condition) jijiFiltered = jijiFiltered.filter(m => m.condition === filters.condition);
+      if (filters.city) jijiFiltered = jijiFiltered.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
+      if (filters.minPrice) jijiFiltered = jijiFiltered.filter(m => m.price >= Number(filters.minPrice));
+      if (filters.maxPrice) jijiFiltered = jijiFiltered.filter(m => m.price <= Number(filters.maxPrice));
+      if (filters.yearFrom) jijiFiltered = jijiFiltered.filter(m => m.year >= Number(filters.yearFrom));
+      if (filters.yearTo) jijiFiltered = jijiFiltered.filter(m => m.year <= Number(filters.yearTo));
+      if (filters.bodyType?.length) jijiFiltered = jijiFiltered.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+      if (filters.fuelType?.length) jijiFiltered = jijiFiltered.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
+      if (filters.country && filters.country !== "All") {
+        const cities = countryCitiesMap[filters.country] || [];
+        jijiFiltered = jijiFiltered.filter(m => cities.some(c => m.location?.includes(c)));
+      }
 
       // Always merge mock data with Supabase data so we don't lose listings
       let mocks = [...mockListings];
@@ -220,10 +243,11 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       // Apply validation to mock data
       mocks = mocks.filter(validateListing);
 
-      // Merge: use Supabase data + add mock data that isn't already in Supabase
+      // Merge: Supabase + mock + Jiji
       const realIds = new Set(mapped.map(r => r.id));
       const uniqueMocks = mocks.filter(m => !realIds.has(m.id));
-      const combined = [...mapped.filter(validateListing), ...uniqueMocks];
+      const uniqueJiji = jijiFiltered.filter(m => !realIds.has(m.id));
+      const combined = [...mapped.filter(validateListing), ...uniqueMocks, ...uniqueJiji];
       
       // Sort combined results
       if (sort === "price-low") combined.sort((a, b) => a.price - b.price);

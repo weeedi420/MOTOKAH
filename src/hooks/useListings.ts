@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings } from "@/data/mockData";
+import { getJijiListings } from "@/data/jijiListings";
 
 const defaultImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop";
 
@@ -58,13 +59,15 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
       const { data: rows, error } = await query;
 
       if (error || !rows || rows.length === 0) {
-        let mocks = [...mockListings];
-        // Filter mock data by country if specified
+        const jiji = await getJijiListings();
+        let fallback = [...mockListings, ...jiji];
         if (country && country !== "All") {
           const cities = countryCitiesMap[country] || [];
-          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+          fallback = fallback.filter(m => cities.some(c => m.location?.includes(c)));
         }
-        setListings(mocks.slice(0, limit));
+        // Shuffle so Jiji and mock listings are mixed
+        fallback.sort(() => Math.random() - 0.5);
+        setListings(fallback.slice(0, limit));
         setLoading(false);
         return;
       }
@@ -109,26 +112,28 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
       });
 
       const dbIds = new Set(mapped.map((m) => m.id));
-      let fillFrom = mockListings.filter((m) => !dbIds.has(m.id));
-      
-      // Filter mock fill by country if specified
+      const jiji = await getJijiListings();
+      let fillFrom = [...mockListings, ...jiji].filter((m) => !dbIds.has(m.id));
+
       if (country && country !== "All") {
         const cities = countryCitiesMap[country] || [];
         fillFrom = fillFrom.filter(m => cities.some(c => m.location?.includes(c)));
       }
-      
-      const combined = [...mapped, ...fillFrom].slice(0, limit);
+      fillFrom.sort(() => Math.random() - 0.5);
 
+      const combined = [...mapped, ...fillFrom].slice(0, limit);
       setListings(combined);
       setLoading(false);
     };
 
-    fetchListings().catch(() => {
-      let mocks = [...mockListings];
+    fetchListings().catch(async () => {
+      const jiji = await getJijiListings().catch(() => []);
+      let mocks = [...mockListings, ...jiji];
       if (country && country !== "All") {
         const cities = countryCitiesMap[country] || [];
         mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
       }
+      mocks.sort(() => Math.random() - 0.5);
       setListings(mocks.slice(0, options?.limit || 20));
       setLoading(false);
     });

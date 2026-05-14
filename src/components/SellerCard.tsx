@@ -1,4 +1,4 @@
-import { IconPhone, IconBrandWhatsapp, IconMessage, IconStarFilled, IconShieldCheck, IconUser, IconBuildingStore } from "@tabler/icons-react";
+import { IconPhone, IconBrandWhatsapp, IconMessage, IconStarFilled, IconShieldCheck, IconUser, IconBuildingStore, IconExternalLink } from "@tabler/icons-react";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
@@ -79,18 +79,30 @@ export default function SellerCard({ listing }: SellerCardProps) {
       </div>
 
       <div className="space-y-2">
-        <button onClick={handleWhatsApp} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition-colors">
-          <IconBrandWhatsapp size={20} stroke={2} />
-          WhatsApp
-        </button>
-        <button onClick={handleCall} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-colors">
-          <IconPhone size={18} stroke={2.5} />
-          Call Seller
-        </button>
-        <button onClick={handleMessage} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-border hover:bg-muted/50 font-semibold text-sm transition-colors">
-          <IconMessage size={18} stroke={2.5} />
-          Send Message
-        </button>
+        {listing.id?.startsWith("jiji-") && listing.sourceUrl ? (
+          <>
+            <a href={listing.sourceUrl} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-colors">
+              <IconExternalLink size={18} stroke={2.5} />
+              View on Jiji
+            </a>
+            <p className="text-[11px] text-center text-muted-foreground">This listing is from Jiji. Contact seller on their platform.</p>
+          </>
+        ) : (
+          <>
+            <button onClick={handleWhatsApp} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition-colors">
+              <IconBrandWhatsapp size={20} stroke={2} />
+              WhatsApp
+            </button>
+            <button onClick={handleCall} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-colors">
+              <IconPhone size={18} stroke={2.5} />
+              Call Seller
+            </button>
+            <button onClick={handleMessage} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-border hover:bg-muted/50 font-semibold text-sm transition-colors">
+              <IconMessage size={18} stroke={2.5} />
+              Send Message
+            </button>
+          </>
+        )}
       </div>
 
       <div className="pt-3 border-t border-border">

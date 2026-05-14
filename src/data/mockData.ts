@@ -83,6 +83,7 @@ export interface Listing {
   color?: string;
   chassis?: string;
   dutyPaid?: boolean;
+  sourceUrl?: string;
 }
 
 // ─── Scraped Instagram listings — Mgaya Motors TZ ────────────────────────────
