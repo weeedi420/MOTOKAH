@@ -126,26 +126,33 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (error) {
         console.error(error);
         const jiji = await getJijiListings().catch(() => []);
-        let mocks = [...mockListings, ...jiji];
-        if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
-        if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
-        if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
-        if (filters.transmission) mocks = mocks.filter(m => !m.transmission || m.transmission === filters.transmission);
-        if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
-        if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
-        if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
-        if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));
-        if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
-        if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
+        let errMocks = [...mockListings];
+        let errJiji = [...jiji];
+        const applyCommon = (arr: typeof errMocks) => {
+          if (filters.make) arr = arr.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
+          if (filters.model) arr = arr.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
+          if (filters.condition) arr = arr.filter(m => m.condition === filters.condition);
+          if (filters.transmission) arr = arr.filter(m => !m.transmission || m.transmission === filters.transmission);
+          if (filters.city) arr = arr.filter(m => m.location?.toLowerCase().includes(filters.city!.toLowerCase()));
+          if (filters.bodyType?.length) arr = arr.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+          if (filters.minPrice) arr = arr.filter(m => m.price >= Number(filters.minPrice));
+          if (filters.maxPrice) arr = arr.filter(m => m.price <= Number(filters.maxPrice));
+          if (filters.yearFrom) arr = arr.filter(m => m.year >= Number(filters.yearFrom));
+          if (filters.yearTo) arr = arr.filter(m => m.year <= Number(filters.yearTo));
+          return arr.filter(l => l.price > 0);
+        };
+        errMocks = applyCommon(errMocks);
+        errJiji = applyCommon(errJiji);
         if (filters.country && filters.country !== "All") {
           const cities = countryCitiesMap[filters.country] || [];
           const iso = countryToIso(filters.country);
-          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+          errMocks = errMocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+          errJiji = errJiji.filter(m => cities.some(c => m.location?.includes(c)));
         }
-        mocks = mocks.filter(l => l.price > 0);
-        if (sort === "price-low") mocks.sort((a, b) => a.price - b.price);
-        else if (sort === "price-high") mocks.sort((a, b) => b.price - a.price);
-        setListings(mocks);
+        const combined = [...errMocks, ...errJiji];
+        if (sort === "price-low") combined.sort((a, b) => a.price - b.price);
+        else if (sort === "price-high") combined.sort((a, b) => b.price - a.price);
+        setListings(combined);
         setLoading(false);
         return;
       }
@@ -209,9 +216,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.fuelType?.length) jijiFiltered = jijiFiltered.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
       if (filters.country && filters.country !== "All") {
         const cities = countryCitiesMap[filters.country] || [];
-        const isoMap: Record<string, string> = { TZ: "Tanzania", KE: "Kenya", UG: "Uganda", RW: "Rwanda", ET: "Ethiopia", BI: "Burundi", NG: "Nigeria" };
-        const iso = Object.entries(isoMap).find(([, n]) => n === filters.country)?.[0];
-        jijiFiltered = jijiFiltered.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+        // Jiji country field is corrupted (e.g. Lagos tagged as TZ) — city name only
+        jijiFiltered = jijiFiltered.filter(m => cities.some(c => m.location?.includes(c)));
       }
 
       // Always merge mock data with Supabase data so we don't lose listings

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -153,7 +153,39 @@ function formatFollowers(n: number) {
   return String(n);
 }
 
-function ImageGallery({ images, onClose, startIndex }: { images: string[]; onClose: () => void; startIndex: number }) {
+// Image with CDN → local web path → placeholder fallback chain
+function CarImage({ src, shortcode, index, username, alt, className, onClick }: {
+  src: string; shortcode: string; index: number; username: string; alt: string; className?: string; onClick?: React.MouseEventHandler<HTMLElement>;
+}) {
+  const [attempt, setAttempt] = useState(0);
+  const sources = [
+    src,
+    src.startsWith("http") ? `/instagram-cars/${username}/${shortcode}_${index + 1}.jpg` : null,
+  ].filter(Boolean) as string[];
+  const current = sources[attempt] ?? null;
+
+  if (!current) {
+    return (
+      <div className={`${className} bg-muted flex items-center justify-center`} onClick={onClick}>
+        <IconPhoto size={32} className="text-muted-foreground/30" />
+      </div>
+    );
+  }
+  return (
+    <img
+      src={current}
+      alt={alt}
+      className={className}
+      onClick={onClick}
+      onError={() => setAttempt((a) => a + 1)}
+      loading="lazy"
+    />
+  );
+}
+
+function ImageGallery({ images, onClose, startIndex, shortcode, username }: {
+  images: string[]; onClose: () => void; startIndex: number; shortcode: string; username: string;
+}) {
   const [idx, setIdx] = useState(startIndex);
   return (
     <div
@@ -173,8 +205,11 @@ function ImageGallery({ images, onClose, startIndex }: { images: string[]; onClo
       >
         <IconChevronLeft size={20} className="text-white" />
       </button>
-      <img
+      <CarImage
         src={images[idx]}
+        shortcode={shortcode}
+        index={idx}
+        username={username}
         alt=""
         className="max-h-[90vh] max-w-[90vw] object-contain"
         onClick={(e) => e.stopPropagation()}
@@ -191,7 +226,7 @@ function ImageGallery({ images, onClose, startIndex }: { images: string[]; onClo
   );
 }
 
-function CarCard({ post, waPhone, dealerName }: { post: Post; waPhone: string; dealerName: string }) {
+function CarCard({ post, waPhone, dealerName, username }: { post: Post; waPhone: string; dealerName: string; username: string }) {
   const [gallery, setGallery] = useState<number | null>(null);
   const info = parseCaption(post.caption);
   const phone = waPhone;
@@ -205,18 +240,14 @@ function CarCard({ post, waPhone, dealerName }: { post: Post; waPhone: string; d
           className="relative aspect-[4/3] bg-muted cursor-pointer overflow-hidden shrink-0"
           onClick={() => post.images.length > 0 && setGallery(0)}
         >
-          {post.images[0] ? (
-            <img
-              src={post.images[0]}
-              alt={info.title}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-muted">
-              <IconPhoto size={32} className="text-muted-foreground/30" />
-            </div>
-          )}
+          <CarImage
+            src={post.images[0] ?? ""}
+            shortcode={post.shortcode}
+            index={0}
+            username={username}
+            alt={info.title}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          />
           {post.images.length > 1 && (
             <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded-full">
               <IconPhoto size={9} /> {post.images.length}
@@ -304,7 +335,13 @@ function CarCard({ post, waPhone, dealerName }: { post: Post; waPhone: string; d
       </div>
 
       {gallery !== null && (
-        <ImageGallery images={post.images} onClose={() => setGallery(null)} startIndex={gallery} />
+        <ImageGallery
+          images={post.images}
+          onClose={() => setGallery(null)}
+          startIndex={gallery}
+          shortcode={post.shortcode}
+          username={username}
+        />
       )}
     </>
   );
@@ -431,7 +468,7 @@ export default function InstagramShowroom() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filtered.map((post) => (
-                    <CarCard key={post.shortcode} post={post} waPhone={waPhone} dealerName={dealer.full_name || dealer.username} />
+                    <CarCard key={post.shortcode} post={post} waPhone={waPhone} dealerName={dealer.full_name || dealer.username} username={dealer.username} />
                   ))}
                 </div>
               )}

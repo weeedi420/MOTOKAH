@@ -65,13 +65,17 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
 
       if (error || !rows || rows.length === 0) {
         const jiji = await getJijiListings();
-        let fallback = [...mockListings, ...jiji];
+        let mocks = [...mockListings];
+        let jijiItems = [...jiji];
         if (country && country !== "All") {
           const cities = countryCitiesMap[country] || [];
           const iso = countryToIso(country);
-          fallback = fallback.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+          // Mock data is hand-crafted — trust both city name and country ISO
+          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+          // Jiji country field is unreliable (e.g. Nigerian cities tagged as TZ) — use city name only
+          jijiItems = jijiItems.filter(m => cities.some(c => m.location?.includes(c)));
         }
-        // Shuffle so Jiji and mock listings are mixed
+        const fallback = [...mocks, ...jijiItems];
         fallback.sort(() => Math.random() - 0.5);
         setListings(fallback.slice(0, limit));
         setLoading(false);
@@ -119,13 +123,16 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
 
       const dbIds = new Set(mapped.map((m) => m.id));
       const jiji = await getJijiListings();
-      let fillFrom = [...mockListings, ...jiji].filter((m) => !dbIds.has(m.id));
+      let fillMocks = [...mockListings].filter((m) => !dbIds.has(m.id));
+      let fillJiji = [...jiji].filter((m) => !dbIds.has(m.id));
 
       if (country && country !== "All") {
         const cities = countryCitiesMap[country] || [];
         const iso = countryToIso(country);
-        fillFrom = fillFrom.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+        fillMocks = fillMocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+        fillJiji = fillJiji.filter(m => cities.some(c => m.location?.includes(c)));
       }
+      const fillFrom = [...fillMocks, ...fillJiji];
       fillFrom.sort(() => Math.random() - 0.5);
 
       const combined = [...mapped, ...fillFrom].slice(0, limit);
@@ -136,14 +143,17 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
     fetchListings().catch(async () => {
       const catchCountry = options?.country;
       const jiji = await getJijiListings().catch(() => []);
-      let mocks = [...mockListings, ...jiji];
+      let catchMocks = [...mockListings];
+      let catchJiji = [...jiji];
       if (catchCountry && catchCountry !== "All") {
         const cities = countryCitiesMap[catchCountry] || [];
         const iso = countryToIso(catchCountry);
-        mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+        catchMocks = catchMocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
+        catchJiji = catchJiji.filter(m => cities.some(c => m.location?.includes(c)));
       }
-      mocks.sort(() => Math.random() - 0.5);
-      setListings(mocks.slice(0, options?.limit || 20));
+      const all = [...catchMocks, ...catchJiji];
+      all.sort(() => Math.random() - 0.5);
+      setListings(all.slice(0, options?.limit || 20));
       setLoading(false);
     });
   }, [options?.limit, options?.orderBy, options?.country]);
