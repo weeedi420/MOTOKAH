@@ -14,8 +14,22 @@ import {
   IconBuildingStore,
   IconExternalLink,
   IconSearch,
+  IconBrandInstagram,
+  IconUsers,
 } from "@tabler/icons-react";
 import { DEALERS, type Dealer } from "@/data/dealers";
+import { mockDealers } from "@/data/mockData";
+
+// Instagram showrooms — accounts with scraped data + showroom pages
+const IG_SHOWROOMS = mockDealers.filter((d) =>
+  d.user_id.startsWith("mock-dealer-") && d.user_id !== "mock-dealer-ibaraki"
+).map((d) => ({
+  username: d.user_id.replace("mock-dealer-", ""),
+  name: d.display_name,
+  phone: d.phone,
+  description: d.description,
+  listing_count: d.listing_count,
+}));
 
 type Country = "All" | "Tanzania" | "Kenya" | "Uganda" | "Rwanda";
 
@@ -240,6 +254,49 @@ export default function DealerLeads() {
                 {tab.label}
               </button>
             ))}
+          </div>
+
+          {/* Instagram Showrooms */}
+          <div>
+            <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
+              <IconBrandInstagram size={18} className="text-pink-500" />
+              Instagram Showrooms
+              <span className="text-xs font-normal text-muted-foreground">— live listings from verified dealers</span>
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {IG_SHOWROOMS.map((s) => {
+                const waPhone = s.phone.replace(/[^0-9]/g, "");
+                const waNum = waPhone.startsWith("0") ? `255${waPhone.slice(1)}` : waPhone;
+                return (
+                  <div key={s.username} className="bg-card border border-border rounded-xl p-3 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-orange-400 flex items-center justify-center shrink-0">
+                        <IconBrandInstagram size={16} className="text-white" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-foreground truncate leading-tight">{s.name}</p>
+                        <p className="text-[10px] text-muted-foreground">@{s.username}</p>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                      <IconUsers size={10} /> {s.listing_count} listings
+                    </p>
+                    <div className="flex gap-1 mt-auto">
+                      <Link to={`/showroom/${s.username}`} className="flex-1">
+                        <Button size="sm" variant="outline" className="w-full text-[10px] h-7 px-2">View</Button>
+                      </Link>
+                      {waNum.length >= 10 && (
+                        <a href={`https://wa.me/${waNum}`} target="_blank" rel="noopener noreferrer">
+                          <Button size="sm" className="bg-[#25D366] hover:bg-[#1ebe5a] text-white h-7 px-2">
+                            <IconBrandWhatsapp size={12} />
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Grid */}

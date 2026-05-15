@@ -8,6 +8,14 @@ const path = require("path");
 const BASE = "https://www.motokah.com";
 const TODAY = new Date().toISOString().split("T")[0];
 
+const igShowrooms = [
+  "mgayamotors","khushimotorsdaressalaam","njari_motors","ruge_magari",
+  "al_husnainmotors","lomaautos_","magari_empire1","dula_magari",
+  "rwanko_motors","cholloh_magari_tz","breemotors","ndinga_bei_poa",
+  "tgworldimports","ezy_auto_motors","hanami.japan","fau_motors",
+  "evanamotors","barari_motorstz",
+];
+
 const staticPages = [
   { path: "/",               freq: "daily",   pri: 1.0 },
   { path: "/search",         freq: "daily",   pri: 0.9 },
@@ -23,7 +31,7 @@ const staticPages = [
   { path: "/safety",         freq: "monthly", pri: 0.4 },
   { path: "/terms",          freq: "monthly", pri: 0.3 },
   { path: "/privacy",        freq: "monthly", pri: 0.3 },
-  { path: "/showroom/mgayamotors", freq: "weekly", pri: 0.7 },
+  ...igShowrooms.map(u => ({ path: `/showroom/${u}`, freq: "weekly", pri: 0.7 })),
 ];
 
 const cities = [

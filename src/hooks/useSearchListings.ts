@@ -41,6 +41,11 @@ const countryCitiesMap: Record<string, string[]> = {
   Nigeria: ["Lagos", "Abuja", "Ibadan", "Kano", "Port Harcourt", "Benin City", "Kaduna", "Ilorin", "Maiduguri", "Enugu"],
 };
 
+const isoToCountry: Record<string, string> = { TZ: "Tanzania", KE: "Kenya", UG: "Uganda", RW: "Rwanda", ET: "Ethiopia", BI: "Burundi", NG: "Nigeria" };
+function countryToIso(country: string): string | undefined {
+  return Object.entries(isoToCountry).find(([, n]) => n === country)?.[0];
+}
+
 export type SortOption = "newest" | "price-low" | "price-high" | "views" | "location";
 
 export function useSearchListings(filters: SearchFilters, sort: SortOption) {
@@ -134,7 +139,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
         if (filters.country && filters.country !== "All") {
           const cities = countryCitiesMap[filters.country] || [];
-          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+          const iso = countryToIso(filters.country);
+          mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
         }
         mocks = mocks.filter(l => l.price > 0);
         if (sort === "price-low") mocks.sort((a, b) => a.price - b.price);
@@ -203,7 +209,9 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.fuelType?.length) jijiFiltered = jijiFiltered.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
       if (filters.country && filters.country !== "All") {
         const cities = countryCitiesMap[filters.country] || [];
-        jijiFiltered = jijiFiltered.filter(m => cities.some(c => m.location?.includes(c)));
+        const isoMap: Record<string, string> = { TZ: "Tanzania", KE: "Kenya", UG: "Uganda", RW: "Rwanda", ET: "Ethiopia", BI: "Burundi", NG: "Nigeria" };
+        const iso = Object.entries(isoMap).find(([, n]) => n === filters.country)?.[0];
+        jijiFiltered = jijiFiltered.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
       }
 
       // Always merge mock data with Supabase data so we don't lose listings
@@ -217,7 +225,9 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
       if (filters.country && filters.country !== "All") {
         const cities = countryCitiesMap[filters.country] || [];
-        mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+        const isoMap: Record<string, string> = { TZ: "Tanzania", KE: "Kenya", UG: "Uganda", RW: "Rwanda", ET: "Ethiopia", BI: "Burundi", NG: "Nigeria" };
+        const iso = Object.entries(isoMap).find(([, n]) => n === filters.country)?.[0];
+        mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
       }
       if (filters.minPrice) mocks = mocks.filter(m => m.price >= Number(filters.minPrice));
       if (filters.maxPrice) mocks = mocks.filter(m => m.price <= Number(filters.maxPrice));

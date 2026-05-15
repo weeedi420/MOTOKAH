@@ -14,9 +14,12 @@ import {
   IconChevronRight,
   IconX,
   IconHeart,
+  IconGauge,
+  IconCalendar,
+  IconManualGearbox,
+  IconGasStation,
+  IconPhoto,
 } from "@tabler/icons-react";
-import mgayamotorsData from "@/data/showrooms/mgayamotors.json";
-
 interface Post {
   shortcode: string;
   date: string;
@@ -37,12 +40,17 @@ interface DealerData {
   posts: Post[];
 }
 
-const SHOWROOMS: Record<string, DealerData> = {
-  mgayamotors: mgayamotorsData as DealerData,
-};
+// Auto-load all showroom JSONs from src/data/showrooms/
+const _mods = import.meta.glob("../data/showrooms/*.json", { eager: true }) as Record<string, { default: DealerData }>;
+const SHOWROOMS: Record<string, DealerData> = Object.fromEntries(
+  Object.entries(_mods).map(([path, mod]) => {
+    const username = path.split("/").pop()!.replace(".json", "");
+    return [username, mod.default as DealerData];
+  })
+);
 
 const EMOJI_RE = /[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{1F900}-\u{1F9FF}☎️▶️📍🤝💸🇹🇿🇯🇵👇✅⛽🔥🥷🏻🙌]/gu;
-const CAR_BRANDS = ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi","ford","range rover","land rover","jaguar","volkswagen","vw","lexus","hyundai","kia","suzuki","isuzu","volvo","maserati","bentley","porsche","yamaha","bajaj"];
+const CAR_BRANDS = ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi","ford","range rover","land rover","jaguar","volkswagen","vw","lexus","hyundai","kia","suzuki","isuzu","volvo","maserati","bentley","porsche","yamaha","bajaj","tvs","ktm","piaggio","ducati","royal enfield"];
 
 function cleanText(s: string) {
   return s.replace(EMOJI_RE, "").replace(/[*#]/g, "").trim();
@@ -66,21 +74,32 @@ function parseCaption(caption: string) {
   const model = get("model");
   // year: handles "Year:", "Year of manufacture:", "Year Model:"
   const year = get("year of manufacture", "year model", "year");
-  // price: handles "Price:", "Bei:", "Bei/Price:", "PRICE/BEI:"
+  // price: handles "Price:", "Bei:", "Bei/Price:", "PRICE/BEI:", ":TZS.X"
   const rawPrice = get("price", "bei", "price/bei", "bei/price", "bei:") ||
     (() => {
       for (const line of lines) {
-        const m = line.match(/(?:price|bei)[:/\s]+([0-9,.]+\s*(?:M|m|Million|TZS|TSH)?)/i);
+        let m = line.match(/(?:price|bei)[:/\s]+([0-9,.]+\s*(?:M|m|Million|TZS|TSH)?)/i);
+        if (m) return cleanText(m[1]);
+        // handle ":TZS.22,000,000/-" style lines
+        m = line.match(/(?:^|:)\s*TZS[.\s]*([0-9,.]+)/i);
         if (m) return cleanText(m[1]);
       }
       return null;
     })();
-  // Format price — append "M" if it looks like a bare number ≥ 10
+  // Format price correctly
   let price = rawPrice;
   if (price) {
     const bare = price.replace(/[,\s]/g, "");
-    if (/^\d+(\.\d+)?$/.test(bare) && parseFloat(bare) >= 10) {
-      price = `${bare}M TZS`;
+    const num = parseFloat(bare);
+    if (/^\d+(\.\d+)?$/.test(bare) && num >= 10) {
+      if (num >= 1_000_000) {
+        // raw TZS like "2990000" → "2.99M TZS"
+        const m = (num / 1_000_000).toFixed(2).replace(/\.?0+$/, "");
+        price = `${m}M TZS`;
+      } else {
+        // already in millions like "17.8" → "17.8M TZS"
+        price = `${bare}M TZS`;
+      }
     } else if (/\d+,\d{3},\d{3}/.test(price)) {
       price = price + " TZS";
     }
@@ -113,7 +132,8 @@ function isCarPost(caption: string): boolean {
   const hasYear = /\b(19|20)\d{2}\b/.test(caption);
   const hasPrice = /(?:price|bei)[:\s]/i.test(caption) || /\d+[,.]?\d*\s*(?:m|million)/i.test(caption);
   const hasCarField = /(?:fuel|cc|engine|transmission|mileage|km|color|colour|make|model)\s*[:/]/i.test(caption);
-  return hasBrand || hasYear || hasPrice || hasCarField;
+  const hasBike = /\b(pikipiki|bodaboda|motorbike|motorcycle)\b/i.test(caption);
+  return hasBrand || hasYear || hasPrice || hasCarField || hasBike;
 }
 
 // Deduplicate by caption content (same car posted twice)
@@ -171,17 +191,18 @@ function ImageGallery({ images, onClose, startIndex }: { images: string[]; onClo
   );
 }
 
-function CarCard({ post }: { post: Post }) {
+function CarCard({ post, waPhone, dealerName }: { post: Post; waPhone: string; dealerName: string }) {
   const [gallery, setGallery] = useState<number | null>(null);
   const info = parseCaption(post.caption);
-  const phone = "255712986630";
+  const phone = waPhone;
+  const hasPhone = phone.length >= 10;
 
   return (
     <>
-      <div className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+      <div className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
         {/* Image */}
         <div
-          className="relative aspect-[4/3] bg-muted cursor-pointer overflow-hidden"
+          className="relative aspect-[4/3] bg-muted cursor-pointer overflow-hidden shrink-0"
           onClick={() => post.images.length > 0 && setGallery(0)}
         >
           {post.images[0] ? (
@@ -192,53 +213,90 @@ function CarCard({ post }: { post: Post }) {
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <IconHeart size={32} className="text-muted-foreground/30" />
+            <div className="w-full h-full flex items-center justify-center bg-muted">
+              <IconPhoto size={32} className="text-muted-foreground/30" />
             </div>
           )}
           {post.images.length > 1 && (
-            <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded-full">
-              1/{post.images.length}
+            <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+              <IconPhoto size={9} /> {post.images.length}
             </div>
           )}
-          <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full">
-            <IconHeart size={10} /> {post.likes.toLocaleString()}
-          </div>
+          {post.likes > 0 && (
+            <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full">
+              <IconHeart size={10} /> {post.likes.toLocaleString()}
+            </div>
+          )}
         </div>
 
         {/* Info */}
-        <div className="p-3 space-y-2">
-          <h3 className="font-bold text-sm text-foreground leading-tight line-clamp-1">{info.title}</h3>
+        <div className="p-3 flex flex-col gap-2 flex-1">
+          {/* Title */}
+          <h3 className="font-bold text-sm text-foreground leading-tight line-clamp-2">{info.title}</h3>
 
-          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
-            {info.year && <span>{info.year}</span>}
-            {info.mileage && <span>{info.mileage} km</span>}
-            {info.fuel && <span>{info.fuel}</span>}
-            {info.cc && <span>{info.cc} cc</span>}
-            {info.transmission && <span>{info.transmission}</span>}
-            {info.color && <span>{info.color}</span>}
-          </div>
-
+          {/* Price */}
           {info.price ? (
-            <div className="text-sm font-bold text-primary">{info.price}</div>
+            <div className="text-base font-extrabold text-primary leading-none">{info.price}</div>
           ) : (
             <div className="text-xs text-muted-foreground italic">Contact for price</div>
           )}
 
-          <div className="flex gap-2 pt-1">
+          {/* Stats row */}
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
+            {info.year && (
+              <span className="flex items-center gap-1">
+                <IconCalendar size={11} stroke={2} /> {info.year}
+              </span>
+            )}
+            {info.mileage && (
+              <span className="flex items-center gap-1">
+                <IconGauge size={11} stroke={2} /> {info.mileage} km
+              </span>
+            )}
+            {info.transmission && (
+              <span className="flex items-center gap-1">
+                <IconManualGearbox size={11} stroke={2} /> {info.transmission}
+              </span>
+            )}
+            {(info.fuel || info.cc) && (
+              <span className="flex items-center gap-1">
+                <IconGasStation size={11} stroke={2} /> {[info.fuel, info.cc ? (/cc/i.test(info.cc) ? info.cc : `${info.cc}cc`) : ""].filter(Boolean).join(" · ")}
+              </span>
+            )}
+          </div>
+
+          {/* Color badge */}
+          {info.color && (
+            <span className="self-start text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full border border-border capitalize">
+              {info.color}
+            </span>
+          )}
+
+          {/* Seller */}
+          <p className="text-[10px] text-muted-foreground truncate mt-auto">{dealerName}</p>
+
+          {/* Actions */}
+          <div className="flex gap-2">
+            {hasPhone && (
+              <a
+                href={`https://wa.me/${phone}?text=Hi, I saw your ${info.title} on Motokah. Is it still available?`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1"
+              >
+                <Button size="sm" className="w-full bg-[#25D366] hover:bg-[#1ebe5a] text-white text-xs gap-1">
+                  <IconBrandWhatsapp size={13} /> WhatsApp
+                </Button>
+              </a>
+            )}
             <a
-              href={`https://wa.me/${phone}?text=Hi, I saw your ${info.title} listing on Motokah. Is it still available?`}
+              href={post.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1"
+              className={hasPhone ? "" : "flex-1"}
             >
-              <Button size="sm" className="w-full bg-[#25D366] hover:bg-[#1ebe5a] text-white text-xs gap-1">
-                <IconBrandWhatsapp size={13} /> WhatsApp
-              </Button>
-            </a>
-            <a href="tel:+255712986630" className="flex-1">
-              <Button size="sm" variant="outline" className="w-full text-xs gap-1">
-                <IconPhone size={13} /> Call
+              <Button size="sm" variant="outline" className={`${hasPhone ? "" : "w-full"} text-xs gap-1`}>
+                <IconBrandInstagram size={13} /> {hasPhone ? "Post" : "View on Instagram"}
               </Button>
             </a>
           </div>
@@ -304,10 +362,17 @@ export default function InstagramShowroom() {
                   <IconUsers size={14} />
                   {formatFollowers(dealer.followers)} followers
                 </span>
-                <span className="flex items-center gap-1">
-                  <IconMapPin size={14} />
-                  Kinondoni, Dar es Salaam, Tanzania
-                </span>
+                {(() => {
+                  const loc = dealer.bio.match(/(?:📍|location|address|ofisi|located)[^\n]*?((?:dar es salaam|nairobi|kampala|arusha|mwanza|dodoma|mombasa|kigali)[^\n,]{0,30})/i)?.[1]
+                    || dealer.bio.match(/(dar es salaam|nairobi|kampala|arusha|mwanza|dodoma|mombasa|kigali)/i)?.[1]
+                    || "Tanzania";
+                  return (
+                    <span className="flex items-center gap-1">
+                      <IconMapPin size={14} />
+                      {loc.trim()}
+                    </span>
+                  );
+                })()}
               </div>
               <p className="text-xs text-muted-foreground mt-2 line-clamp-2 max-w-lg">
                 {dealer.bio.replace(/[🇹🇿🇯🇵▶️☎️👇]/g, "").replace(/\n+/g, " ").trim()}
@@ -355,11 +420,21 @@ export default function InstagramShowroom() {
                   <IconBrandInstagram size={14} /> View on Instagram
                 </a>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filtered.map((post) => (
-                  <CarCard key={post.shortcode} post={post} />
-                ))}
-              </div>
+              {filtered.length === 0 ? (
+                <div className="text-center py-16 text-muted-foreground">
+                  <IconPhoto size={40} className="mx-auto mb-3 opacity-30" />
+                  <p className="text-sm">No car listings found for this dealer yet.</p>
+                  <a href={`https://www.instagram.com/${dealer.username}/`} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline mt-1 block">
+                    View on Instagram →
+                  </a>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filtered.map((post) => (
+                    <CarCard key={post.shortcode} post={post} waPhone={waPhone} dealerName={dealer.full_name || dealer.username} />
+                  ))}
+                </div>
+              )}
             </>
           );
         })()}

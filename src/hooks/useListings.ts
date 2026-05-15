@@ -32,6 +32,11 @@ const countryCitiesMap: Record<string, string[]> = {
   Nigeria: ["Lagos", "Abuja", "Ibadan", "Kano", "Port Harcourt", "Benin City", "Kaduna", "Ilorin", "Maiduguri", "Enugu"],
 };
 
+const isoToCountry: Record<string, string> = { TZ: "Tanzania", KE: "Kenya", UG: "Uganda", RW: "Rwanda", ET: "Ethiopia", BI: "Burundi", NG: "Nigeria" };
+function countryToIso(country: string): string | undefined {
+  return Object.entries(isoToCountry).find(([, n]) => n === country)?.[0];
+}
+
 export function useListings(options?: { limit?: number; orderBy?: string; country?: string }) {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +68,8 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         let fallback = [...mockListings, ...jiji];
         if (country && country !== "All") {
           const cities = countryCitiesMap[country] || [];
-          fallback = fallback.filter(m => cities.some(c => m.location?.includes(c)));
+          const iso = countryToIso(country);
+          fallback = fallback.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
         }
         // Shuffle so Jiji and mock listings are mixed
         fallback.sort(() => Math.random() - 0.5);
@@ -117,7 +123,8 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
 
       if (country && country !== "All") {
         const cities = countryCitiesMap[country] || [];
-        fillFrom = fillFrom.filter(m => cities.some(c => m.location?.includes(c)));
+        const iso = countryToIso(country);
+        fillFrom = fillFrom.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
       }
       fillFrom.sort(() => Math.random() - 0.5);
 
@@ -127,11 +134,13 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
     };
 
     fetchListings().catch(async () => {
+      const catchCountry = options?.country;
       const jiji = await getJijiListings().catch(() => []);
       let mocks = [...mockListings, ...jiji];
-      if (country && country !== "All") {
-        const cities = countryCitiesMap[country] || [];
-        mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)));
+      if (catchCountry && catchCountry !== "All") {
+        const cities = countryCitiesMap[catchCountry] || [];
+        const iso = countryToIso(catchCountry);
+        mocks = mocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
       }
       mocks.sort(() => Math.random() - 0.5);
       setListings(mocks.slice(0, options?.limit || 20));

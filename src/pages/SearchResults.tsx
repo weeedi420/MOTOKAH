@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useLocation as useLocationCtx } from "@/contexts/LocationContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VehicleCard from "@/components/VehicleCard";
@@ -20,6 +21,7 @@ export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
   const { user } = useAuth();
+  const { country: locationCountry } = useLocationCtx();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>("newest");
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -32,13 +34,21 @@ export default function SearchResults() {
     make: searchParams.get("make") || "",
     condition: searchParams.get("condition") || "",
     city: searchParams.get("city") || "",
-    country: searchParams.get("country") || "",
+    country: searchParams.get("country") || (locationCountry !== "All" ? locationCountry : ""),
     bodyType: searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : [],
     transmission: searchParams.get("transmission") || "",
     minPrice: searchParams.get("minPrice") || "",
     maxPrice: searchParams.get("maxPrice") || "",
     vehicleType: (searchParams.get("vehicleType") as "car" | "bike" | "commercial" | "spare") || "",
   }));
+
+  // Sync filters when the user changes country in the header
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
+      country: locationCountry !== "All" ? locationCountry : "",
+    }));
+  }, [locationCountry]);
 
   // Sync URL params when filters change
   const updateFilters = (newFilters: Filters) => {
