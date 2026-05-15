@@ -195,8 +195,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       const validateListing = (l: Listing) => {
         if (!l.price || l.price <= 0) return false;
-        // For Jiji listings (external), be less strict
-        if (l.id?.startsWith("jiji-")) return true;
+        // Instagram showroom and Jiji listings — skip strict mileage/transmission checks
+        if (l.id?.startsWith("jiji-") || l.id?.startsWith("ig-")) return true;
         if (l.mileage === 0 && l.condition !== "New") return false;
         if (!l.transmission) return false;
         return true;

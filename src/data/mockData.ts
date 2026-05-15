@@ -1,5 +1,13 @@
 import mgayaJson from "./showrooms/mgayamotors.json";
 
+// Load all other showroom JSONs
+const _showroomMods = import.meta.glob("./showrooms/*.json", { eager: true }) as Record<string, { default: { username: string; full_name: string; phone: string; posts: Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string }> } }>;
+
+const _DEALER_CITY: Record<string, string> = {
+  hupa_motors_ltd: "Mwanza, TZ",
+  justin_motors_ltd: "Dar es Salaam, TZ",
+};
+
 export const carMakes = [
   "Toyota", "Nissan", "Subaru", "Land Rover", "Jeep", "Mitsubishi",
   "BMW", "Audi", "Mazda", "Mercedes-Benz", "Honda", "Hyundai",
@@ -187,8 +195,58 @@ function _convertMgayaToListings(): Listing[] {
   });
 }
 
+function _convertAllShowroomsToListings(): Listing[] {
+  const results: Listing[] = [];
+  for (const [path, mod] of Object.entries(_showroomMods)) {
+    const username = path.split("/").pop()!.replace(".json", "");
+    if (username === "mgayamotors") continue; // already handled separately
+    const dealer = mod.default;
+    const city = _DEALER_CITY[username] ?? "Dar es Salaam, TZ";
+    const carPosts = dealer.posts
+      .filter((p) => _isMgayaCarPost(p.caption))
+      .filter((p, i, arr) => {
+        const key = p.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase();
+        return arr.findIndex((x) => x.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase() === key) === i;
+      });
+    for (const post of carPosts) {
+      const info = _parseMgayaCaption(post.caption);
+      results.push({
+        id: `ig-${username}-${post.shortcode}`,
+        title: info.title,
+        price: info.price,
+        currency: "TZS",
+        condition: "Foreign Used" as const,
+        year: info.year || (post.date ? new Date(post.date).getFullYear() : 0),
+        mileage: info.mileage,
+        transmission: info.transmission,
+        location: city,
+        image: post.images[0] || "",
+        images: post.images,
+        views: Math.max(post.likes * 3, 50),
+        sellerName: dealer.full_name || username,
+        sellerRating: 4.5,
+        sellerType: "dealer" as const,
+        sellerListingCount: carPosts.length,
+        sellerId: `mock-dealer-${username}`,
+        sellerPhone: dealer.phone || "",
+        make: info.make ?? "Unknown",
+        model: info.model ?? "Unknown",
+        cc: info.cc,
+        color: info.color,
+        fuelType: info.fuel,
+        dutyPaid: false,
+        description: post.caption.slice(0, 300).trim(),
+        sourceUrl: post.url,
+        country: "TZ",
+      });
+    }
+  }
+  return results;
+}
+
 export const mockListings: Listing[] = [
   ..._convertMgayaToListings(),
+  ..._convertAllShowroomsToListings(),
 
   // ─── Additional private seller listings — various cities across East Africa ──
   {
