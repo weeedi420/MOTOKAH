@@ -64,7 +64,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
       const { data: rows, error } = await query;
 
       if (error || !rows || rows.length === 0) {
-        const jiji = await getJijiListings();
+        const jiji = await getJijiListings(country);
         let mocks = [...mockListings];
         let jijiItems = [...jiji];
         if (country && country !== "All") {
@@ -122,7 +122,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
       });
 
       const dbIds = new Set(mapped.map((m) => m.id));
-      const jiji = await getJijiListings();
+      const jiji = await getJijiListings(country);
       let fillMocks = [...mockListings].filter((m) => !dbIds.has(m.id));
       let fillJiji = [...jiji].filter((m) => !dbIds.has(m.id));
 
@@ -142,7 +142,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
 
     fetchListings().catch(async () => {
       const catchCountry = options?.country;
-      const jiji = await getJijiListings().catch(() => []);
+      const jiji = await getJijiListings(catchCountry).catch(() => []);
       let catchMocks = [...mockListings];
       let catchJiji = [...jiji];
       if (catchCountry && catchCountry !== "All") {

@@ -26,8 +26,8 @@ function detectCountry(): Country {
   const lang = navigator.language || "en";
   if (lang === "sw") return "Tanzania";
 
-  // Default fallback
-  return "All";
+  // Default fallback — site is Tanzania-focused
+  return "Tanzania";
 }
 
 const LocationContext = createContext<LocationContextType>({

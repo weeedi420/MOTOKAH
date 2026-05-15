@@ -125,7 +125,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       if (error) {
         console.error(error);
-        const jiji = await getJijiListings().catch(() => []);
+        const jiji = await getJijiListings(filters.country).catch(() => []);
         let errMocks = [...mockListings];
         let errJiji = [...jiji];
         const applyCommon = (arr: typeof errMocks) => {
@@ -202,7 +202,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         return true;
       };
 
-      const jiji = await getJijiListings().catch(() => []);
+      const jiji = await getJijiListings(filters.country).catch(() => []);
       let jijiFiltered = [...jiji];
       if (filters.make) jijiFiltered = jijiFiltered.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
       if (filters.model) jijiFiltered = jijiFiltered.filter(m => m.model?.toLowerCase().includes(filters.model!.toLowerCase()));
