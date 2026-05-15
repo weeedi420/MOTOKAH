@@ -3,9 +3,11 @@ import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLocation } from "@/contexts/LocationContext";
 
 export function NewlyAdded() {
-  const { listings, loading } = useListings({ limit: 8 });
+  const { country } = useLocation();
+  const { listings, loading } = useListings({ limit: 8, country });
 
   if (loading) {
     return (
@@ -88,7 +90,8 @@ export function BestSellingBrands() {
 }
 
 export function SpecialDeals() {
-  const { listings, loading } = useListings({ limit: 4 });
+  const { country } = useLocation();
+  const { listings, loading } = useListings({ limit: 4, country });
 
   if (loading || listings.length === 0) return null;
 
