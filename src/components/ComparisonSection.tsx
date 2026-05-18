@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { IconScale, IconCheck } from "@tabler/icons-react";
 import { useListings } from "@/hooks/useListings";
+import { useLocation } from "@/contexts/LocationContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 export default function ComparisonSection() {
-  const { listings, loading } = useListings({ limit: 4 });
+  const { country } = useLocation();
+  const { listings, loading } = useListings({ limit: 4, country });
   const [selected, setSelected] = useState<string[]>([]);
 
   const toggle = (id: string) => {
