@@ -39,7 +39,7 @@ export const bikeTypes = ["Sport", "Cruiser", "Touring", "Scooter", "Dirt Bike"]
 export const bikeMakes = ["Honda", "Yamaha", "Suzuki", "Kawasaki", "Bajaj", "TVS", "KTM"];
 export const ccRanges = ["50cc", "125cc", "250cc", "500cc", "750cc", "1000cc+"];
 
-export const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Tipper"];
+export const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
 
 export const africanCities = [
   "Dar es Salaam", "Dodoma", "Arusha", "Mwanza", "Zanzibar", "Mbeya", "Moshi", "Tanga",
@@ -144,7 +144,27 @@ function _parseMgayaCaption(caption: string) {
     ? `${year ? year + " " : ""}${make} ${model}`.trim()
     : lines[0].replace(emojiRe, "").replace(/[*#]/g, "").trim().slice(0, 80) || "Vehicle";
   title = title.replace(/\b\w/g, (c) => c.toUpperCase());
-  return { title, make, model, year, price, fuel, mileage, color, transmission, cc };
+
+  // Detect bodyType from make+model+caption keywords
+  const bodyHint = `${make || ""} ${model || ""} ${caption}`.toLowerCase();
+  let bodyType: string | undefined;
+  if (/hilux|navara|ranger|d-max|l200|double.?cab|single.?cab|dmax|pickup/i.test(bodyHint)) {
+    bodyType = "Pickup";
+  } else if (/canter|dyna|tipper|lorry|elf\b|fuso|hino|actros|truck/i.test(bodyHint)) {
+    bodyType = "Truck";
+  } else if (/daladala|coaster|rosa|hiace.{0,10}bus|minibus|mini.?bus/i.test(bodyHint)) {
+    bodyType = "Minibus";
+  } else if (/\bbus\b/i.test(bodyHint) && !/airbus|minibus/i.test(bodyHint)) {
+    bodyType = "Bus";
+  } else if (/hiace|noah|voxy|\bvan\b|probox|succeed/i.test(bodyHint)) {
+    bodyType = "Van";
+  } else if (/motorbike|motorcycle|bodaboda|boda.?boda|pikipiki|scooter|tvs|bajaj|yamaha.{0,10}(125|150|250)/i.test(bodyHint)) {
+    bodyType = "Motorcycle";
+  } else if (/prado|landcruiser|land.?cruiser|patrol|fortuner|harrier|rav4|cx-5|tucson|santa.?fe|forester|outback|\bsuv\b/i.test(bodyHint)) {
+    bodyType = "SUV";
+  }
+
+  return { title, make, model, year, price, fuel, mileage, color, transmission, cc, bodyType };
 }
 
 function _isMgayaCarPost(caption: string): boolean {
@@ -185,6 +205,7 @@ function _convertMgayaToListings(): Listing[] {
       sellerPhone: "+255712986630",
       badge: i < 3 ? "hot" as const : undefined,
       fuelType: info.fuel,
+      bodyType: info.bodyType,
       make: info.make ?? "Unknown",
       model: info.model ?? "Unknown",
       cc: info.cc,
@@ -231,6 +252,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         sellerPhone: dealer.phone || "",
         make: info.make ?? "Unknown",
         model: info.model ?? "Unknown",
+        bodyType: info.bodyType,
         cc: info.cc,
         color: info.color,
         fuelType: info.fuel,

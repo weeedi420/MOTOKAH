@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { type Listing, mockListings } from "@/data/mockData";
+import { type Listing, mockListings, commercialTypes as COMMERCIAL_TYPES } from "@/data/mockData";
 import { getJijiListings } from "@/data/jijiListings";
 
 export interface SearchFilters {
@@ -84,13 +84,12 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       // Vehicle type filtering
       if (filters.vehicleType) {
         const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
-        const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
         if (filters.vehicleType === "bike") {
           query = query.in("body_type", bikeTypes);
         } else if (filters.vehicleType === "commercial") {
-          query = query.in("body_type", commercialTypes);
+          query = query.in("body_type", COMMERCIAL_TYPES);
         } else if (filters.vehicleType === "car") {
-          query = query.not("body_type", "in", [...bikeTypes, ...commercialTypes]);
+          query = query.not("body_type", "in", [...bikeTypes, ...COMMERCIAL_TYPES]);
         }
       }
 
@@ -246,23 +245,23 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       // Vehicle type filtering for mocks
       if (filters.vehicleType) {
         const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
-        const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
         if (filters.vehicleType === "bike") {
           mocks = mocks.filter(m => bikeTypes.includes(m.bodyType || ""));
         } else if (filters.vehicleType === "commercial") {
-          mocks = mocks.filter(m => commercialTypes.includes(m.bodyType || ""));
+          mocks = mocks.filter(m => COMMERCIAL_TYPES.includes(m.bodyType || ""));
         } else if (filters.vehicleType === "car") {
-          mocks = mocks.filter(m => !bikeTypes.includes(m.bodyType || "") && !commercialTypes.includes(m.bodyType || ""));
+          mocks = mocks.filter(m => !bikeTypes.includes(m.bodyType || "") && !COMMERCIAL_TYPES.includes(m.bodyType || ""));
         }
       }
       
       // Apply validation to mock data
       mocks = mocks.filter(validateListing);
 
-      // Merge: Supabase + mock + Jiji
+      // Merge: Supabase + mock + Jiji (deduplicate all three sources against each other)
       const realIds = new Set(mapped.map(r => r.id));
       const uniqueMocks = mocks.filter(m => !realIds.has(m.id));
-      const uniqueJiji = jijiFiltered.filter(m => !realIds.has(m.id));
+      const mockIds = new Set(uniqueMocks.map(m => m.id));
+      const uniqueJiji = jijiFiltered.filter(m => !realIds.has(m.id) && !mockIds.has(m.id));
       const combined = [...mapped.filter(validateListing), ...uniqueMocks, ...uniqueJiji];
       
       // Sort combined results

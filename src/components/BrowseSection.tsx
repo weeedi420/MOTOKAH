@@ -7,6 +7,7 @@ const allCategories = [
   { name: "Double Cab",       icon: "/icons/pickup.png",      param: "bodyType=Pickup" },
   { name: "Small Car",        icon: "/icons/hatchback.png",   param: "bodyType=Hatchback" },
   { name: "Daladala",         icon: "/icons/minibus.png",     param: "bodyType=Minibus" },
+  { name: "Bus",              icon: "/icons/minibus.png",     param: "bodyType=Bus" },
   { name: "Lorry",            icon: "/icons/truck.png",       param: "bodyType=Truck" },
   { name: "Van",              icon: "/icons/van.png",         param: "bodyType=Van" },
   { name: "Boda Boda",        icon: "/icons/bike-sports.png", param: "bodyType=Motorcycle" },

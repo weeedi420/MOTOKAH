@@ -42,6 +42,8 @@ ACCOUNTS = [
     "hanami.japan",
     "ndinga_bei_poa",
     "ukajapantz",
+    "carzone_tz",
+    "kk_magic_cars_",
 ]
 
 SESSION_FILE = os.path.join(os.path.expanduser("~"), ".motokah_ig_session")
