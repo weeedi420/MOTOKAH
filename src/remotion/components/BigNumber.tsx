@@ -31,14 +31,14 @@ export function BigNumber({
     const t = interpolate(f, [0, durationFrames], [0, 1], {
       extrapolateRight: "clamp",
       extrapolateLeft: "clamp",
-      easing: EASE,
+      easing: EASE.outExpo,
     });
     const current = Math.round(from + (to - from) * t);
     displayValue = current.toLocaleString();
   }
 
-  const opacity = interpolate(f, [0, 18], [0, 1], { extrapolateRight: "clamp", extrapolateLeft: "clamp", easing: EASE });
-  const translateY = interpolate(f, [0, 18], [16, 0], { extrapolateRight: "clamp", extrapolateLeft: "clamp", easing: EASE });
+  const opacity = interpolate(f, [0, 18], [0, 1], { extrapolateRight: "clamp", extrapolateLeft: "clamp", easing: EASE.outExpo });
+  const translateY = interpolate(f, [0, 18], [16, 0], { extrapolateRight: "clamp", extrapolateLeft: "clamp", easing: EASE.outExpo });
 
   if (f < 0) return null;
 

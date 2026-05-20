@@ -8,11 +8,11 @@ export function Scene07_Map() {
   const fadeOut = interpolate(frame, [140, 155], [1, 0], { extrapolateRight: "clamp" });
 
   // Title animations - FASTER
-  const titleOp = interpolate(frame, [10, 22], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const titleY  = interpolate(frame, [10, 22], [14, 0], { extrapolateRight: "clamp", easing: EASE });
+  const titleOp = interpolate(frame, [10, 22], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo });
+  const titleY  = interpolate(frame, [10, 22], [14, 0], { extrapolateRight: "clamp", easing: EASE.outExpo });
 
   // Stats row - FASTER
-  const statsOp = interpolate(frame, [80, 92], [0, 1], { extrapolateRight: "clamp", easing: EASE });
+  const statsOp = interpolate(frame, [80, 92], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo });
 
   const stats = [
     { value: "5", label: "Countries" },

@@ -7,14 +7,14 @@ interface DetailScreenProps {
 }
 
 export function DetailScreen({ frame }: DetailScreenProps) {
-  const imageOp   = interpolate(frame, [0, 16], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const titleOp   = interpolate(frame, [8, 26], [0, 1],  { extrapolateRight: "clamp", easing: EASE });
-  const priceOp   = interpolate(frame, [14, 30], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const priceScale = interpolate(frame, [14, 30], [0.96, 1], { extrapolateRight: "clamp", easing: EASE });
-  const specsOp   = interpolate(frame, [22, 38], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const locOp     = interpolate(frame, [28, 44], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const btnOp     = interpolate(frame, [36, 52], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const btnY      = interpolate(frame, [36, 52], [8, 0],  { extrapolateRight: "clamp", easing: EASE });
+  const imageOp   = interpolate(frame, [0, 16], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const titleOp   = interpolate(frame, [8, 26], [0, 1],  { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const priceOp   = interpolate(frame, [14, 30], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const priceScale = interpolate(frame, [14, 30], [0.96, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const specsOp   = interpolate(frame, [22, 38], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const locOp     = interpolate(frame, [28, 44], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const btnOp     = interpolate(frame, [36, 52], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const btnY      = interpolate(frame, [36, 52], [8, 0],  { extrapolateRight: "clamp", easing: EASE.outExpo});
 
   // WhatsApp subtle pulse
   const wpPulse = 1 + 0.015 * Math.sin((frame / 18) * Math.PI * 2);

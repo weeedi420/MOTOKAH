@@ -13,12 +13,12 @@ const MESSAGES = [
 ];
 
 export function ChatScreen({ frame }: ChatScreenProps) {
-  const headerOp = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp", easing: EASE });
+  const headerOp = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
   const successOp = interpolate(frame, [MESSAGES.length * 14 + 10, MESSAGES.length * 14 + 28], [0, 1], {
-    extrapolateRight: "clamp", easing: EASE,
+    extrapolateRight: "clamp", easing: EASE.outExpo,
   });
   const successY = interpolate(frame, [MESSAGES.length * 14 + 10, MESSAGES.length * 14 + 28], [16, 0], {
-    extrapolateRight: "clamp", easing: EASE,
+    extrapolateRight: "clamp", easing: EASE.outExpo,
   });
 
   return (
@@ -60,8 +60,8 @@ export function ChatScreen({ frame }: ChatScreenProps) {
         background: "#f0f2f5",
       }}>
         {MESSAGES.map((msg, i) => {
-          const op = interpolate(frame, [i * 14 + 4, i * 14 + 22], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-          const y  = interpolate(frame, [i * 14 + 4, i * 14 + 22], [8, 0],  { extrapolateRight: "clamp", easing: EASE });
+          const op = interpolate(frame, [i * 14 + 4, i * 14 + 22], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+          const y  = interpolate(frame, [i * 14 + 4, i * 14 + 22], [8, 0],  { extrapolateRight: "clamp", easing: EASE.outExpo});
           const isSeller = msg.from === "seller";
 
           return (

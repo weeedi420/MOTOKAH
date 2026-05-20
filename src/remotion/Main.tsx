@@ -1,6 +1,6 @@
-import { AbsoluteFill, Audio, Sequence, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Sequence, spring, useCurrentFrame } from "remotion";
 import { TIMING } from "./timing";
-import { colorGrade, SPRING, EASE } from "./design";
+import { colorGrade, SPRING } from "./design";
 import { Scene01_Hook }    from "./scenes/Scene01_Hook";
 import { Scene02_Problem } from "./scenes/Scene02_Problem";
 import { Scene03_Brand }   from "./scenes/Scene03_Brand";
@@ -12,7 +12,6 @@ import { Scene06b_Chat }   from "./scenes/Scene06b_Chat";
 import { Scene07_Countries } from "./scenes/Scene07_Countries";
 import { Scene08_Stats }   from "./scenes/Scene08_Stats";
 import { Scene09_CTA }     from "./scenes/Scene09_CTA";
-import { spring } from "remotion";
 
 const T = TIMING.scenes;
 const OVR = TIMING.overlap;

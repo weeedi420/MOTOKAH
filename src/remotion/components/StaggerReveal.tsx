@@ -25,12 +25,12 @@ export function StaggerReveal({
         const opacity = interpolate(f, [0, 20], [0, 1], {
           extrapolateRight: "clamp",
           extrapolateLeft: "clamp",
-          easing: EASE,
+          easing: EASE.outExpo,
         });
         const y = interpolate(f, [0, 20], [distance, 0], {
           extrapolateRight: "clamp",
           extrapolateLeft: "clamp",
-          easing: EASE,
+          easing: EASE.outExpo,
         });
         return (
           <div key={i} style={{ transform: `translateY(${y}px)`, opacity }}>

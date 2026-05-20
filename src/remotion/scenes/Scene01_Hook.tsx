@@ -1,6 +1,5 @@
 import { useCurrentFrame, spring } from "remotion";
 import { COLOR, SPRING, appleReveal, cameraZoom } from "../design";
-import { markerToFrame } from "../timing";
 
 const HEADLINE = ["Buying", "a", "car", "in", "East", "Africa...", "just", "got", "easier."];
 

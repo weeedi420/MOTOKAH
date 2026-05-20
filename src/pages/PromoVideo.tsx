@@ -1,9 +1,8 @@
 import { Player } from "@remotion/player";
 import { MotokahPromo } from "@/remotion/Main";
-import { TIMING } from "@/remotion/timing";
+import { TIMING, FPS } from "@/remotion/timing";
 
 const TOTAL = TIMING.totalDuration;
-const FPS = TIMING.fps;
 const W = 1280;
 const H = 720;
 

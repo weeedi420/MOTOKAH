@@ -12,14 +12,14 @@ interface HomeScreenProps {
 const SEARCH = "Toyota Hilux";
 
 export function HomeScreen({ frame, showTyping = false, hideSearchBar = false }: HomeScreenProps) {
-  const contentOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const heroOp = interpolate(frame, [4, 22], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const heroY = interpolate(frame, [4, 22], [12, 0], { extrapolateRight: "clamp", easing: EASE });
-  const chipsOp = interpolate(frame, [12, 30], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const card1Op = interpolate(frame, [22, 40], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const card1Y = interpolate(frame, [22, 40], [12, 0], { extrapolateRight: "clamp", easing: EASE });
-  const card2Op = interpolate(frame, [28, 46], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const card2Y = interpolate(frame, [28, 46], [12, 0], { extrapolateRight: "clamp", easing: EASE });
+  const contentOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const heroOp = interpolate(frame, [4, 22], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const heroY = interpolate(frame, [4, 22], [12, 0], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const chipsOp = interpolate(frame, [12, 30], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const card1Op = interpolate(frame, [22, 40], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const card1Y = interpolate(frame, [22, 40], [12, 0], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const card2Op = interpolate(frame, [28, 46], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const card2Y = interpolate(frame, [28, 46], [12, 0], { extrapolateRight: "clamp", easing: EASE.outExpo});
 
   return (
     <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: contentOp }}>

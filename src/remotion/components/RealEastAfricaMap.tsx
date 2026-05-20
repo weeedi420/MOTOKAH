@@ -1,5 +1,5 @@
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { COLOR, SPRING_CFG } from "../design";
+import { COLOR, SPRING } from "../design";
 
 interface City {
   name: string;
@@ -190,7 +190,7 @@ export function RealEastAfricaMap({ frame }: RealMapProps) {
           {/* City pins */}
           {CITIES.filter(c => c.active).map((city, i) => {
             const delay = 35 + i * 6;
-            const s = spring({ frame: frame - delay, fps, config: SPRING_CFG });
+            const s = spring({ frame: frame - delay, fps, config: SPRING.main });
             const op = interpolate(frame - delay, [0, 10], [0, 1], { extrapolateRight: "clamp" });
             const pulse = 1 + 0.12 * Math.sin((frame / fps) * Math.PI * 2 + i * 1.2);
 

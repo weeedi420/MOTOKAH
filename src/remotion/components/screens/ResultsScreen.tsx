@@ -13,8 +13,8 @@ const CARS = [
 ];
 
 export function ResultsScreen({ frame }: ResultsScreenProps) {
-  const headerOp = interpolate(frame, [0, 16], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const chipsOp  = interpolate(frame, [8, 24], [0, 1], { extrapolateRight: "clamp", easing: EASE });
+  const headerOp = interpolate(frame, [0, 16], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
+  const chipsOp  = interpolate(frame, [8, 24], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo});
 
   return (
     <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column" }}>

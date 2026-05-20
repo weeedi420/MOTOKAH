@@ -1,5 +1,5 @@
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { COLOR, EASE, SPRING_CFG } from "../design";
+import { COLOR, EASE, SPRING } from "../design";
 
 // Projection: x = (lon − 28) * 21,  y = (12 − lat) * 21
 // ViewBox: 0 0 520 588  →  28°E–52.8°E, 12°N–16°S
@@ -145,7 +145,7 @@ export function EastAfricaMap({
   const f = frame - startFrame;
 
   const inactiveOp = interpolate(f, [0, 20], [0, 0.8], {
-    extrapolateRight: "clamp", extrapolateLeft: "clamp", easing: EASE,
+    extrapolateRight: "clamp", extrapolateLeft: "clamp", easing: EASE.outExpo,
   });
 
   return (
@@ -202,7 +202,7 @@ export function EastAfricaMap({
       {/* City pins */}
       {ACTIVE.filter((c) => c.pin).map((c, i) => {
         const delay = i * 10 + 40;
-        const s = spring({ frame: f - delay, fps, config: SPRING_CFG });
+        const s = spring({ frame: f - delay, fps, config: SPRING.main });
         const op = interpolate(f - delay, [0, 12], [0, 1], {
           extrapolateRight: "clamp", extrapolateLeft: "clamp",
         });
