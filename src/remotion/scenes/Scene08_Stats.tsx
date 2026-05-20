@@ -25,7 +25,7 @@ export function Scene08_Stats() {
     };
   });
 
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 1675) / 12);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 70) / 15);
 
   return (
     <div

@@ -18,7 +18,7 @@ export function Scene06_Listing() {
     config: SPRING.cinematic,
   });
 
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 1260) / 15);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 100) / 15);
 
   return (
     <div
