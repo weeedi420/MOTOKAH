@@ -1,101 +1,23 @@
-# MOTOKAH PROMO - ELEVENLABS SCRIPT
-# =================================
-# Voice: Ayinde (young British Nigerian) - PREMIUM
-# Model: eleven_multilingual_v2
-# 
-# PERFECT SETTINGS (Copy these exactly):
-# - Stability: 0.28
-# - Similarity: 0.80
-# - Style: 0.55
-# - Speaker Boost: ON
-# - Model: eleven_multilingual_v2
-#
-# IMPORTANT: ElevenLabs supports <break time="Xs" /> tags!
-# Copy EVERYTHING below the line into the text box.
-# ================================================================
+Buying a car in East Africa just got easier.
 
-<break time="0.3s" />
+You know the problem. Endless WhatsApp groups. Random listings. Vague prices. It is a mess.
 
-Yo! <break time="0.2s" /> Buying a car in East Africa?
+But there is a better way.
 
-<break time="0.8s" />
+Motokah. The marketplace for East Africa's car market.
 
-Used to be a total headache. <break time="0.3s" /> Endless WhatsApp groups... <break time="0.2s" /> random listings... <break time="0.2s" /> sketchy prices?
+For sellers, post your car in just two minutes. Completely free. Forever.
 
-<break time="0.6s" />
+Easy listing. Add your photos, set your price, and reach thousands of buyers across East Africa. Free forever.
 
-NOT ANYMORE!
+And buyers? We have got you covered. From Dar es Salaam to Nairobi, Kampala to Kinshasa. Tanzania, Kenya, Uganda, Rwanda, Ethiopia, and DRC.
 
-<break time="0.5s" />
+No middlemen. No commission. Contact the seller directly via WhatsApp or call.
 
-MOTOKAH changes EVERYTHING!
+Your car. Your price. Your deal.
 
-<break time="0.4s" />
+Over ten thousand listings. Six countries. And completely free.
 
-Post your car in just TWO MINUTES. <break time="0.2s" /> Completely FREE.
+Gari yako, bei yako. Your car, your price.
 
-<break time="0.5s" />
-
-Buyers across Tanzania... <break time="0.15s" /> Kenya... <break time="0.15s" /> Uganda... <break time="0.15s" /> Rwanda... <break time="0.15s" /> Ethiopia... <break time="0.15s" /> and DRC find you directly.
-
-<break time="0.5s" />
-
-NO MIDDLEMEN. <break time="0.2s" /> NO COMMISSION.
-
-<break time="0.4s" />
-
-Just YOUR car. <break time="0.2s" /> YOUR price. <break time="0.2s" /> YOUR deal!
-
-<break time="0.5s" />
-
-Over TEN THOUSAND verified listings across East Africa on ONE massive platform!
-
-<break time="0.6s" />
-
-Motokah... <break time="0.3s" /> dot... <break time="0.3s" /> com!
-
-<break time="0.8s" />
-
-Let's GO!
-
-<break time="0.3s" />
-
-# ================================================================
-# TIMING BREAKDOWN (for reference):
-#
-# 0.0s  - "Yo! Buying a car..." (Scene 1: Hook starts)
-# 4.5s  - "Endless WhatsApp..." (Scene 2: Problem starts)
-# 9.5s  - "MOTOKAH changes..."  (Scene 3: Brand starts)
-# 12.5s - "Post your car..."    (Scene 4: Home starts)
-# 14.5s - "...TWO MINUTES"      (Scene 5: PostCar starts)
-# 16.0s - "Buyers across..."    (Scene 6: Coverage starts)
-# 17.5s - Tanzania appears
-# 18.3s - Kenya appears
-# 19.0s - Uganda appears
-# 19.7s - Rwanda appears
-# 20.5s - Ethiopia appears
-# 21.2s - DRC appears
-# 23.0s - "NO MIDDLEMEN..."     (Scene 7: Listing starts)
-# 26.5s - "Just YOUR car..."    (Scene 8: Chat starts)
-# 30.0s - "Over TEN THOUSAND..."(Scene 9: Stats starts)
-# 35.0s - "Motokah... dot... com!" (Scene 10: CTA starts)
-# 37.5s - "Let's GO!"
-# 39.5s - END
-#
-# Total: ~39.5 seconds (perfect for social media!)
-# ================================================================
-# 
-# PRO TIPS:
-# 1. If Ayinde speaks too fast: increase Stability to 0.35
-# 2. If Ayinde speaks too slow: decrease Stability to 0.25
-# 3. For more energy: increase Style to 0.65
-# 4. The <break time="Xs" /> tags create natural pauses
-# 5. ALL CAPS words get emphasis/stress
-# 6. Ellipses (...) create trailing pauses
-#
-# After generating:
-# 1. Click "Download" (MP3)
-# 2. Rename to: voiceover.mp3
-# 3. Place in: public/audio/voiceover.mp3
-# 4. Re-render video: npx remotion render ...
-# ================================================================
+Motokah dot com. List your car for free.
