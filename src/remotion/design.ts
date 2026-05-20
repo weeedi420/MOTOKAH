@@ -61,7 +61,6 @@ export function appleReveal(
   return {
     opacity: s,
     transform: `translate3d(${xOffset * (1 - s)}px, ${yOffset * (1 - s)}px, 0)`,
-    filter: `blur(${(1 - s) * 3}px)`,
   };
 }
 
@@ -88,7 +87,6 @@ export function wordReveal(frame: number, words: string[], startFrame: number, s
       word: words[i],
       opacity: s,
       transform: `translate3d(0, ${(1 - s) * 20}px, 0)`,
-      filter: `blur(${(1 - s) * 2}px)`,
     };
   });
 }

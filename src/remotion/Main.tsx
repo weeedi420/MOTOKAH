@@ -16,11 +16,19 @@ const T = TIMING.scenes;
 const OVR = TIMING.overlap;
 const { hasVoiceover, hasMusic, musicVolume, voiceoverVolume, sfxVolume } = TIMING.audio;
 
-// Scene transition overlay - very subtle, no blur
+// Scene transition overlay - fades in then out, very brief
 function SceneTransition({ from, duration = 12 }: { from: number; duration?: number }) {
   const frame = useCurrentFrame();
-  const t = Math.max(0, Math.min(1, (frame - from) / duration));
-  const s = spring({ frame: t * 30, fps: 30, config: SPRING.snap });
+  const t = Math.max(0, frame - from);
+  
+  // Only show during transition, then fade out completely
+  if (t > duration * 2) return null;
+  
+  const s = t < duration
+    ? spring({ frame: t, fps: 30, config: SPRING.snap })
+    : Math.max(0, 1 - (t - duration) / duration);
+
+  if (s <= 0.01) return null;
 
   return (
     <div
@@ -28,7 +36,7 @@ function SceneTransition({ from, duration = 12 }: { from: number; duration?: num
         position: "absolute",
         inset: 0,
         background: "#FFFFFF",
-        opacity: s * 0.15,
+        opacity: s * 0.08,
         zIndex: 50,
         pointerEvents: "none",
       }}
