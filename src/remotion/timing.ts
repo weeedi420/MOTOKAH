@@ -31,6 +31,7 @@ export const COUNTRY_FRAMES = {
 
 // Structured timing consumed by Main.tsx
 export const TIMING = {
+  fps: 30,
   totalDuration: 1148,
   overlap: 12,
   audio: {

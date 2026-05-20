@@ -21,7 +21,8 @@ export function Scene08_Stats() {
     return {
       ...stat,
       opacity: s,
-      transform: `translate3d(0, ${(1 - s) * 50}px, 0) scale(${0.8 + s * 0.2})`,\n    };
+      transform: `translate3d(0, ${(1 - s) * 50}px, 0) scale(${0.8 + s * 0.2})`,
+    };
   });
 
   const fadeOut = Math.max(0, 1 - Math.max(0, frame - 70) / 15);
@@ -48,7 +49,8 @@ export function Scene08_Stats() {
           textTransform: "uppercase",
           marginBottom: 20,
           opacity: titleSpring,
-          transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,\n        }}
+          transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,
+        }}
       >
         By The Numbers
       </div>
@@ -64,7 +66,8 @@ export function Scene08_Stats() {
           marginBottom: 64,
           lineHeight: 1.1,
           opacity: titleSpring,
-          transform: `translate3d(0, ${(1 - titleSpring) * 20}px, 0)`,\n        }}
+          transform: `translate3d(0, ${(1 - titleSpring) * 20}px, 0)`,
+        }}
       >
         Over ten thousand listings.
         <br />
@@ -79,7 +82,6 @@ export function Scene08_Stats() {
               textAlign: "center",
               opacity: s.opacity,
               transform: s.transform,
-              filter: s.filter,
             }}
           >
             <div

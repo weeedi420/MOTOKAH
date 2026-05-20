@@ -18,7 +18,8 @@ export function Scene03_Brand() {
     return {
       letter,
       opacity: s,
-      transform: `translate3d(0, ${(1 - s) * 60}px, 0) scale(${0.5 + s * 0.5})`,\n    };
+      transform: `translate3d(0, ${(1 - s) * 60}px, 0) scale(${0.5 + s * 0.5})`,
+    };
   });
 
   // Glow pulse after letters appear
@@ -126,7 +127,8 @@ export function Scene03_Brand() {
           color: COLOR.inkSoft,
           letterSpacing: "-0.01em",
           opacity: tagSpring,
-          transform: `translate3d(0, ${(1 - tagSpring) * 15}px, 0)`,\n        }}
+          transform: `translate3d(0, ${(1 - tagSpring) * 15}px, 0)`,
+        }}
       >
         The marketplace for East Africa's car market.
       </div>

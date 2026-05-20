@@ -18,7 +18,7 @@ export function Scene07_Countries() {
     config: SPRING.main,
   });
 
-  const countries = COUNTRIES.map((country) =>> {
+  const countries = COUNTRIES.map((country) => {
     const delay = country.delay;
     const t = Math.max(0, Math.min(1, (frame - delay) / 20));
     const s = spring({ frame: t * 30, fps: 30, config: SPRING.elastic });

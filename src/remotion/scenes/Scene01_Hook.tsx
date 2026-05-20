@@ -27,7 +27,8 @@ export function Scene01_Hook() {
     return {
       word,
       opacity: s,
-      transform: `translate3d(0, ${(1 - s) * 25}px, 0)`,\n    };
+      transform: `translate3d(0, ${(1 - s) * 25}px, 0)`,
+    };
   });
 
   // Underline draws with spring
@@ -71,7 +72,6 @@ export function Scene01_Hook() {
           marginBottom: 32,
           opacity: captionSpring,
           transform: `translate3d(0, ${(1 - captionSpring) * 15}px, 0)`,
-          filter: `blur(0px)`,
         }}
       >
         East Africa
@@ -101,7 +101,6 @@ export function Scene01_Hook() {
                 color: isLast ? COLOR.brand : COLOR.ink,
                 opacity: w.opacity,
                 transform: w.transform,
-                filter: w.filter,
                 display: "inline-block",
               }}
             >
