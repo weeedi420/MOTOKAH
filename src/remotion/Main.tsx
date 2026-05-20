@@ -1,4 +1,4 @@
-import { AbsoluteFill, Audio, Sequence, spring, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Sequence, spring, useCurrentFrame, staticFile } from "remotion";
 import { TIMING } from "./timing";
 import { SPRING } from "./design";
 import { Scene01_Hook }    from "./scenes/Scene01_Hook";
@@ -57,7 +57,7 @@ export function MotokahPromo() {
     >
       {/* Audio layers */}
       {hasVoiceover && (
-        <Audio src="/audio/voiceover.mp3" startFrom={0} volume={voiceoverVolume} />
+        <Audio src={staticFile("voiceover.mp3")} startFrom={0} volume={voiceoverVolume} />
       )}
 
       {hasMusic && (
@@ -122,7 +122,7 @@ export function MotokahPromo() {
         <Scene09_CTA />
       </Sequence>
 
-      {/* Sound effects - disabled for render without audio files */}
+      {/* Sound effects - disabled, file not found */}
       {/* {frame === T.s3_Brand + 5 && (
         <Audio src="/audio/sfx/whoosh.mp3" volume={sfxVolume} />
       )} */}
