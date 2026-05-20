@@ -122,10 +122,10 @@ export function MotokahPromo() {
         <Scene09_CTA />
       </Sequence>
 
-      {/* Sound effects */}
-      {frame === T.s3_Brand + 5 && (
+      {/* Sound effects - disabled for render without audio files */}
+      {/* {frame === T.s3_Brand + 5 && (
         <Audio src="/audio/sfx/whoosh.mp3" volume={sfxVolume} />
-      )}
+      )} */}
     </AbsoluteFill>
   );
 }

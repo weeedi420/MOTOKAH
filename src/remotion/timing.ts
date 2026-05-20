@@ -40,7 +40,7 @@ export const TIMING = {
   totalDuration: 1148,
   overlap: 12,
   audio: {
-    hasVoiceover: true,
+    hasVoiceover: false,
     hasMusic: false,
     voiceoverVolume: 1,
     musicVolume: 0.18,
