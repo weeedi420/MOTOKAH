@@ -11,9 +11,9 @@ export function Scene08_Stats() {
   });
 
   const stats = [
-    { value: "10K+", label: "Listings", delay: 12 },
-    { value: "10", label: "Countries", delay: 24 },
-    { value: "Free", label: "Forever", delay: 36 },
+    { value: "10K+", label: "Listings", delay: 10 },
+    { value: "6", label: "Countries", delay: 18 },
+    { value: "Free", label: "Forever", delay: 26 },
   ].map((stat) => {
     const t = Math.max(0, Math.min(1, (frame - stat.delay) / 20));
     const s = spring({ frame: t * 30, fps: 30, config: SPRING.elastic });
