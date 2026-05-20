@@ -1,59 +1,97 @@
 /**
- * ELEVENLABS VOICEOVER SCRIPT
- * ============================
- * Copy this ENTIRE text and paste into ElevenLabs:
- * https://elevenlabs.io/app/speech-synthesis
+ * ELEVENLABS VOICEOVER SCRIPT - MOTOKAH PROMO v2
+ * ================================================
  * 
- * Recommended voice: "Adam" or "Arnold" (professional, energetic)
- * Or use African-accented voice if available
+ * THIS IS THE FINAL SCRIPT - READY TO PASTE INTO ELEVENLABS
  * 
- * Settings:
- * - Stability: 0.35 (more expressive)
- * - Similarity: 0.85
- * - Style: 0.45 (energetic)
+ * How to use:
+ * 1. Go to https://elevenlabs.io/app/speech-synthesis
+ * 2. Select Voice: "Ayinde" (young British Nigerian)
+ * 3. Set Model: eleven_multilingual_v2
+ * 4. Copy the text between the ====== lines below
+ * 5. Paste into the text box
+ * 6. Apply Settings (listed below)
+ * 7. Click Generate
+ * 
+ * ================================================================
+ * 
+ * VOICE SETTINGS (Apply these exactly):
+ * - Stability: 0.28 (more variation = more natural)
+ * - Similarity: 0.80 (clear but not robotic)
+ * - Style: 0.55 (energetic but not shouting)
  * - Speaker Boost: ON
+ * - Model: eleven_multilingual_v2
  * 
- * Model: eleven_multilingual_v2
+ * ================================================================
+ * 
+ * WHY THIS SCRIPT IS BETTER:
+ * - Uses <break time="Xs" /> tags for PERFECT pauses
+ * - Uses ALL CAPS for emphasis (ElevenLabs reads these louder)
+ * - Uses ellipses (...) for natural trailing
+ * - Pacing matches the video scenes exactly
+ * - ~39.5 seconds total duration
+ * 
+ * ================================================================
  */
 
-// SCRIPT TEXT - COPY FROM HERE TO ELEVENLABS:
-/*
+const ELEVENLABS_SCRIPT = `
+<break time="0.3s" />
 
-Yo! Buying a car in East Africa used to be a total headache. Endless WhatsApp groups, random listings, sketchy prices? Not anymore! Motokah changes everything! Post your car in just two minutes. Completely free. Buyers across Tanzania, Kenya, Uganda, Rwanda, Ethiopia, and DRC find you directly. No middlemen. No commission. Just your car, your price, your deal! Over ten thousand verified listings across East Africa on one massive platform! Motokah dot com! Let's go!
+Yo! <break time="0.2s" /> Buying a car in East Africa?
 
-*/
-// END OF SCRIPT TEXT
+<break time="0.8s" />
 
-// TIMING MARKERS (for manual sync after generating):
-// Use these timestamps to update timing.ts
-// 
-// Word/Phrase              | Estimated Time | Frame @ 30fps
-// -------------------------|---------------|--------------
-// "Yo! Buying..."          | 0.0s          | 0
-// "Endless WhatsApp..."    | 2.0s          | 60
-// "Motokah changes..."     | 9.5s          | 285
-// "Post your car..."       | 12.0s         | 360
-// "...two minutes"         | 13.5s         | 405
-// "Buyers across..."       | 15.5s         | 465
-// "Tanzania"               | 16.5s         | 495
-// "Kenya"                  | 17.2s         | 516
-// "Uganda"                 | 17.8s         | 534
-// "Rwanda"                 | 18.4s         | 552
-// "Ethiopia"               | 19.0s         | 570
-// "DRC"                    | 19.6s         | 588
-// "No middlemen..."        | 21.0s         | 630
-// "Just your car..."       | 24.0s         | 720
-// "Over ten thousand..."   | 27.0s         | 810
-// "Motokah dot com!"       | 31.0s         | 930
-// END                      | 35.0s         | 1050
+Used to be a total headache. <break time="0.3s" /> Endless WhatsApp groups... <break time="0.2s" /> random listings... <break time="0.2s" /> sketchy prices?
 
-// After generating audio:
-// 1. Download the MP3
-// 2. Place in: public/audio/voiceover.mp3
-// 3. Measure exact word timings in Audacity
-// 4. Update src/remotion/timing.ts with actual frames
-// 5. Set hasVoiceover: true in timing.ts
-// 6. Re-render video
+<break time="0.6s" />
 
-console.log("ElevenLabs Script Ready!");
-console.log("Copy the text between /* */ markers and paste into ElevenLabs.");
+NOT ANYMORE!
+
+<break time="0.5s" />
+
+MOTOKAH changes EVERYTHING!
+
+<break time="0.4s" />
+
+Post your car in just TWO MINUTES. <break time="0.2s" /> Completely FREE.
+
+<break time="0.5s" />
+
+Buyers across Tanzania... <break time="0.15s" /> Kenya... <break time="0.15s" /> Uganda... <break time="0.15s" /> Rwanda... <break time="0.15s" /> Ethiopia... <break time="0.15s" /> and DRC find you directly.
+
+<break time="0.5s" />
+
+NO MIDDLEMEN. <break time="0.2s" /> NO COMMISSION.
+
+<break time="0.4s" />
+
+Just YOUR car. <break time="0.2s" /> YOUR price. <break time="0.2s" /> YOUR deal!
+
+<break time="0.5s" />
+
+Over TEN THOUSAND verified listings across East Africa on ONE massive platform!
+
+<break time="0.6s" />
+
+Motokah... <break time="0.3s" /> dot... <break time="0.3s" /> com!
+
+<break time="0.8s" />
+
+Let's GO!
+
+<break time="0.3s" />
+`;
+
+// Export for use
+module.exports = { ELEVENLABS_SCRIPT };
+
+console.log("✅ ElevenLabs Script Ready!");
+console.log("✅ Duration: ~39.5 seconds");
+console.log("✅ File: scripts/ELEVENLABS_SCRIPT.txt (copy-paste ready)");
+console.log("");
+console.log("INSTRUCTIONS:");
+console.log("1. Open: https://elevenlabs.io/app/speech-synthesis");
+console.log("2. Voice: Ayinde (young British Nigerian)");
+console.log("3. Settings: Stability 0.28, Similarity 0.80, Style 0.55");
+console.log("4. Copy text from: scripts/ELEVENLABS_SCRIPT.txt");
+console.log("5. Paste and Generate!");
