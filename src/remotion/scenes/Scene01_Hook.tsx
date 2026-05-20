@@ -27,9 +27,7 @@ export function Scene01_Hook() {
     return {
       word,
       opacity: s,
-      transform: `translate3d(0, ${(1 - s) * 25}px, 0)`,
-      filter: `blur(${(1 - s) * 8}px)`,
-    };
+      transform: `translate3d(0, ${(1 - s) * 25}px, 0)`,\n    };
   });
 
   // Underline draws with spring
@@ -73,7 +71,7 @@ export function Scene01_Hook() {
           marginBottom: 32,
           opacity: captionSpring,
           transform: `translate3d(0, ${(1 - captionSpring) * 15}px, 0)`,
-          filter: `blur(${(1 - captionSpring) * 4}px)`,
+          filter: `blur(0px)`,
         }}
       >
         East Africa

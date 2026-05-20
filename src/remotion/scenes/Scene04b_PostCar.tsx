@@ -25,7 +25,7 @@ export function Scene04b_PostCar() {
   ].map((f) => {
     const t = Math.max(0, Math.min(1, (frame - f.delay) / 14));
     const s = spring({ frame: t * 30, fps: 30, config: SPRING.snap });
-    return { ...f, opacity: s, transform: `translate3d(0, ${(1 - s) * 20}px, 0)`, filter: `blur(${(1 - s) * 6}px)` };
+    return { ...f, opacity: s, transform: `translate3d(0, ${(1 - s) * 20}px, 0)` };
   });
 
   const btnSpring = spring({
@@ -61,9 +61,7 @@ export function Scene04b_PostCar() {
             textTransform: "uppercase",
             marginBottom: 20,
             opacity: titleSpring,
-            transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,
-            filter: `blur(${(1 - titleSpring) * 4}px)`,
-          }}
+            transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,\n          }}
         >
           Easy Listing
         </div>
@@ -78,9 +76,7 @@ export function Scene04b_PostCar() {
             lineHeight: 1.1,
             marginBottom: 20,
             opacity: titleSpring,
-            transform: `translate3d(0, ${(1 - titleSpring) * 20}px, 0)`,
-            filter: `blur(${(1 - titleSpring) * 6}px)`,
-          }}
+            transform: `translate3d(0, ${(1 - titleSpring) * 20}px, 0)`,\n          }}
         >
           Post your car
           <br />
@@ -94,9 +90,7 @@ export function Scene04b_PostCar() {
             fontFamily: "Inter, sans-serif",
             lineHeight: 1.5,
             opacity: titleSpring,
-            transform: `translate3d(0, ${(1 - titleSpring) * 10}px, 0)`,
-            filter: `blur(${(1 - titleSpring) * 3}px)`,
-          }}
+            transform: `translate3d(0, ${(1 - titleSpring) * 10}px, 0)`,\n          }}
         >
           Add photos, set your price, and reach thousands of buyers across East Africa. Free forever.
         </div>
@@ -112,9 +106,7 @@ export function Scene04b_PostCar() {
           border: `1px solid ${COLOR.border}`,
           padding: 24,
           opacity: phoneSpring,
-          transform: `translate3d(${(1 - phoneSpring) * 40}px, 0, 0) rotate(${(1 - phoneSpring) * 5}deg)`,
-          filter: `blur(${(1 - phoneSpring) * 8}px)`,
-          boxShadow: "0 25px 50px rgba(0,0,0,0.1)",
+          transform: `translate3d(${(1 - phoneSpring) * 40}px, 0, 0) rotate(${(1 - phoneSpring) * 5}deg)`,\n          boxShadow: "0 25px 50px rgba(0,0,0,0.1)",
         }}
       >
         <div
@@ -181,9 +173,7 @@ export function Scene04b_PostCar() {
             fontFamily: "Inter",
             marginTop: 8,
             opacity: btnSpring,
-            transform: `scale(${0.9 + btnSpring * 0.1})`,
-            filter: `blur(${(1 - btnSpring) * 4}px)`,
-            boxShadow: `0 0 20px ${COLOR.brandGlow}`,
+            transform: `scale(${0.9 + btnSpring * 0.1})`,\n            boxShadow: `0 0 20px ${COLOR.brandGlow}`,
           }}
         >
           Post Listing →

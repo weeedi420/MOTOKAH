@@ -28,16 +28,15 @@ export function Scene06b_Chat() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 60,
-        padding: "0 80px",
+        gap: 50,
+        padding: "0 60px",
         opacity: fadeOut,
       }}
     >
-      {/* Left: "Your deal" text */}
-      <div style={{ flex: 1, padding: "0 60px" }}>
+      <div style={{ flex: 1, padding: "0 40px" }}>
         <div
           style={{
-            fontSize: 42,
+            fontSize: 38,
             fontWeight: 800,
             color: COLOR.ink,
             fontFamily: "Inter, system-ui, sans-serif",
@@ -46,7 +45,6 @@ export function Scene06b_Chat() {
             marginBottom: 20,
             opacity: textSpring,
             transform: `translate3d(0, ${(1 - textSpring) * 20}px, 0)`,
-            filter: `blur(${(1 - textSpring) * 6}px)`,
           }}
         >
           Your car.
@@ -57,15 +55,13 @@ export function Scene06b_Chat() {
         </div>
       </div>
 
-      {/* Right: ChatScreen in phone */}
       <div
         style={{
           opacity: phoneSpring,
-          transform: `translate3d(${(1 - phoneSpring) * 40}px, 0, 0) rotate(${(1 - phoneSpring) * 5}deg)`,
-          filter: `blur(${(1 - phoneSpring) * 8}px)`,
+          transform: `translate3d(${(1 - phoneSpring) * 30}px, 0, 0)`,
         }}
       >
-        <PhoneFrame width={240} height={480} tilt={-3}>
+        <PhoneFrame width={260} height={520} tilt={-3}>
           <ChatScreen frame={Math.max(0, frame - 15)} />
         </PhoneFrame>
       </div>

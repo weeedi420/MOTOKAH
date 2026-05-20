@@ -45,9 +45,7 @@ export function Scene05_Search() {
           border: `1px solid ${COLOR.border}`,
           padding: 24,
           opacity: phoneSpring,
-          transform: `translate3d(0, ${(1 - phoneSpring) * 30}px, 0) scale(${0.95 + phoneSpring * 0.05})`,
-          filter: `blur(${(1 - phoneSpring) * 8}px)`,
-          boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
+          transform: `translate3d(0, ${(1 - phoneSpring) * 30}px, 0) scale(${0.95 + phoneSpring * 0.05})`,\n          boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
         }}
       >
         {/* Search bar */}
@@ -62,9 +60,7 @@ export function Scene05_Search() {
             alignItems: "center",
             gap: 10,
             opacity: searchSpring,
-            transform: `translate3d(0, ${(1 - searchSpring) * 15}px, 0)`,
-            filter: `blur(${(1 - searchSpring) * 4}px)`,
-            boxShadow: `0 0 20px ${COLOR.brandGlow}`,
+            transform: `translate3d(0, ${(1 - searchSpring) * 15}px, 0)`,\n            boxShadow: `0 0 20px ${COLOR.brandGlow}`,
           }}
         >
           <span style={{ fontSize: 14, color: COLOR.inkMute, fontFamily: "Inter" }}>Search</span>
@@ -87,9 +83,7 @@ export function Scene05_Search() {
         <div
           style={{
             opacity: resultsSpring,
-            transform: `translate3d(0, ${(1 - resultsSpring) * 20}px, 0)`,
-            filter: `blur(${(1 - resultsSpring) * 6}px)`,
-          }}
+            transform: `translate3d(0, ${(1 - resultsSpring) * 20}px, 0)`,\n          }}
         >
           {[
             { name: "Toyota Hilux 2021", price: "TSh 78.5M", loc: "Dar es Salaam" },

@@ -39,9 +39,7 @@ export function Scene09_CTA() {
     return {
       char,
       opacity: s,
-      transform: `translate3d(0, ${(1 - s) * 20}px, 0) scale(${0.8 + s * 0.2})`,
-      filter: `blur(${(1 - s) * 8}px)`,
-    };
+      transform: `translate3d(0, ${(1 - s) * 20}px, 0) scale(${0.8 + s * 0.2})`,\n    };
   });
 
   // CTA button spring
@@ -123,9 +121,7 @@ export function Scene09_CTA() {
           letterSpacing: "-0.03em",
           marginBottom: 12,
           opacity: swahiliSpring,
-          transform: `translate3d(0, ${(1 - swahiliSpring) * 25}px, 0)`,
-          filter: `blur(${(1 - swahiliSpring) * 8}px)`,
-        }}
+          transform: `translate3d(0, ${(1 - swahiliSpring) * 25}px, 0)`,\n        }}
       >
         Gari yako, bei yako.
       </div>
@@ -139,9 +135,7 @@ export function Scene09_CTA() {
           color: COLOR.inkSoft,
           marginBottom: 56,
           opacity: transSpring,
-          transform: `translate3d(0, ${(1 - transSpring) * 15}px, 0)`,
-          filter: `blur(${(1 - transSpring) * 6}px)`,
-        }}
+          transform: `translate3d(0, ${(1 - transSpring) * 15}px, 0)`,\n        }}
       >
         Your car, your price.
       </div>
@@ -166,7 +160,6 @@ export function Scene09_CTA() {
             style={{
               opacity: c.opacity,
               transform: c.transform,
-              filter: c.filter,
               display: "inline-block",
             }}
           >
@@ -179,9 +172,7 @@ export function Scene09_CTA() {
       <div
         style={{
           opacity: btnSpring,
-          transform: `translate3d(0, ${(1 - btnSpring) * 20}px, 0)`,
-          filter: `blur(${(1 - btnSpring) * 6}px)`,
-          position: "relative",
+          transform: `translate3d(0, ${(1 - btnSpring) * 20}px, 0)`,\n          position: "relative",
         }}
       >
         {/* Glow behind button */}

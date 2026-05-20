@@ -28,25 +28,23 @@ export function Scene04_Home() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 60,
-        padding: "0 80px",
+        gap: 50,
+        padding: "0 60px",
         opacity: fadeOut,
       }}
     >
-      {/* Left text */}
-      <div style={{ flex: 1, maxWidth: 440 }}>
+      <div style={{ flex: 1, maxWidth: 500, paddingRight: 20 }}>
         <div
           style={{
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 700,
             color: COLOR.brand,
             fontFamily: "Inter, sans-serif",
-            letterSpacing: "0.12em",
+            letterSpacing: "0.15em",
             textTransform: "uppercase",
             marginBottom: 16,
             opacity: titleSpring,
             transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,
-            filter: `blur(${(1 - titleSpring) * 4}px)`,
           }}
         >
           For Sellers
@@ -54,16 +52,15 @@ export function Scene04_Home() {
 
         <div
           style={{
-            fontSize: 44,
+            fontSize: 40,
             fontWeight: 800,
             color: COLOR.ink,
             fontFamily: "Inter, system-ui, sans-serif",
             letterSpacing: "-0.03em",
             lineHeight: 1.1,
-            marginBottom: 16,
+            marginBottom: 20,
             opacity: titleSpring,
             transform: `translate3d(0, ${(1 - titleSpring) * 20}px, 0)`,
-            filter: `blur(${(1 - titleSpring) * 6}px)`,
           }}
         >
           Post your car
@@ -73,27 +70,31 @@ export function Scene04_Home() {
 
         <div
           style={{
-            fontSize: 15,
+            fontSize: 16,
             color: COLOR.ok,
             fontWeight: 700,
             fontFamily: "Inter, sans-serif",
-            marginTop: 12,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
             opacity: titleSpring,
           }}
         >
-          ✓ Completely free. Forever.
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="10" fill={COLOR.ok}/>
+            <path d="M6 10L9 13L14 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Completely free. Forever.
         </div>
       </div>
 
-      {/* Right: Phone with HomeScreen */}
       <div
         style={{
           opacity: phoneSpring,
-          transform: `translate3d(${(1 - phoneSpring) * 40}px, 0, 0) rotate(${(1 - phoneSpring) * 5}deg)`,
-          filter: `blur(${(1 - phoneSpring) * 8}px)`,
+          transform: `translate3d(${(1 - phoneSpring) * 30}px, 0, 0)`,
         }}
       >
-        <PhoneFrame width={240} height={480} tilt={-3}>
+        <PhoneFrame width={260} height={520} tilt={-3}>
           <HomeScreen frame={Math.max(0, frame - 8)} showTyping={true} />
         </PhoneFrame>
       </div>

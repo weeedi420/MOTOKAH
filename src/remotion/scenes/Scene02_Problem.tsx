@@ -26,9 +26,7 @@ export function Scene02_Problem() {
     return {
       text,
       opacity: s,
-      transform: `translate3d(${(1 - s) * -50}px, 0, 0)`,
-      filter: `blur(${(1 - s) * 8}px)`,
-    };
+      transform: `translate3d(${(1 - s) * -50}px, 0, 0)`,\n    };
   });
 
   // "There's a better way" reveal
@@ -64,9 +62,7 @@ export function Scene02_Problem() {
           textTransform: "uppercase",
           marginBottom: 40,
           opacity: titleSpring,
-          transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,
-          filter: `blur(${(1 - titleSpring) * 4}px)`,
-        }}
+          transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,\n        }}
       >
         The Problem
       </div>
@@ -102,9 +98,7 @@ export function Scene02_Problem() {
           fontFamily: "Inter, sans-serif",
           letterSpacing: "-0.01em",
           opacity: betterSpring,
-          transform: `translate3d(0, ${(1 - betterSpring) * 20}px, 0)`,
-          filter: `blur(${(1 - betterSpring) * 6}px)`,
-          textShadow: `0 0 30px ${COLOR.brandGlow}`,
+          transform: `translate3d(0, ${(1 - betterSpring) * 20}px, 0)`,\n          textShadow: `0 0 30px ${COLOR.brandGlow}`,
         }}
       >
         There's a better way.

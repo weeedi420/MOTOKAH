@@ -1,5 +1,5 @@
 import React from "react";
-import { COLOR, RADIUS, SHADOW } from "../design";
+import { COLOR, RADIUS } from "../design";
 
 interface PhoneFrameProps {
   width?: number;
@@ -9,10 +9,10 @@ interface PhoneFrameProps {
   style?: React.CSSProperties;
 }
 
-export function PhoneFrame({ width = 320, height = 680, tilt = 0, children, style }: PhoneFrameProps) {
-  const bezel = 14;
-  const notchW = 80;
-  const notchH = 22;
+export function PhoneFrame({ width = 260, height = 520, tilt = 0, children, style }: PhoneFrameProps) {
+  const bezel = 12;
+  const notchW = 70;
+  const notchH = 20;
 
   const transform = tilt !== 0
     ? `perspective(2000px) rotateY(${-tilt}deg) rotateX(2deg)`
@@ -22,10 +22,10 @@ export function PhoneFrame({ width = 320, height = 680, tilt = 0, children, styl
     <div style={{
       width,
       height,
-      borderRadius: RADIUS.phone,
-      background: COLOR.bg,
-      border: `1px solid ${COLOR.border}`,
-      boxShadow: SHADOW.lift,
+      borderRadius: 32,
+      background: COLOR.ink,
+      border: `2px solid ${COLOR.border}`,
+      boxShadow: "0 25px 60px rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.1)",
       position: "relative",
       overflow: "hidden",
       transform,
@@ -35,7 +35,7 @@ export function PhoneFrame({ width = 320, height = 680, tilt = 0, children, styl
       {/* Notch */}
       <div style={{
         position: "absolute",
-        top: 10,
+        top: 8,
         left: "50%",
         transform: "translateX(-50%)",
         width: notchW,
@@ -45,11 +45,11 @@ export function PhoneFrame({ width = 320, height = 680, tilt = 0, children, styl
         zIndex: 10,
       }} />
 
-      {/* Screen content — inset from bezel */}
+      {/* Screen content */}
       <div style={{
         position: "absolute",
         inset: bezel,
-        borderRadius: RADIUS.phone - bezel,
+        borderRadius: 24,
         overflow: "hidden",
         background: COLOR.surface,
       }}>
@@ -59,46 +59,14 @@ export function PhoneFrame({ width = 320, height = 680, tilt = 0, children, styl
       {/* Home indicator */}
       <div style={{
         position: "absolute",
-        bottom: 8,
+        bottom: 6,
         left: "50%",
         transform: "translateX(-50%)",
-        width: 50,
+        width: 45,
         height: 3,
-        background: COLOR.ink,
+        background: "rgba(255,255,255,0.3)",
         borderRadius: 99,
-        opacity: 0.25,
         zIndex: 10,
-      }} />
-
-      {/* Volume rocker */}
-      <div style={{
-        position: "absolute",
-        left: -2,
-        top: 120,
-        width: 3,
-        height: 40,
-        background: COLOR.border,
-        borderRadius: 99,
-      }} />
-      <div style={{
-        position: "absolute",
-        left: -2,
-        top: 175,
-        width: 3,
-        height: 40,
-        background: COLOR.border,
-        borderRadius: 99,
-      }} />
-
-      {/* Power button */}
-      <div style={{
-        position: "absolute",
-        right: -2,
-        top: 150,
-        width: 3,
-        height: 56,
-        background: COLOR.border,
-        borderRadius: 99,
       }} />
     </div>
   );

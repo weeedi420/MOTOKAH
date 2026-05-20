@@ -16,8 +16,8 @@ const T = TIMING.scenes;
 const OVR = TIMING.overlap;
 const { hasVoiceover, hasMusic, musicVolume, voiceoverVolume, sfxVolume } = TIMING.audio;
 
-// Scene transition overlay
-function SceneTransition({ from, duration = 15 }: { from: number; duration?: number }) {
+// Scene transition overlay - very subtle, no blur
+function SceneTransition({ from, duration = 12 }: { from: number; duration?: number }) {
   const frame = useCurrentFrame();
   const t = Math.max(0, Math.min(1, (frame - from) / duration));
   const s = spring({ frame: t * 30, fps: 30, config: SPRING.snap });
@@ -27,8 +27,8 @@ function SceneTransition({ from, duration = 15 }: { from: number; duration?: num
       style={{
         position: "absolute",
         inset: 0,
-        background: "#F8FAFB",
-        opacity: s * 0.3,
+        background: "#FFFFFF",
+        opacity: s * 0.15,
         zIndex: 50,
         pointerEvents: "none",
       }}

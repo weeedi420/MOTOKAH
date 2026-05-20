@@ -28,32 +28,30 @@ export function Scene06_Listing() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 60,
-        padding: "0 80px",
+        gap: 50,
+        padding: "0 60px",
         opacity: fadeOut,
       }}
     >
-      {/* Left: "No middlemen" text */}
-      <div style={{ flex: 1, padding: "0 60px" }}>
+      <div style={{ flex: 1, padding: "0 40px" }}>
         <div
           style={{
-            fontSize: 13,
+            fontSize: 12,
             fontWeight: 700,
             color: COLOR.brand,
             fontFamily: "Inter, sans-serif",
-            letterSpacing: "0.2em",
+            letterSpacing: "0.15em",
             textTransform: "uppercase",
-            marginBottom: 20,
+            marginBottom: 16,
             opacity: textSpring,
             transform: `translate3d(0, ${(1 - textSpring) * 15}px, 0)`,
-            filter: `blur(${(1 - textSpring) * 4}px)`,
           }}
         >
           Direct Contact
         </div>
         <div
           style={{
-            fontSize: 42,
+            fontSize: 38,
             fontWeight: 800,
             color: COLOR.ink,
             fontFamily: "Inter, system-ui, sans-serif",
@@ -62,7 +60,6 @@ export function Scene06_Listing() {
             marginBottom: 20,
             opacity: textSpring,
             transform: `translate3d(0, ${(1 - textSpring) * 20}px, 0)`,
-            filter: `blur(${(1 - textSpring) * 6}px)`,
           }}
         >
           No middlemen.
@@ -77,24 +74,19 @@ export function Scene06_Listing() {
             lineHeight: 1.5,
             opacity: textSpring,
             transform: `translate3d(0, ${(1 - textSpring) * 10}px, 0)`,
-            filter: `blur(${(1 - textSpring) * 3}px)`,
           }}
         >
-          Contact the seller directly
-          <br />
-          via WhatsApp or call.
+          Contact the seller directly via WhatsApp or call.
         </div>
       </div>
 
-      {/* Right: DetailScreen in phone frame */}
       <div
         style={{
           opacity: phoneSpring,
-          transform: `translate3d(${(1 - phoneSpring) * 40}px, 0, 0) rotate(${(1 - phoneSpring) * 5}deg)`,
-          filter: `blur(${(1 - phoneSpring) * 8}px)`,
+          transform: `translate3d(${(1 - phoneSpring) * 30}px, 0, 0)`,
         }}
       >
-        <PhoneFrame width={240} height={480} tilt={-3}>
+        <PhoneFrame width={260} height={520} tilt={-3}>
           <DetailScreen frame={Math.max(0, frame - 10)} />
         </PhoneFrame>
       </div>

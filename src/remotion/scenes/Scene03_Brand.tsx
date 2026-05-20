@@ -18,9 +18,7 @@ export function Scene03_Brand() {
     return {
       letter,
       opacity: s,
-      transform: `translate3d(0, ${(1 - s) * 60}px, 0) scale(${0.5 + s * 0.5})`,
-      filter: `blur(${(1 - s) * 12}px)`,
-    };
+      transform: `translate3d(0, ${(1 - s) * 60}px, 0) scale(${0.5 + s * 0.5})`,\n    };
   });
 
   // Glow pulse after letters appear
@@ -77,14 +75,13 @@ export function Scene03_Brand() {
           <span
             key={i}
             style={{
-              fontSize: 120,
+              fontSize: 100,
               fontWeight: 800,
               fontFamily: "Inter, system-ui, sans-serif",
               letterSpacing: "-0.04em",
               color: COLOR.brand,
               opacity: l.opacity,
               transform: l.transform,
-              filter: l.filter,
               display: "inline-block",
               textShadow: `0 0 40px ${COLOR.brandGlow}`,
             }}
@@ -129,9 +126,7 @@ export function Scene03_Brand() {
           color: COLOR.inkSoft,
           letterSpacing: "-0.01em",
           opacity: tagSpring,
-          transform: `translate3d(0, ${(1 - tagSpring) * 15}px, 0)`,
-          filter: `blur(${(1 - tagSpring) * 4}px)`,
-        }}
+          transform: `translate3d(0, ${(1 - tagSpring) * 15}px, 0)`,\n        }}
       >
         The marketplace for East Africa's car market.
       </div>
