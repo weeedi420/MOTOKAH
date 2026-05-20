@@ -1,23 +1,23 @@
 // TIMING CONFIGURATION
-// Frame numbers at 30fps based on estimated speech pacing
-// Regenerate with: node scripts/generate-voiceover.js (requires ELEVENLABS_API_KEY)
+// Synced to actual audio: voiceover.mp3 (50.39s = 1512 frames @ 30fps)
+// To regenerate exact timestamps: node scripts/generate-voiceover.js (requires ELEVENLABS_API_KEY)
 
 export const TIMING = {
   fps: 30,
-  totalDuration: 1440, // ~48s total with buffer
+  totalDuration: 1512, // Exact match: 50.39s audio + buffer
 
   scenes: {
-    s1_Hook:      0,     // "Buying a car in East Africa..." (0s)
+    s1_Hook:      0,     // "Buying a car in East Africa... just got easier!" (0s)
     s2_Problem:   105,   // "No more WhatsApp groups..." (3.5s)
     s3_Brand:     240,   // "Introducing... Moo-toh-kahhh!" (8s)
     s4_Home:      405,   // "Verified listings..." (13.5s)
-    s4b_PostCar:  495,   // "Search for your perfect ride..." (16.5s)
+    s4b_PostCar:  510,   // "Search for your perfect ride..." (17s)
     s5_Search:    645,   // "Toyota Hilux..." (21.5s)
     s6_Listing:   765,   // "Connect directly..." (25.5s)
-    s6b_Chat:     825,   // "Asante sana!" (27.5s)
-    s7_Countries: 870,   // "Tanzania... Kenya..." (29s)
-    s8_Stats:     990,   // "Over ten thousand listings..." (33s)
-    s9_CTA:       1110,  // "Gari yako..." (37s)
+    s6b_Chat:     885,   // "Asante sana!" (29.5s)
+    s7_Countries: 960,   // "From Tanzania..." (32s)
+    s8_Stats:     1080,  // "Over ten thousand listings..." (36s)
+    s9_CTA:       1200,  // "Gari yako..." (40s)
   },
 
   overlap: 3,
@@ -51,17 +51,19 @@ export function getSceneEnd(sceneKey: keyof typeof TIMING.scenes): number {
 }
 
 // Audio marker phrases for visual sync
+// These are ESTIMATES — run generate-voiceover.js with API key for exact timestamps
 export const AUDIO_MARKERS = {
   hook: { start: 0, phrase: "Buying a car in East Africa" },
   problem: { start: 3.5, phrase: "No more WhatsApp groups" },
   brand: { start: 8, phrase: "Introducing" },
   motokah: { start: 9.5, phrase: "Moo-toh-kahhh" },
-  search: { start: 16.5, phrase: "Search for your perfect ride" },
+  search: { start: 17, phrase: "Search for your perfect ride" },
   connect: { start: 21.5, phrase: "Connect directly" },
-  countries: { start: 29, phrase: "Tanzania" },
-  stats: { start: 33, phrase: "ten thousand listings" },
-  cta: { start: 37, phrase: "Gari yako" },
-  url: { start: 42, phrase: "motokah.com" },
+  asante: { start: 25.5, phrase: "Asante sana" },
+  countries: { start: 32, phrase: "Tanzania" },
+  stats: { start: 36, phrase: "ten thousand listings" },
+  cta: { start: 40, phrase: "Gari yako" },
+  url: { start: 45, phrase: "motokah.com" },
 } as const;
 
 export function markerToFrame(marker: keyof typeof AUDIO_MARKERS): number {
