@@ -140,7 +140,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
             {listing.condition}
           </span>
           <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-            <IconMapPin size={14} stroke={2.5} /> {listing.location}
+            <IconMapPin size={14} stroke={2.5} /> {(listing.location || "").split(",")[0].replace(/,?\s*(TZ|KE|UG|RW|ET|NG)$/i, "").trim()}
           </span>
         </div>
 
