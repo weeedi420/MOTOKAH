@@ -105,7 +105,6 @@ export function Scene01_Hook() {
                 transform: w.transform,
                 filter: w.filter,
                 display: "inline-block",
-                textShadow: isLast ? `0 0 60px ${COLOR.brandGlow}` : "none",
               }}
             >
               {w.word}

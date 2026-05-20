@@ -5,10 +5,11 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const API_KEY = process.env.ELEVENLABS_API_KEY;
 
-// Try African voices first
-const VOICE_IDS = [
-  "KfOKur2SDMsqQVcT1wKb", // Primary African voice
-  "77aEIu0qStu8Jwv1EdhX", // Fallback African voice
+// Try deeper male voices first (African/natural tone)
+const VOICES = [
+  "2EiwWnXFnvU5JabPnv8n", // Clyde — deep, warm, authoritative
+  "VR6AewLTigWG4xSOukaG", // Arnold — confident broadcast voice
+  "pNInz6obpgDQGcFmaJgB", // Adam — natural, clean (current fallback)
 ];
 
 const OUTPUT_PATH = path.join(__dirname, "..", "public", "audio", "voiceover.mp3");
@@ -19,14 +20,14 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-// Script optimized for "Moo-toh-kahhh" pronunciation and dramatic pauses
+// Script optimized for natural pronunciation and dramatic pauses
 const SCRIPT = `Buying a car in East Africa... just got easier!
 
 No more WhatsApp groups. No more random listings. No more vague prices.
 
 There's a better way.
 
-Introducing... Moo-toh-kahhh!
+Introducing... Motokah!
 
 Verified listings. Real prices. Across five countries.
 
@@ -133,7 +134,7 @@ async function getTimestamps(voiceId) {
 async function main() {
   let usedVoiceId = null;
 
-  for (const voiceId of VOICE_IDS) {
+  for (const voiceId of VOICES) {
     console.log(`\n🎯 Trying voice: ${voiceId}`);
     const result = await generateWithVoice(voiceId);
     if (result) {
@@ -201,7 +202,7 @@ async function main() {
     "Buying", "East", "Africa", "easier",
     "No", "more", "WhatsApp",
     "Introducing",
-    "Moo-toh-kahhh",
+    "Motokah",
     "Verified", "listings",
     "Search", "perfect", "ride",
     "Toyota", "Hilux", "Land", "Cruiser", "Vitz",
@@ -230,12 +231,11 @@ async function main() {
     { scene: "s3_Brand", keyword: "Introducing", offset: 0 },
     { scene: "s4_Home", keyword: "Verified", offset: 0 },
     { scene: "s4b_PostCar", keyword: "Search", offset: 0 },
-    { scene: "s5_Search", keyword: "Toyota", offset: 0 },
+    { scene: "s5_Coverage", keyword: "Toyota", offset: 0 },
     { scene: "s6_Listing", keyword: "Connect", offset: 0 },
     { scene: "s6b_Chat", keyword: "Asante", offset: 0 },
-    { scene: "s7_Countries", keyword: "Tanzania", offset: 0 },
-    { scene: "s8_Stats", keyword: "ten", offset: 0 },
-    { scene: "s9_CTA", keyword: "Gari", offset: 0 },
+    { scene: "s7_Stats", keyword: "ten", offset: 0 },
+    { scene: "s8_CTA", keyword: "Gari", offset: 0 },
   ];
 
   const sceneFrames = {};
@@ -264,15 +264,14 @@ export const TIMING = {
   scenes: {
     s1_Hook:      ${sceneFrames.s1_Hook || 0},    // "Buying a car in East Africa..."
     s2_Problem:   ${sceneFrames.s2_Problem || 90},   // "No more WhatsApp groups..."
-    s3_Brand:     ${sceneFrames.s3_Brand || 200},  // "Introducing Moo-toh-kahhh!"
+    s3_Brand:     ${sceneFrames.s3_Brand || 200},  // "Introducing Motokah!"
     s4_Home:      ${sceneFrames.s4_Home || 320},  // "Verified listings..."
     s4b_PostCar:  ${sceneFrames.s4b_PostCar || 420},  // "Search for your perfect ride..."
-    s5_Search:    ${sceneFrames.s5_Search || 520},  // "Toyota Hilux..."
+    s5_Coverage:  ${sceneFrames.s5_Coverage || 520},  // "Toyota Hilux..."
     s6_Listing:   ${sceneFrames.s6_Listing || 640},  // "Connect directly..."
     s6b_Chat:     ${sceneFrames.s6b_Chat || 760},  // "Asante sana!"
-    s7_Countries: ${sceneFrames.s7_Countries || 880},  // "Tanzania..."
-    s8_Stats:     ${sceneFrames.s8_Stats || 1000}, // "Over ten thousand listings..."
-    s9_CTA:       ${sceneFrames.s9_CTA || 1120}, // "Gari yako..."
+    s7_Stats:     ${sceneFrames.s7_Stats || 880},  // "Over ten thousand listings..."
+    s8_CTA:       ${sceneFrames.s8_CTA || 1000}, // "Gari yako..."
   },
 
   overlap: 4,

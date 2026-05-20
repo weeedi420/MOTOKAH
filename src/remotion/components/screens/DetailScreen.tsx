@@ -58,7 +58,7 @@ export function DetailScreen({ frame }: DetailScreenProps) {
 
         {/* Price */}
         <div style={{ opacity: priceOp, transform: `scale(${priceScale})`, transformOrigin: "left center" }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: COLOR.brandInk, fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: COLOR.brand, fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
             TSh 78,500,000
           </div>
         </div>

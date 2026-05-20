@@ -2,11 +2,11 @@ import { useCurrentFrame, spring } from "remotion";
 import { COLOR, SPRING } from "../design";
 
 const COUNTRIES = [
-  { name: "Tanzania", city: "Dar es Salaam", flag: "TZ" },
-  { name: "Kenya", city: "Nairobi", flag: "KE" },
-  { name: "Uganda", city: "Kampala", flag: "UG" },
-  { name: "Rwanda", city: "Kigali", flag: "RW" },
-  { name: "Burundi", city: "Bujumbura", flag: "BI" },
+  { name: "Tanzania", city: "Dar es Salaam", delay: 28, num: 1 },   // abs 511
+  { name: "Kenya",    city: "Nairobi",       delay: 53, num: 2 },   // abs 536
+  { name: "Uganda",   city: "Kampala",       delay: 69, num: 3 },   // abs 552
+  { name: "Rwanda",   city: "Kigali",        delay: 88, num: 4 },   // abs 571
+  { name: "Burundi",  city: "Bujumbura",     delay: 109, num: 5 },  // abs 592
 ];
 
 export function Scene07_Countries() {
@@ -28,7 +28,7 @@ export function Scene07_Countries() {
 
   // Countries: staggered spring reveal with blur-to-sharp
   const countries = COUNTRIES.map((country, i) => {
-    const delay = 25 + i * 12;
+    const delay = country.delay;
     const t = Math.max(0, Math.min(1, (frame - delay) / 20));
     const s = spring({ frame: t * 30, fps: 30, config: SPRING.elastic });
 
@@ -46,13 +46,13 @@ export function Scene07_Countries() {
 
   // Stats badge spring
   const statsSpring = spring({
-    frame: Math.max(0, frame - 95),
+    frame: Math.max(0, frame - 125),
     fps: 30,
     config: SPRING.snap,
   });
 
   // Fade out
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 110) / 15);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 170) / 15);
 
   return (
     <div
@@ -101,9 +101,9 @@ export function Scene07_Countries() {
           filter: `blur(${(1 - titleSpring) * 8}px)`,
         }}
       >
-        Five Countries.
+        Buyers across
         <br />
-        <span style={{ color: COLOR.brand }}>One Platform.</span>
+        <span style={{ color: COLOR.brand }}>East Africa.</span>
       </div>
 
       {/* Subtitle */}
@@ -137,7 +137,7 @@ export function Scene07_Countries() {
       >
         {countries.map((country, i) => (
           <div
-            key={country.flag}
+            key={country.num}
             style={{
               display: "flex",
               alignItems: "center",
@@ -153,13 +153,13 @@ export function Scene07_Countries() {
                 width: 40,
                 height: 40,
                 borderRadius: "50%",
-                background: `linear-gradient(135deg, ${COLOR.brand}, ${COLOR.accent})`,
+                background: COLOR.brand,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 16,
                 fontWeight: 800,
-                color: COLOR.bg,
+                color: "#fff",
                 fontFamily: "Inter",
                 flexShrink: 0,
                 boxShadow: `0 0 20px ${COLOR.brandGlow}`,
@@ -228,9 +228,10 @@ export function Scene07_Countries() {
             style={{
               textAlign: "center",
               padding: "16px 28px",
-              background: "rgba(245,166,35,0.08)",
+              background: COLOR.surface,
               borderRadius: 16,
-              border: `1px solid ${COLOR.brandSoft}`,
+              border: `1px solid ${COLOR.border}`,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
             <div
@@ -241,6 +242,7 @@ export function Scene07_Countries() {
                 fontFamily: "Inter",
                 lineHeight: 1,
                 textShadow: `0 0 20px ${COLOR.brandGlow}`,
+                marginBottom: 8,
               }}
             >
               {stat.value}
@@ -253,7 +255,6 @@ export function Scene07_Countries() {
                 fontFamily: "Inter",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
-                marginTop: 6,
               }}
             >
               {stat.label}

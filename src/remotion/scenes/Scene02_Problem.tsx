@@ -39,7 +39,7 @@ export function Scene02_Problem() {
   });
 
   // Fade out
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 120) / 20);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 220) / 20);
 
   return (
     <div

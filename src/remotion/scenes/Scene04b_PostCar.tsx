@@ -1,5 +1,6 @@
 import { useCurrentFrame, spring } from "remotion";
 import { COLOR, SPRING } from "../design";
+import { PhoneFrame } from "../components/PhoneFrame";
 
 export function Scene04b_PostCar() {
   const frame = useCurrentFrame();
@@ -33,7 +34,7 @@ export function Scene04b_PostCar() {
     config: SPRING.elastic,
   });
 
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 110) / 15);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 55) / 15);
 
   return (
     <div
@@ -64,7 +65,7 @@ export function Scene04b_PostCar() {
             filter: `blur(${(1 - titleSpring) * 4}px)`,
           }}
         >
-          For Sellers
+          Easy Listing
         </div>
 
         <div
@@ -83,7 +84,7 @@ export function Scene04b_PostCar() {
         >
           Post your car
           <br />
-          <span style={{ color: COLOR.brand }}>in 2 minutes</span>
+          <span style={{ color: COLOR.brand }}>in just 2 minutes</span>
         </div>
 
         <div
@@ -101,7 +102,7 @@ export function Scene04b_PostCar() {
         </div>
       </div>
 
-      {/* Phone mockup */}
+      {/* Right: Phone mockup with form */}
       <div
         style={{
           width: 280,
@@ -113,7 +114,7 @@ export function Scene04b_PostCar() {
           opacity: phoneSpring,
           transform: `translate3d(${(1 - phoneSpring) * 40}px, 0, 0) rotate(${(1 - phoneSpring) * 5}deg)`,
           filter: `blur(${(1 - phoneSpring) * 8}px)`,
-          boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
+          boxShadow: "0 25px 50px rgba(0,0,0,0.1)",
         }}
       >
         <div
@@ -131,7 +132,7 @@ export function Scene04b_PostCar() {
         <div
           style={{
             height: 100,
-            background: "rgba(245,166,35,0.08)",
+            background: COLOR.brandSoft,
             borderRadius: 16,
             border: `2px dashed ${COLOR.brand}40`,
             display: "flex",
@@ -170,8 +171,8 @@ export function Scene04b_PostCar() {
 
         <div
           style={{
-            background: `linear-gradient(135deg, ${COLOR.brand}, #D4891A)`,
-            color: "#0A0A0F",
+            background: COLOR.brand,
+            color: "#fff",
             borderRadius: 14,
             padding: "14px",
             textAlign: "center",

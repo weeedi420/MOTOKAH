@@ -189,7 +189,7 @@ export function Scene09_CTA() {
           style={{
             position: "absolute",
             inset: "-12px -24px",
-            background: `radial-gradient(ellipse at center, rgba(245,166,35,${btnGlow}) 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse at center, rgba(0,102,204,${btnGlow}) 0%, transparent 70%)`,
             borderRadius: 20,
             pointerEvents: "none",
           }}
@@ -198,8 +198,8 @@ export function Scene09_CTA() {
         {/* Button */}
         <div
           style={{
-            background: `linear-gradient(135deg, ${COLOR.brand}, #D4891A)`,
-            color: "#0A0A0F",
+            background: COLOR.brand,
+            color: "#fff",
             fontSize: 20,
             fontWeight: 800,
             fontFamily: "Inter, sans-serif",
@@ -208,7 +208,7 @@ export function Scene09_CTA() {
             letterSpacing: "-0.01em",
             transform: `scale(${btnPulse})`,
             position: "relative",
-            boxShadow: `0 0 40px ${COLOR.brandGlow}, 0 4px 20px rgba(0,0,0,0.3)`,
+            boxShadow: `0 0 40px ${COLOR.brandGlow}, 0 4px 20px rgba(0,0,0,0.1)`,
             cursor: "pointer",
           }}
         >

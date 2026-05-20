@@ -81,7 +81,7 @@ export function Scene03_Brand() {
               fontWeight: 800,
               fontFamily: "Inter, system-ui, sans-serif",
               letterSpacing: "-0.04em",
-              color: COLOR.ink,
+              color: COLOR.brand,
               opacity: l.opacity,
               transform: l.transform,
               filter: l.filter,
