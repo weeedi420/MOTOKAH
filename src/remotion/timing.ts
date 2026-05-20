@@ -33,7 +33,7 @@ export const COUNTRY_FRAMES = {
 export const TIMING = {
   fps: 30,
   totalDuration: 1186,
-  overlap: 8,
+  overlap: 0,  // NO OVERLAP - prevents phone clipping between scenes
   audio: {
     hasVoiceover: true,
     hasMusic: false,
