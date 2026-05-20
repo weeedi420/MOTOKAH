@@ -1,37 +1,54 @@
-// TIMING synced to actual voiceover: 64.63s = 1939 frames @ 30fps
-// Voice: Ayinde (young British Nigerian) - FULL VERSION
+// TIMING synced to ACTUAL AUDIO ANALYSIS
+// Audio: 64.63s = 1938 frames
+// Analyzed with ffmpeg silence detection
 
 export const FPS = 30;
 
-// Scene start frames - synced to longer voiceover with more wording
+// Grouped speech segments into scenes based on natural pauses
 export const T = {
-  s1:  0,     // "Buying a car in East Africa..."
-  s2:  180,   // "Endless WhatsApp groups..."
-  s3:  420,   // "Motokah..."
-  s4:  600,   // "For sellers..."
-  s5:  750,   // "Easy listing..."
-  s6:  960,   // "Buyers across..."
-  s7:  1260,  // "No middlemen..."
-  s8:  1440,  // "Your car..."
-  s9:  1590,  // "Over ten thousand..."
-  s10: 1740,  // "Gari yako..."
-  end: 1939,  // End (64.63s)
+  // Scene 1: HOOK (0-8.5s) - "Buying a car... just got easier" + pause
+  s1:  0,     // "Buying a car in East Africa just got easier"
+  
+  // Scene 2: PROBLEM (8.5-16.5s) - "Endless WhatsApp... Not anymore"
+  s2:  257,   // "Endless WhatsApp groups..."
+  
+  // Scene 3: BRAND (16.5-21s) - "Motokah changes everything"
+  s3:  464,   // "Motokah changes everything"
+  
+  // Scene 4: HOME/POSTCAR (21-28s) - "Post your car..."
+  s4:  611,   // "Post your car in just two minutes"
+  s5:  753,   // "Completely free" + "Buyers across..."
+  
+  // Scene 5: COVERAGE (28-38.5s) - Countries
+  s6:  859,   // "Tanzania... DRC" (starts at 28.6s)
+  
+  // Scene 6: LISTING (38.5-44s) - "No middlemen"
+  s7:  1043,  // "No middlemen..."
+  
+  // Scene 7: CHAT (44-48.5s) - "Your car..."
+  s8:  1275,  // "Just your car..."
+  
+  // Scene 8: STATS (48.5-55s) - "Over ten thousand"
+  s9:  1462,  // "Over ten thousand..."
+  
+  // Scene 9: CTA (55-64.6s) - "Gari yako... Motokah dot com"
+  s10: 1687,  // "Gari yako..."
+  end: 1938,  // End (64.63s)
 };
 
-// Country frame offsets (within Coverage scene) - more time to show each
+// Country frames - spread across Coverage scene (28.6s to 38.5s)
 export const COUNTRY_FRAMES = {
-  tz: 1020,  // Tanzania
-  ke: 1050,  // Kenya
-  ug: 1080,  // Uganda
-  rw: 1110,  // Rwanda
-  et: 1140,  // Ethiopia
-  cd: 1170,  // DRC
+  tz: 900,   // Tanzania (~30s)
+  ke: 938,   // Kenya (~31.3s)
+  ug: 980,   // Uganda (~32.7s)
+  rw: 1031,  // Rwanda (~34.4s)
+  et: 1078,  // Ethiopia (~35.9s)
+  cd: 1156,  // DRC (~38.5s)
 };
 
-// Structured timing consumed by Main.tsx
 export const TIMING = {
   fps: 30,
-  totalDuration: 1939,
+  totalDuration: 1938,
   overlap: 12,
   audio: {
     hasVoiceover: true,
@@ -42,14 +59,14 @@ export const TIMING = {
   },
   scenes: {
     s1_Hook:      0,
-    s2_Problem:   180,
-    s3_Brand:     420,
-    s4_Home:      600,
-    s4b_PostCar:  750,
-    s5_Coverage:  960,
-    s6_Listing:   1260,
-    s6b_Chat:     1440,
-    s7_Stats:     1590,
-    s8_CTA:       1740,
+    s2_Problem:   257,
+    s3_Brand:     464,
+    s4_Home:      611,
+    s4b_PostCar:  753,
+    s5_Coverage:  859,
+    s6_Listing:   1043,
+    s6b_Chat:     1275,
+    s7_Stats:     1462,
+    s8_CTA:       1687,
   },
 };
