@@ -40,15 +40,17 @@ export function Scene05_Search() {
   const searchBarX = phoneLeft + 160;        // 640 — phone center
   const searchBarY = phoneTop + 14 + 44 + 12 + 52 + 10 + 16; // ≈ 168
 
-  // Cursor path: starts bottom-right, moves UP to search bar, hovers, then drifts
+  // Cursor path: starts off-screen, moves naturally to search bar, clicks, then exits
   const cursorPath = [
-    { frame: 0,   x: 1100, y: 650 },          // starts bottom-right off phone
-    { frame: 40,  x: searchBarX + 20, y: searchBarY + 120 }, // moving up
-    { frame: 55,  x: searchBarX + 20, y: searchBarY + 40 },  // approaching
-    { frame: 65,  x: searchBarX + 20, y: searchBarY + 30 },  // hovering (pause)
-    { frame: 75,  x: searchBarX + 20, y: searchBarY + 30 },  // still hovering
-    { frame: 140, x: searchBarX + 20, y: searchBarY + 30 },  // stays while typing
-    { frame: 180, x: searchBarX + 80, y: searchBarY + 60 },  // drifts away
+    { frame: 0,   x: 1320, y: 780 },          // starts off-screen bottom-right
+    { frame: 25,  x: searchBarX + 80, y: searchBarY + 100 }, // entering frame
+    { frame: 45,  x: searchBarX + 30, y: searchBarY + 35 },  // approaching search bar
+    { frame: 55,  x: searchBarX + 20, y: searchBarY + 25 },  // hovering before click
+    { frame: 65,  x: searchBarX + 20, y: searchBarY + 25 },  // CLICK
+    { frame: 85,  x: searchBarX + 20, y: searchBarY + 25 },  // stays during typing
+    { frame: 105, x: searchBarX + 120, y: searchBarY + 180 }, // moves to first result
+    { frame: 125, x: searchBarX + 120, y: searchBarY + 180 }, // hovers on result
+    { frame: 145, x: 1320, y: 780 },                          // exits frame
   ];
 
   // Focus ring opacity
@@ -91,7 +93,7 @@ export function Scene05_Search() {
                 padding: "9px 12px",
                 display: "flex", alignItems: "center", gap: 8,
               }}>
-                <span style={{ fontSize: 12, opacity: 0.5 }}>🔍</span>
+                <span style={{ fontSize: 12, opacity: 0.5, fontFamily: "Inter" }}>Search</span>
                 <div style={{ fontSize: 11, color: COLOR.inkMute, fontFamily: "Inter, sans-serif", flex: 1 }}>
                   {frame >= typeStart ? (
                     <TypingText text={SEARCH} startFrame={typeStart - 60} charsPerFrame={0.5} />

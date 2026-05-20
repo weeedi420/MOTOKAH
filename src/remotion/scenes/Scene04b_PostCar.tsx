@@ -14,10 +14,10 @@ export function Scene04b_PostCar() {
 
   // Form fields appearing - FASTER stagger
   const fields = [
-    { label: "Toyota Hilux 2021", icon: "🚗", delay: 15 },
-    { label: "TSh 78,500,000", icon: "💰", delay: 22 },
-    { label: "Dar es Salaam", icon: "📍", delay: 29 },
-    { label: "45,000 km", icon: "📊", delay: 36 },
+    { label: "Toyota Hilux 2021", icon: "Car", delay: 15 },
+    { label: "TSh 78,500,000", icon: "Price", delay: 22 },
+    { label: "Dar es Salaam", icon: "Loc", delay: 29 },
+    { label: "45,000 km", icon: "Km", delay: 36 },
   ];
 
   // Submit button
@@ -30,13 +30,16 @@ export function Scene04b_PostCar() {
   const phoneLeft = (1280 - 320) / 2;
   const phoneTop = (720 - 680) / 2;
 
-  // Cursor path
+  // Cursor path: natural movement through form fields
   const cursorPath = [
-    { frame: 0, x: phoneLeft + 200, y: phoneTop + 300 },
-    { frame: 20, x: phoneLeft + 160, y: phoneTop + 200 },
-    { frame: 40, x: phoneLeft + 160, y: phoneTop + 300 },
-    { frame: 60, x: phoneLeft + 160, y: phoneTop + 420 },
-    { frame: 70, x: phoneLeft + 160, y: phoneTop + 420 },
+    { frame: 0,  x: phoneLeft + 260, y: phoneTop + 500 },  // starts below phone
+    { frame: 15, x: phoneLeft + 200, y: phoneTop + 350 },  // entering
+    { frame: 30, x: phoneLeft + 160, y: phoneTop + 250 },  // photo area
+    { frame: 45, x: phoneLeft + 160, y: phoneTop + 320 },  // first field
+    { frame: 55, x: phoneLeft + 160, y: phoneTop + 370 },  // second field
+    { frame: 65, x: phoneLeft + 160, y: phoneTop + 420 },  // submit button hover
+    { frame: 75, x: phoneLeft + 160, y: phoneTop + 420 },  // click
+    { frame: 95, x: phoneLeft + 260, y: phoneTop + 500 },  // exit
   ];
 
   return (
@@ -110,8 +113,7 @@ export function Scene04b_PostCar() {
               marginBottom: 16,
               opacity: interpolate(frame, [10, 18], [0, 1], { extrapolateRight: "clamp" }),
             }}>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 28, marginBottom: 4 }}>📷</div>
+                <div style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 11, color: COLOR.brand, fontWeight: 600, fontFamily: "Inter" }}>Add Photos</div>
               </div>
             </div>
@@ -131,7 +133,17 @@ export function Scene04b_PostCar() {
                   opacity: op,
                   transform: `translateY(${y}px)`,
                 }}>
-                  <span>{field.icon}</span>
+                  <span style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: COLOR.brand,
+                    background: COLOR.brandSoft,
+                    padding: "2px 6px",
+                    borderRadius: 4,
+                    fontFamily: "Inter",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}>{field.icon}</span>
                   <span style={{ fontSize: 12, color: COLOR.ink, fontFamily: "Inter", fontWeight: 500 }}>{field.label}</span>
                 </div>
               );
@@ -176,7 +188,7 @@ export function Scene04b_PostCar() {
                 fontWeight: 700,
                 fontFamily: "Inter",
               }}>
-                ✅ Posted! Live in 30 seconds
+                ✓ Posted! Live in 30 seconds
               </div>
             </div>
           </div>

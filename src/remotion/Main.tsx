@@ -1,4 +1,5 @@
 import { AbsoluteFill, Audio, Sequence } from "remotion";
+import { TIMING } from "./timing";
 import { Scene01_Hook }    from "./scenes/Scene01_Hook";
 import { Scene02_Problem } from "./scenes/Scene02_Problem";
 import { Scene03_Brand }   from "./scenes/Scene03_Brand";
@@ -11,68 +12,49 @@ import { Scene07_Map }     from "./scenes/Scene07_Map";
 import { Scene08_Stats }   from "./scenes/Scene08_Stats";
 import { Scene09_CTA }     from "./scenes/Scene09_CTA";
 
-// TOTAL: 50.39s @ 30fps = 1512 frames
-// TIGHTER TIMINGS - everything is faster to match energetic audio
-
-const T = {
-  s1:     0,    // Hook: "Buying a car in East Africa..." (0-3s)
-  s2:    90,    // Problem: "No more WhatsApp groups..." (3-7.3s)
-  s3:   220,    // Brand: "Introducing Motokah!" (7.3-11s)
-  s4:   330,    // Home: "Verified listings..." (11-14.3s)
-  s4b:  430,    // Post Car: "Post in 2 minutes" (14.3-18.3s)
-  s5:   550,    // Search: "Search for your perfect ride..." (18.3-23.3s)
-  s6:   700,    // Listing: Car details (23.3-27.3s)
-  s6b:  820,    // Chat: "Chat, Call, WhatsApp" (27.3-32s)
-  s7:   960,    // Map: East Africa coverage (32-37s)
-  s8:  1110,    // Stats: "10K+ listings..." (37-40.7s)
-  s9:  1220,    // CTA: "Gari yako, bei yako" (40.7-50.4s)
-  end: 1512,
-};
-
-const OVR = 6; // Very short overlap for snappy transitions
-
-const HAS_VOICEOVER = true;
-const HAS_MUSIC = false;
+const T = TIMING.scenes;
+const OVR = TIMING.overlap;
+const { hasVoiceover, hasMusic, voiceoverVolume } = TIMING.audio;
 
 export function MotokahPromo() {
   return (
     <AbsoluteFill style={{ background: "#FFFFFF", fontFamily: "Inter, system-ui, sans-serif" }}>
       {/* Main voiceover */}
-      {HAS_VOICEOVER && (
-        <Audio src="/audio/voiceover.mp3" startFrom={0} volume={1} />
+      {hasVoiceover && (
+        <Audio src="/audio/voiceover.mp3" startFrom={0} volume={voiceoverVolume} />
       )}
 
-      <Sequence from={T.s1} durationInFrames={T.s2 - T.s1 + OVR}>
+      <Sequence from={T.s1_Hook} durationInFrames={T.s2_Problem - T.s1_Hook + OVR}>
         <Scene01_Hook />
       </Sequence>
-      <Sequence from={T.s2} durationInFrames={T.s3 - T.s2 + OVR}>
+      <Sequence from={T.s2_Problem} durationInFrames={T.s3_Brand - T.s2_Problem + OVR}>
         <Scene02_Problem />
       </Sequence>
-      <Sequence from={T.s3} durationInFrames={T.s4 - T.s3 + OVR}>
+      <Sequence from={T.s3_Brand} durationInFrames={T.s4_Home - T.s3_Brand + OVR}>
         <Scene03_Brand />
       </Sequence>
-      <Sequence from={T.s4} durationInFrames={T.s4b - T.s4 + OVR}>
+      <Sequence from={T.s4_Home} durationInFrames={T.s4b_PostCar - T.s4_Home + OVR}>
         <Scene04_Home />
       </Sequence>
-      <Sequence from={T.s4b} durationInFrames={T.s5 - T.s4b + OVR}>
+      <Sequence from={T.s4b_PostCar} durationInFrames={T.s5_Search - T.s4b_PostCar + OVR}>
         <Scene04b_PostCar />
       </Sequence>
-      <Sequence from={T.s5} durationInFrames={T.s6 - T.s5 + OVR}>
+      <Sequence from={T.s5_Search} durationInFrames={T.s6_Listing - T.s5_Search + OVR}>
         <Scene05_Search />
       </Sequence>
-      <Sequence from={T.s6} durationInFrames={T.s6b - T.s6 + OVR}>
+      <Sequence from={T.s6_Listing} durationInFrames={T.s6b_Chat - T.s6_Listing + OVR}>
         <Scene06_Listing />
       </Sequence>
-      <Sequence from={T.s6b} durationInFrames={T.s7 - T.s6b + OVR}>
+      <Sequence from={T.s6b_Chat} durationInFrames={T.s7_Map - T.s6b_Chat + OVR}>
         <Scene06b_Chat />
       </Sequence>
-      <Sequence from={T.s7} durationInFrames={T.s8 - T.s7 + OVR}>
+      <Sequence from={T.s7_Map} durationInFrames={T.s8_Stats - T.s7_Map + OVR}>
         <Scene07_Map />
       </Sequence>
-      <Sequence from={T.s8} durationInFrames={T.s9 - T.s8 + OVR}>
+      <Sequence from={T.s8_Stats} durationInFrames={T.s9_CTA - T.s8_Stats + OVR}>
         <Scene08_Stats />
       </Sequence>
-      <Sequence from={T.s9} durationInFrames={T.end - T.s9}>
+      <Sequence from={T.s9_CTA} durationInFrames={TIMING.totalDuration - T.s9_CTA}>
         <Scene09_CTA />
       </Sequence>
     </AbsoluteFill>

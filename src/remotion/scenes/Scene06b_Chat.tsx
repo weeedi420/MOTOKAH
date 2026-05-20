@@ -13,7 +13,7 @@ export function Scene06b_Chat() {
     { text: "Habari! Is the Hilux still available?", from: "buyer", delay: 8 },
     { text: "Yes — when can you come see it?", from: "seller", delay: 22 },
     { text: "Tomorrow 10am, Mikocheni?", from: "buyer", delay: 36 },
-    { text: "Sawa, see you then 👍", from: "seller", delay: 50 },
+    { text: "Sawa, see you then!", from: "seller", delay: 50 },
   ];
 
   // Action buttons appearing
@@ -22,11 +22,14 @@ export function Scene06b_Chat() {
   const phoneLeft = (1280 - 320) / 2;
   const phoneTop = (720 - 680) / 2;
 
-  // Cursor to WhatsApp button
+  // Cursor: enters from left, moves to WhatsApp button, clicks, exits
   const cursorPath = [
-    { frame: 0, x: phoneLeft + 120, y: phoneTop + 300 },
-    { frame: 25, x: phoneLeft + 160, y: phoneTop + 520 },
-    { frame: 40, x: phoneLeft + 160, y: phoneTop + 520 },
+    { frame: 0,  x: phoneLeft - 60, y: phoneTop + 400 },   // off-screen left
+    { frame: 20, x: phoneLeft + 80, y: phoneTop + 500 },   // entering
+    { frame: 35, x: phoneLeft + 160, y: phoneTop + 520 },  // over WhatsApp button
+    { frame: 45, x: phoneLeft + 160, y: phoneTop + 520 },  // click
+    { frame: 65, x: phoneLeft + 200, y: phoneTop + 400 },  // moves to message area
+    { frame: 85, x: phoneLeft + 260, y: phoneTop + 600 },  // exits bottom
   ];
 
   return (
@@ -175,7 +178,7 @@ export function Scene06b_Chat() {
                   fontWeight: 700,
                   fontFamily: "Inter",
                 }}>
-                  💬 WhatsApp
+                  WhatsApp
                 </div>
                 <div style={{
                   flex: 1,
@@ -188,7 +191,7 @@ export function Scene06b_Chat() {
                   fontWeight: 700,
                   fontFamily: "Inter",
                 }}>
-                  📞 Call
+                  Call
                 </div>
               </div>
               <div style={{
@@ -202,7 +205,7 @@ export function Scene06b_Chat() {
                 fontFamily: "Inter",
                 color: COLOR.ink,
               }}>
-                📅 Book Test Drive
+                Book Test Drive
               </div>
             </div>
           </div>

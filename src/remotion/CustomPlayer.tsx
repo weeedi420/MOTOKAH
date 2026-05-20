@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState, useCallback, type ComponentType } from "react";
 import { VideoContext } from "./compat";
+import { TIMING } from "./timing";
 
-const FPS = 30;
-const TOTAL = 1320;
+const FPS = TIMING.fps;
+const TOTAL = TIMING.totalDuration; // 1512 frames = 50.4s
 const W = 1280;
 const H = 720;
 
@@ -184,7 +185,7 @@ export function CustomPlayer({
             fontSize: 10, color: "rgba(232,168,53,0.7)", letterSpacing: 1,
             fontFamily: "Inter, sans-serif", fontWeight: 700,
           }}>
-            44s · 30fps · 1280×720
+            50s · 30fps · 1280×720
           </span>
 
           <span style={{
