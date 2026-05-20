@@ -39,7 +39,7 @@ export function Scene04b_PostCar() {
   });
 
   // Fade out
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 50) / 10);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 930) / 30);
 
   return (
     <div

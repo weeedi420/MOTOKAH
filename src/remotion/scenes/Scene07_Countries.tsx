@@ -40,7 +40,7 @@ export function Scene07_Countries() {
     config: SPRING.punch,
   });
 
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 130) / 12);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 1220) / 40);
 
   return (
     <div

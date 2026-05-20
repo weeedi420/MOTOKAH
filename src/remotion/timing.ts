@@ -1,38 +1,38 @@
-// TIMING synced to actual voiceover: 39.55s = 1186 frames @ 30fps
-// Voice: Ayinde (young British Nigerian)
+// TIMING synced to actual voiceover: 64.63s = 1939 frames @ 30fps
+// Voice: Ayinde (young British Nigerian) - FULL VERSION
 
 export const FPS = 30;
 
-// Scene start frames - synced to actual voiceover timing
+// Scene start frames - synced to longer voiceover with more wording
 export const T = {
-  s1:  0,     // "Yo! Buying a car..." (0.0s)
-  s2:  135,   // "Endless WhatsApp groups..." (4.5s)
-  s3:  285,   // "Motokah changes everything!" (9.5s)
-  s4:  375,   // "Post your car..." (12.5s)
-  s5:  435,   // "...in just 2 minutes" (14.5s)
-  s6:  480,   // "Buyers across..." (16.0s)
-  s7:  690,   // "No middlemen..." (23.0s)
-  s8:  795,   // "Just your car..." (26.5s)
-  s9:  900,   // "Over ten thousand..." (30.0s)
-  s10: 1050,  // "Motokah dot com!" (35.0s)
-  end: 1186,  // End (39.55s)
+  s1:  0,     // "Buying a car in East Africa..."
+  s2:  180,   // "Endless WhatsApp groups..."
+  s3:  420,   // "Motokah..."
+  s4:  600,   // "For sellers..."
+  s5:  750,   // "Easy listing..."
+  s6:  960,   // "Buyers across..."
+  s7:  1260,  // "No middlemen..."
+  s8:  1440,  // "Your car..."
+  s9:  1590,  // "Over ten thousand..."
+  s10: 1740,  // "Gari yako..."
+  end: 1939,  // End (64.63s)
 };
 
-// Country frame offsets (within Coverage scene)
+// Country frame offsets (within Coverage scene) - more time to show each
 export const COUNTRY_FRAMES = {
-  tz: 525,  // Tanzania (17.5s)
-  ke: 549,  // Kenya (18.3s)
-  ug: 570,  // Uganda (19.0s)
-  rw: 591,  // Rwanda (19.7s)
-  et: 615,  // Ethiopia (20.5s)
-  cd: 636,  // DRC (21.2s)
+  tz: 1020,  // Tanzania
+  ke: 1050,  // Kenya
+  ug: 1080,  // Uganda
+  rw: 1110,  // Rwanda
+  et: 1140,  // Ethiopia
+  cd: 1170,  // DRC
 };
 
 // Structured timing consumed by Main.tsx
 export const TIMING = {
   fps: 30,
-  totalDuration: 1186,
-  overlap: 8,
+  totalDuration: 1939,
+  overlap: 12,
   audio: {
     hasVoiceover: true,
     hasMusic: false,
@@ -42,14 +42,14 @@ export const TIMING = {
   },
   scenes: {
     s1_Hook:      0,
-    s2_Problem:   135,
-    s3_Brand:     285,
-    s4_Home:      375,
-    s4b_PostCar:  435,
-    s5_Coverage:  480,
-    s6_Listing:   690,
-    s6b_Chat:     795,
-    s7_Stats:     900,
-    s8_CTA:       1050,
+    s2_Problem:   180,
+    s3_Brand:     420,
+    s4_Home:      600,
+    s4b_PostCar:  750,
+    s5_Coverage:  960,
+    s6_Listing:   1260,
+    s6b_Chat:     1440,
+    s7_Stats:     1590,
+    s8_CTA:       1740,
   },
 };

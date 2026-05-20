@@ -48,7 +48,7 @@ export function Scene03_Brand() {
   });
 
   // Fade out
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 140) / 20);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 570) / 30);
 
   return (
     <div

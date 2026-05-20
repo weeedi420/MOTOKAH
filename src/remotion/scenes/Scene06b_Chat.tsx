@@ -18,7 +18,7 @@ export function Scene06b_Chat() {
     config: SPRING.cinematic,
   });
 
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 120) / 15);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 1550) / 40);
 
   return (
     <div

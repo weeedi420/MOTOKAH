@@ -45,7 +45,7 @@ export function Scene01_Hook() {
     : 0;
 
   // Fade out
-  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 85) / 15);
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 160) / 20);
 
   return (
     <div
