@@ -1,71 +1,120 @@
-import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE } from "../design";
-import { BigNumber } from "../components/BigNumber";
+import { useCurrentFrame, spring } from "remotion";
+import { COLOR, SPRING } from "../design";
 
 export function Scene08_Stats() {
   const frame = useCurrentFrame();
 
-  const fadeOut = interpolate(frame, [100, 110], [1, 0], { extrapolateRight: "clamp" });
+  const titleSpring = spring({
+    frame: Math.max(0, frame - 2),
+    fps: 30,
+    config: SPRING.main,
+  });
 
-  const captionOp = interpolate(frame, [0, 10], [0, 1], { extrapolateRight: "clamp", easing: EASE });
+  const stats = [
+    { value: "10K+", label: "Listings", delay: 12 },
+    { value: "5", label: "Countries", delay: 24 },
+    { value: "Free", label: "Forever", delay: 36 },
+  ].map((stat) => {
+    const t = Math.max(0, Math.min(1, (frame - stat.delay) / 20));
+    const s = spring({ frame: t * 30, fps: 30, config: SPRING.elastic });
 
-  // Stagger the entire stat cards (number + label together) - FASTER
-  const statCards = [
-    { from: 0, to: 10000, suffix: "+", label: "Verified Listings", startFrame: 12, durationFrames: 30, delay: 0 },
-    { from: 0, to: 5, label: "Countries", startFrame: 20, durationFrames: 24, delay: 8 },
-    { to: "Free", label: "To List & Browse", startFrame: 28, delay: 16 },
-  ];
+    return {
+      ...stat,
+      opacity: s,
+      transform: `translate3d(0, ${(1 - s) * 50}px, 0) scale(${0.8 + s * 0.2})`,
+      filter: `blur(${(1 - s) * 10}px)`,
+    };
+  });
+
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 100) / 15);
 
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      background: COLOR.bg,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      opacity: fadeOut,
-    }}>
-      {/* Section caption */}
-      <div style={{
-        fontSize: 11, fontWeight: 500, color: COLOR.inkMute,
-        fontFamily: "Inter, sans-serif",
-        letterSpacing: "0.12em", textTransform: "uppercase",
-        marginBottom: 64,
-        opacity: captionOp,
-      }}>
-        Motokah by the numbers
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity: fadeOut,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 13,
+          fontWeight: 700,
+          color: COLOR.brand,
+          fontFamily: "Inter, sans-serif",
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          marginBottom: 20,
+          opacity: titleSpring,
+          transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,
+          filter: `blur(${(1 - titleSpring) * 4}px)`,
+        }}
+      >
+        By The Numbers
       </div>
 
-      {/* Numbers row */}
-      <div style={{ display: "flex", gap: 96, alignItems: "flex-start" }}>
-        {statCards.map((stat, i) => {
-          const f = frame - stat.delay;
-          const cardOp = interpolate(f, [0, 16], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-          const cardY = interpolate(f, [0, 16], [14, 0], { extrapolateRight: "clamp", easing: EASE });
+      <div
+        style={{
+          fontSize: 48,
+          fontWeight: 800,
+          color: COLOR.ink,
+          fontFamily: "Inter, system-ui, sans-serif",
+          letterSpacing: "-0.03em",
+          textAlign: "center",
+          marginBottom: 64,
+          lineHeight: 1.1,
+          opacity: titleSpring,
+          transform: `translate3d(0, ${(1 - titleSpring) * 20}px, 0)`,
+          filter: `blur(${(1 - titleSpring) * 6}px)`,
+        }}
+      >
+        Over ten thousand listings.
+        <br />
+        <span style={{ color: COLOR.brand }}>Completely free.</span>
+      </div>
 
-          return (
-            <div key={i} style={{
-              opacity: cardOp,
-              transform: `translateY(${cardY}px)`,
-            }}>
-              {typeof stat.to === "string" ? (
-                <BigNumber
-                  to={stat.to}
-                  label={stat.label}
-                  startFrame={stat.startFrame}
-                />
-              ) : (
-                <BigNumber
-                  from={stat.from}
-                  to={stat.to}
-                  suffix={stat.suffix || ""}
-                  label={stat.label}
-                  startFrame={stat.startFrame}
-                  durationFrames={stat.durationFrames}
-                />
-              )}
+      <div style={{ display: "flex", gap: 48 }}>
+        {stats.map((s, i) => (
+          <div
+            key={i}
+            style={{
+              textAlign: "center",
+              opacity: s.opacity,
+              transform: s.transform,
+              filter: s.filter,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 72,
+                fontWeight: 800,
+                color: COLOR.brand,
+                fontFamily: "Inter",
+                lineHeight: 1,
+                textShadow: `0 0 40px ${COLOR.brandGlow}`,
+                marginBottom: 8,
+              }}
+            >
+              {s.value}
             </div>
-          );
-        })}
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: COLOR.inkSoft,
+                fontFamily: "Inter",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              {s.label}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,98 +1,137 @@
-import { interpolate, useCurrentFrame, Audio } from "remotion";
-import { COLOR, EASE, RADIUS } from "../design";
-import { PhoneFrame } from "../components/PhoneFrame";
-import { DetailScreen } from "../components/screens/DetailScreen";
-import { ChatScreen } from "../components/screens/ChatScreen";
-import { Cursor } from "../components/Cursor";
+import { useCurrentFrame, spring } from "remotion";
+import { COLOR, SPRING } from "../design";
 
 export function Scene06_Listing() {
   const frame = useCurrentFrame();
 
-  const fadeOut = interpolate(frame, [228, 240], [1, 0], { extrapolateRight: "clamp" });
+  const phoneSpring = spring({
+    frame: Math.max(0, frame - 2),
+    fps: 30,
+    config: SPRING.cinematic,
+  });
 
-  // Detail → Chat transition at frame 120
-  const detailOp = interpolate(frame, [110, 128], [1, 0], { extrapolateRight: "clamp" });
-  const chatOp   = interpolate(frame, [118, 136], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const chatY    = interpolate(frame, [118, 136], [24, 0], { extrapolateRight: "clamp", easing: EASE });
+  const contentSpring = spring({
+    frame: Math.max(0, frame - 15),
+    fps: 30,
+    config: SPRING.main,
+  });
 
-  const phoneLeft = (1280 - 320) / 2;  // 480
-  const phoneTop  = (720 - 680) / 2;   // 20
-
-  // bezel=14, topbar=44, photo=140, padding=12, title=20, gap=10, price=30, gap=10,
-  // specs=82, gap=10, location=24, gap=10, WA btn center = +20
-  const wpBtnX = phoneLeft + 160;  // 640
-  const wpBtnY = phoneTop + 14 + 44 + 140 + 12 + 20 + 10 + 30 + 10 + 82 + 10 + 24 + 10 + 20; // ≈ 446
-
-  const cursorPath = [
-    { frame: 0,   x: phoneLeft + 100, y: phoneTop + 200 }, // starts at price area
-    { frame: 35,  x: wpBtnX,          y: wpBtnY + 20 },    // approaching button
-    { frame: 70,  x: wpBtnX,          y: wpBtnY },         // hovering button
-    { frame: 100, x: wpBtnX,          y: wpBtnY },         // click
-    { frame: 160, x: wpBtnX + 80,     y: wpBtnY + 60 },   // drift after
-  ];
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 50) / 15);
 
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      background: COLOR.bg,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      opacity: fadeOut,
-    }}>
-      <PhoneFrame width={320} height={680} tilt={0}>
-        {/* Detail screen */}
-        <div style={{ position: "absolute", inset: 0, opacity: detailOp }}>
-          <DetailScreen frame={frame} />
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity: fadeOut,
+      }}
+    >
+      <div
+        style={{
+          width: 280,
+          height: 560,
+          background: COLOR.surface,
+          borderRadius: 36,
+          border: `1px solid ${COLOR.border}`,
+          padding: 0,
+          overflow: "hidden",
+          opacity: phoneSpring,
+          transform: `translate3d(0, ${(1 - phoneSpring) * 30}px, 0) scale(${0.95 + phoneSpring * 0.05})`,
+          filter: `blur(${(1 - phoneSpring) * 8}px)`,
+          boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
+        }}
+      >
+        {/* Car image placeholder */}
+        <div
+          style={{
+            height: 200,
+            background: `linear-gradient(135deg, ${COLOR.brand}20, ${COLOR.accent}10)`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 14,
+            color: COLOR.inkMute,
+            fontFamily: "Inter",
+          }}
+        >
+          Toyota Hilux 2021
         </div>
 
-        {/* Chat screen */}
-        <div style={{
-          position: "absolute", inset: 0,
-          opacity: chatOp,
-          transform: `translateY(${chatY}px)`,
-        }}>
-          <ChatScreen frame={Math.max(0, frame - 128)} />
-        </div>
-      </PhoneFrame>
-
-      {/* Sound Effects */}
-      {frame === 100 && <Audio src="/audio/sfx/click.mp3" startFrom={0} volume={0.6} />}
-      
-      {/* Cursor */}
-      <Cursor path={cursorPath} clickFrame={100} startFrame={0} hideFrame={190} />
-
-      {/* Step 3 badge — bottom right */}
-      {(() => {
-        const badgeOp = interpolate(frame, [148, 164], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-        const badgeY  = interpolate(frame, [148, 164], [10, 0], { extrapolateRight: "clamp", easing: EASE });
-        return (
-          <div style={{
-            position: "absolute", bottom: 48, right: 72,
-            display: "inline-flex", alignItems: "center", gap: 10,
-            background: "#F0FDF4",
-            border: "1px solid rgba(16,185,129,0.2)",
-            borderRadius: RADIUS.md,
-            padding: "10px 16px",
-            opacity: badgeOp,
-            transform: `translateY(${badgeY}px)`,
-          }}>
-            <div style={{
-              width: 24, height: 24, borderRadius: "50%",
-              background: "#10B981", color: "#fff",
-              fontSize: 11, fontWeight: 800,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontFamily: "Inter, sans-serif", flexShrink: 0,
-            }}>3</div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#065F46", fontFamily: "Inter, sans-serif" }}>
-                Deal done ✓
-              </div>
-              <div style={{ fontSize: 11, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>
-                Sold. No commission.
-              </div>
-            </div>
+        {/* Details */}
+        <div
+          style={{
+            padding: 20,
+            opacity: contentSpring,
+            transform: `translate3d(0, ${(1 - contentSpring) * 20}px, 0)`,
+            filter: `blur(${(1 - contentSpring) * 6}px)`,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 20,
+              fontWeight: 800,
+              color: COLOR.ink,
+              fontFamily: "Inter",
+              marginBottom: 8,
+            }}
+          >
+            Toyota Hilux 2021
           </div>
-        );
-      })()}
+
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 800,
+              color: COLOR.brand,
+              fontFamily: "Inter",
+              marginBottom: 16,
+              textShadow: `0 0 20px ${COLOR.brandGlow}`,
+            }}
+          >
+            TSh 78,500,000
+          </div>
+
+          {[
+            "45,000 km",
+            "Dar es Salaam",
+            "Manual Transmission",
+            "Diesel",
+          ].map((detail, i) => (
+            <div
+              key={i}
+              style={{
+                fontSize: 13,
+                color: COLOR.inkSoft,
+                fontFamily: "Inter",
+                padding: "8px 0",
+                borderBottom: `1px solid ${COLOR.border}`,
+              }}
+            >
+              {detail}
+            </div>
+          ))}
+
+          <div
+            style={{
+              background: `linear-gradient(135deg, ${COLOR.brand}, #D4891A)`,
+              color: "#0A0A0F",
+              borderRadius: 14,
+              padding: "14px",
+              textAlign: "center",
+              fontSize: 14,
+              fontWeight: 800,
+              fontFamily: "Inter",
+              marginTop: 16,
+              boxShadow: `0 0 20px ${COLOR.brandGlow}`,
+            }}
+          >
+            Contact Seller
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

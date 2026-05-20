@@ -1,97 +1,138 @@
-import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS } from "../design";
-import { PhoneFrame } from "../components/PhoneFrame";
-import { HomeScreen } from "../components/screens/HomeScreen";
+import { useCurrentFrame, spring } from "remotion";
+import { COLOR, SPRING, cameraZoom } from "../design";
 
-const CAPTIONS = ["Verified listings.", "Real prices.", "Across 5 countries."];
+const FEATURES = [
+  { icon: "✓", title: "Verified Listings", desc: "Every car is checked" },
+  { icon: "✓", title: "Real Prices", desc: "No hidden fees" },
+  { icon: "✓", title: "5 Countries", desc: "East Africa covered" },
+];
 
 export function Scene04_Home() {
   const frame = useCurrentFrame();
 
-  const fadeOut = interpolate(frame, [90, 100], [1, 0], { extrapolateRight: "clamp" });
+  const zoom = cameraZoom(frame, 0, 90);
 
-  // Phone slides in from right - FASTER
-  const phoneX = interpolate(frame, [5, 18], [180, 0], { extrapolateRight: "clamp", easing: EASE });
-  const phoneOp = interpolate(frame, [5, 16], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const tilt = 8;
+  const titleSpring = spring({
+    frame: Math.max(0, frame - 2),
+    fps: 30,
+    config: SPRING.main,
+  });
 
-  // Left captions stagger in - FASTER
-  const capAnims = CAPTIONS.map((_, i) => ({
-    op: interpolate(frame, [20 + i * 6, 30 + i * 6], [0, 1], { extrapolateRight: "clamp", easing: EASE }),
-    y:  interpolate(frame, [20 + i * 6, 30 + i * 6], [10, 0], { extrapolateRight: "clamp", easing: EASE }),
-  }));
+  const features = FEATURES.map((f, i) => {
+    const delay = 15 + i * 12;
+    const t = Math.max(0, Math.min(1, (frame - delay) / 18));
+    const s = spring({ frame: t * 30, fps: 30, config: SPRING.elastic });
+
+    return {
+      ...f,
+      opacity: s,
+      transform: `translate3d(0, ${(1 - s) * 40}px, 0) scale(${0.9 + s * 0.1})`,
+      filter: `blur(${(1 - s) * 8}px)`,
+    };
+  });
+
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 90) / 15);
 
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      background: COLOR.bg,
-      display: "flex", alignItems: "center",
-      padding: "0 80px",
-      opacity: fadeOut,
-    }}>
-      {/* Left text panel */}
-      <div style={{ flex: 1, paddingRight: 60, maxWidth: 520 }}>
-        {CAPTIONS.map((cap, i) => (
-          <div key={i} style={{
-            fontSize: 30,
-            fontWeight: 700,
-            fontFamily: "Inter, system-ui, sans-serif",
-            color: COLOR.ink,
-            letterSpacing: "-0.02em",
-            lineHeight: 1.3,
-            marginBottom: 12,
-            opacity: capAnims[i].op,
-            transform: `translateY(${capAnims[i].y}px)`,
-          }}>
-            {cap}
-          </div>
-        ))}
-
-        {/* Step 1 badge */}
-        {(() => {
-          const badgeOp = interpolate(frame, [115, 130], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-          const badgeY  = interpolate(frame, [115, 130], [10, 0], { extrapolateRight: "clamp", easing: EASE });
-          return (
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 10,
-              background: COLOR.brandSoft,
-              border: `1px solid rgba(0,153,255,0.18)`,
-              borderRadius: RADIUS.md,
-              padding: "10px 16px",
-              marginTop: 16,
-              opacity: badgeOp,
-              transform: `translateY(${badgeY}px)`,
-            }}>
-              <div style={{
-                width: 24, height: 24, borderRadius: "50%",
-                background: COLOR.brand,
-                color: "#fff", fontSize: 11, fontWeight: 800,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "Inter, sans-serif",
-                flexShrink: 0,
-              }}>1</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: COLOR.brandInk, fontFamily: "Inter, sans-serif" }}>
-                  Post your car
-                </div>
-                <div style={{ fontSize: 11, color: COLOR.inkMute, fontFamily: "Inter, sans-serif" }}>
-                  Free · Takes 2 minutes
-                </div>
-              </div>
-            </div>
-          );
-        })()}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0 80px",
+        opacity: fadeOut,
+        transform: `scale(${zoom})`,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 13,
+          fontWeight: 700,
+          color: COLOR.brand,
+          fontFamily: "Inter, sans-serif",
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          marginBottom: 20,
+          opacity: titleSpring,
+          transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,
+          filter: `blur(${(1 - titleSpring) * 4}px)`,
+        }}
+      >
+        Why Motokah
       </div>
 
-      {/* Phone */}
-      <div style={{
-        opacity: phoneOp,
-        transform: `translateX(${phoneX}px)`,
-        flexShrink: 0,
-      }}>
-        <PhoneFrame width={320} height={680} tilt={tilt}>
-          <HomeScreen frame={Math.max(0, frame - 30)} />
-        </PhoneFrame>
+      <div
+        style={{
+          fontSize: 52,
+          fontWeight: 800,
+          color: COLOR.ink,
+          fontFamily: "Inter, system-ui, sans-serif",
+          letterSpacing: "-0.03em",
+          textAlign: "center",
+          marginBottom: 56,
+          lineHeight: 1.1,
+          opacity: titleSpring,
+          transform: `translate3d(0, ${(1 - titleSpring) * 20}px, 0)`,
+          filter: `blur(${(1 - titleSpring) * 6}px)`,
+        }}
+      >
+        Verified listings.
+        <br />
+        <span style={{ color: COLOR.brand }}>Real prices.</span>
+      </div>
+
+      <div style={{ display: "flex", gap: 32 }}>
+        {features.map((f, i) => (
+          <div
+            key={i}
+            style={{
+              background: "rgba(245,166,35,0.06)",
+              borderRadius: 20,
+              padding: "32px 36px",
+              border: `1px solid ${COLOR.brandSoft}`,
+              minWidth: 220,
+              textAlign: "center",
+              opacity: f.opacity,
+              transform: f.transform,
+              filter: f.filter,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 32,
+                fontWeight: 800,
+                color: COLOR.brand,
+                marginBottom: 12,
+                textShadow: `0 0 20px ${COLOR.brandGlow}`,
+              }}
+            >
+              {f.icon}
+            </div>
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                color: COLOR.ink,
+                fontFamily: "Inter",
+                marginBottom: 8,
+              }}
+            >
+              {f.title}
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                color: COLOR.inkSoft,
+                fontFamily: "Inter",
+              }}
+            >
+              {f.desc}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

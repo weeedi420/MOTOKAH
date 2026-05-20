@@ -1,8 +1,9 @@
 import { Player } from "@remotion/player";
 import { MotokahPromo } from "@/remotion/Main";
+import { TIMING } from "@/remotion/timing";
 
-const TOTAL = 1512; // 50.4s @ 30fps (synced to voiceover)
-const FPS = 30;
+const TOTAL = TIMING.totalDuration;
+const FPS = TIMING.fps;
 const W = 1280;
 const H = 720;
 
@@ -10,7 +11,7 @@ export default function PromoVideo() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "#F8F9FB",
+      background: "#0A0A0F",
       display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center",
       padding: "32px 16px",
@@ -19,16 +20,16 @@ export default function PromoVideo() {
       {/* Header */}
       <div style={{ marginBottom: 20, textAlign: "center" }}>
         <div style={{
-          fontSize: 11, fontWeight: 600, color: "#9AA2B1",
+          fontSize: 11, fontWeight: 600, color: "#6B6678",
           letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8,
         }}>
           Motokah · Product Film
         </div>
         <div style={{
-          fontSize: 24, fontWeight: 700, color: "#0A0F1E",
+          fontSize: 24, fontWeight: 700, color: "#FFFFFF",
           letterSpacing: "-0.025em",
         }}>
-          50-Second Ad
+          Cinematic Ad
         </div>
       </div>
 
@@ -36,8 +37,8 @@ export default function PromoVideo() {
       <div style={{
         width: "100%", maxWidth: 960,
         borderRadius: 16, overflow: "hidden",
-        boxShadow: "0 4px 12px rgba(10,15,30,0.06), 0 24px 48px rgba(10,15,30,0.10)",
-        border: "1px solid #E5E7EB",
+        boxShadow: "0 0 80px rgba(245,166,35,0.1), 0 40px 80px rgba(0,0,0,0.5)",
+        border: "1px solid rgba(245,166,35,0.1)",
       }}>
         <Player
           component={MotokahPromo}
@@ -56,12 +57,12 @@ export default function PromoVideo() {
       {/* Footer */}
       <div style={{
         marginTop: 16, display: "flex", flexWrap: "wrap", gap: 20,
-        justifyContent: "center", color: "#9AA2B1", fontSize: 11,
+        justifyContent: "center", color: "#6B6678", fontSize: 11,
       }}>
-        <span>50s · 30fps · 1280×720</span>
-        <span>9 scenes · white + blue</span>
+        <span>{Math.round(TOTAL / FPS)}s · {FPS}fps · {W}×{H}</span>
+        <span>9 scenes · dark + golden amber</span>
         <span>
-          Export: <code style={{ background: "#fff", padding: "1px 5px", borderRadius: 4, border: "1px solid #E5E7EB" }}>
+          Export: <code style={{ background: "#1A1A24", padding: "1px 5px", borderRadius: 4, border: "1px solid #2A2A35", color: "#B8B4C8" }}>
             npx remotion studio
           </code>
         </span>

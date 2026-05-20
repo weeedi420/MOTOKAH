@@ -1,91 +1,138 @@
-import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE } from "../design";
+import { useCurrentFrame, spring } from "remotion";
+import { COLOR, SPRING, cameraZoom } from "../design";
 
 const LETTERS = ["M", "O", "T", "O", "K", "A", "H"];
 
 export function Scene03_Brand() {
   const frame = useCurrentFrame();
 
-  // Previous scene clears by frame 12
-  const fadeOut = interpolate(frame, [100, 110], [1, 0], { extrapolateRight: "clamp" });
+  // Camera zoom: dramatic pull out
+  const zoom = cameraZoom(frame, 0, 90);
 
-  // Letters fade in, stagger 2 frames, starting at frame 10
-  const letterOps = LETTERS.map((_, i) =>
-    interpolate(frame, [10 + i * 2, 18 + i * 2], [0, 1], { extrapolateRight: "clamp", easing: EASE })
-  );
+  // Letters spring in with stagger
+  const letters = LETTERS.map((letter, i) => {
+    const delay = 12 + i * 2;
+    const t = Math.max(0, Math.min(1, (frame - delay) / 15));
+    const s = spring({ frame: t * 30, fps: 30, config: SPRING.elastic });
 
-  // Underline draws - FASTER
-  const lineW = interpolate(frame, [30, 42], [0, 470], { extrapolateRight: "clamp", easing: EASE });
-  const lineOp = interpolate(frame, [28, 34], [0, 1], { extrapolateRight: "clamp" });
-
-  // Tagline fades in - FASTER
-  const tagOp = interpolate(frame, [48, 58], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const tagY  = interpolate(frame, [48, 58], [8, 0],  { extrapolateRight: "clamp", easing: EASE });
+    return {
+      letter,
+      opacity: s,
+      transform: `translate3d(0, ${(1 - s) * 60}px, 0) scale(${0.5 + s * 0.5})`,
+      filter: `blur(${(1 - s) * 12}px)`,
+    };
+  });
 
   // Glow pulse after letters appear
-  const glowPulse = 0.12 + 0.08 * Math.sin((frame / 20) * Math.PI * 2);
+  const glowStart = 30;
+  const glowSpring = spring({
+    frame: Math.max(0, frame - glowStart),
+    fps: 30,
+    config: SPRING.float,
+  });
+  const glowPulse = 0.08 + 0.12 * glowSpring * Math.sin(frame * 0.15);
+
+  // Underline draws
+  const lineStart = 32;
+  const lineSpring = spring({
+    frame: Math.max(0, frame - lineStart),
+    fps: 30,
+    config: SPRING.main,
+  });
+
+  // Tagline fades in
+  const tagStart = 45;
+  const tagSpring = spring({
+    frame: Math.max(0, frame - tagStart),
+    fps: 30,
+    config: SPRING.cinematic,
+  });
+
+  // Fade out
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 140) / 20);
 
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      background: COLOR.bg,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      opacity: fadeOut,
-    }}>
-      {/* Wordmark */}
-      <div style={{ display: "flex", alignItems: "baseline", position: "relative" }}>
-        {LETTERS.map((letter, i) => (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity: fadeOut,
+        transform: `scale(${zoom})`,
+      }}
+    >
+      {/* Brand name */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          position: "relative",
+          gap: 2,
+        }}
+      >
+        {letters.map((l, i) => (
           <span
             key={i}
             style={{
-              fontSize: 110,
-              fontWeight: 700,
+              fontSize: 120,
+              fontWeight: 800,
               fontFamily: "Inter, system-ui, sans-serif",
-              letterSpacing: "-0.03em",
+              letterSpacing: "-0.04em",
               color: COLOR.ink,
-              opacity: letterOps[i],
-              lineHeight: 1,
+              opacity: l.opacity,
+              transform: l.transform,
+              filter: l.filter,
+              display: "inline-block",
+              textShadow: `0 0 40px ${COLOR.brandGlow}`,
             }}
           >
-            {letter}
+            {l.letter}
           </span>
         ))}
 
-        {/* Glow effect behind wordmark */}
-        <div style={{
-          position: "absolute",
-          inset: "-20px -40px",
-          background: `radial-gradient(ellipse at center, ${COLOR.brandSoft} ${glowPulse * 100}%, transparent 70%)`,
-          opacity: frame > 50 ? 1 : 0,
-          pointerEvents: "none",
-          zIndex: -1,
-          transition: "opacity 0.3s",
-        }} />
+        {/* Ambient glow behind brand */}
+        <div
+          style={{
+            position: "absolute",
+            inset: "-40px -60px",
+            background: `radial-gradient(ellipse at center, ${COLOR.brandSoft} ${glowPulse * 100}%, transparent 70%)`,
+            opacity: glowSpring,
+            pointerEvents: "none",
+            zIndex: -1,
+          }}
+        />
       </div>
 
-      {/* Brand underline */}
-      <div style={{
-        width: lineW,
-        height: 3,
-        background: COLOR.brand,
-        opacity: lineOp,
-        borderRadius: 99,
-        marginTop: 8,
-        alignSelf: "center",
-      }} />
+      {/* Animated underline */}
+      <div
+        style={{
+          width: 500 * lineSpring,
+          height: 4,
+          background: `linear-gradient(90deg, ${COLOR.brand}, ${COLOR.accent})`,
+          borderRadius: 99,
+          marginTop: 12,
+          boxShadow: `0 0 30px ${COLOR.brandGlow}`,
+          opacity: lineSpring,
+        }}
+      />
 
       {/* Tagline */}
-      <div style={{
-        marginTop: 28,
-        fontSize: 18,
-        fontWeight: 500,
-        fontFamily: "Inter, sans-serif",
-        color: COLOR.inkSoft,
-        letterSpacing: "-0.01em",
-        opacity: tagOp,
-        transform: `translateY(${tagY}px)`,
-      }}>
+      <div
+        style={{
+          marginTop: 32,
+          fontSize: 20,
+          fontWeight: 500,
+          fontFamily: "Inter, sans-serif",
+          color: COLOR.inkSoft,
+          letterSpacing: "-0.01em",
+          opacity: tagSpring,
+          transform: `translate3d(0, ${(1 - tagSpring) * 15}px, 0)`,
+          filter: `blur(${(1 - tagSpring) * 4}px)`,
+        }}
+      >
         The marketplace for East Africa's car market.
       </div>
     </div>

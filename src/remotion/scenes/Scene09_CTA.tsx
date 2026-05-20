@@ -1,130 +1,267 @@
-import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../design";
+import { useCurrentFrame, spring } from "remotion";
+import { COLOR, SPRING, cursorGlow } from "../design";
 
 const DOMAIN = "motokah.com";
 
 export function Scene09_CTA() {
   const frame = useCurrentFrame();
 
-  // Swahili - FASTER
-  const swahiliOp = interpolate(frame, [10, 22], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const swahiliY  = interpolate(frame, [10, 22], [8, 0],  { extrapolateRight: "clamp", easing: EASE });
+  // Slow camera zoom in throughout scene
+  const zoomStart = 0;
+  const zoomProgress = Math.max(0, Math.min(1, frame / 100));
+  const zoomSpring = spring({
+    frame: zoomProgress * 30,
+    fps: 30,
+    config: SPRING.cinematic,
+  });
+  const cameraZoom = 1 + zoomSpring * 0.06;
 
-  // Translation - FASTER
-  const transOp = interpolate(frame, [20, 30], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const transY  = interpolate(frame, [20, 30], [6, 0],  { extrapolateRight: "clamp", easing: EASE });
+  // Swahili text reveal
+  const swahiliSpring = spring({
+    frame: Math.max(0, frame - 5),
+    fps: 30,
+    config: SPRING.main,
+  });
 
-  // Domain — chars stagger 1 frame each - FASTER
-  const domainCharOps = DOMAIN.split("").map((_, i) =>
-    interpolate(frame, [34 + i * 1, 42 + i * 1], [0, 1], { extrapolateRight: "clamp" })
-  );
+  // Translation reveal
+  const transSpring = spring({
+    frame: Math.max(0, frame - 20),
+    fps: 30,
+    config: SPRING.cinematic,
+  });
 
-  // CTA button - FASTER
-  const btnOp = interpolate(frame, [60, 72], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const btnY  = interpolate(frame, [60, 72], [8, 0],  { extrapolateRight: "clamp", easing: EASE });
+  // Domain: character-by-character spring reveal
+  const domainChars = DOMAIN.split("").map((char, i) => {
+    const delay = 35 + i * 2;
+    const t = Math.max(0, Math.min(1, (frame - delay) / 10));
+    const s = spring({ frame: t * 30, fps: 30, config: SPRING.snap });
 
-  // Button pulse/glow after it appears
-  const btnPulse = frame >= 72 ? 1 + 0.03 * Math.sin((frame / 16) * Math.PI * 2) : 1;
-  const btnGlow = frame >= 72 ? 0.15 + 0.1 * Math.sin((frame / 16) * Math.PI * 2) : 0;
+    return {
+      char,
+      opacity: s,
+      transform: `translate3d(0, ${(1 - s) * 20}px, 0) scale(${0.8 + s * 0.2})`,
+      filter: `blur(${(1 - s) * 8}px)`,
+    };
+  });
 
-  // Watermark logo top-left
-  const wm = interpolate(frame, [0, 8], [0, 1], { extrapolateRight: "clamp" });
+  // CTA button spring
+  const btnStart = 55;
+  const btnSpring = spring({
+    frame: Math.max(0, frame - btnStart),
+    fps: 30,
+    config: SPRING.elastic,
+  });
+
+  // Button pulse after appear
+  const btnPulse = frame >= btnStart + 20
+    ? 1 + 0.04 * Math.sin(frame * 0.12)
+    : 1;
+
+  const btnGlow = frame >= btnStart + 20
+    ? 0.2 + 0.15 * Math.sin(frame * 0.12)
+    : 0;
+
+  // Cursor path: glides to button
+  const cursorStart = 75;
+  const cursorT = Math.max(0, Math.min(1, (frame - cursorStart) / 25));
+  const cursorSpring = spring({
+    frame: cursorT * 30,
+    fps: 30,
+    config: SPRING.cinematic,
+  });
+
+  const cursorX = 540 + cursorSpring * 100; // Glides to button center
+  const cursorY = 420 + cursorSpring * 20;
+
+  // Click effect
+  const clickFrame = cursorStart + 25;
+  const clickEffect = cursorGlow(frame, clickFrame);
+
+  // Watermark
+  const wmSpring = spring({
+    frame: Math.max(0, frame - 2),
+    fps: 30,
+    config: SPRING.main,
+  });
 
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      background: COLOR.bg,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-    }}>
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        transform: `scale(${cameraZoom})`,
+      }}
+    >
       {/* Watermark */}
-      <div style={{
-        position: "absolute", top: 32, left: 40,
-        fontSize: 12, fontWeight: 700, color: COLOR.inkMute,
-        fontFamily: "Inter, sans-serif", letterSpacing: "-0.01em",
-        opacity: wm,
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 40,
+          left: 48,
+          fontSize: 14,
+          fontWeight: 700,
+          color: COLOR.inkMute,
+          fontFamily: "Inter, sans-serif",
+          letterSpacing: "-0.01em",
+          opacity: wmSpring,
+        }}
+      >
         Motokah
       </div>
 
       {/* Swahili */}
-      <div style={{
-        fontSize: 44,
-        fontWeight: 700,
-        fontFamily: "Inter, system-ui, sans-serif",
-        color: COLOR.ink,
-        letterSpacing: "-0.025em",
-        marginBottom: 8,
-        opacity: swahiliOp,
-        transform: `translateY(${swahiliY}px)`,
-      }}>
+      <div
+        style={{
+          fontSize: 52,
+          fontWeight: 800,
+          fontFamily: "Inter, system-ui, sans-serif",
+          color: COLOR.ink,
+          letterSpacing: "-0.03em",
+          marginBottom: 12,
+          opacity: swahiliSpring,
+          transform: `translate3d(0, ${(1 - swahiliSpring) * 25}px, 0)`,
+          filter: `blur(${(1 - swahiliSpring) * 8}px)`,
+        }}
+      >
         Gari yako, bei yako.
       </div>
 
       {/* Translation */}
-      <div style={{
-        fontSize: 18,
-        fontWeight: 400,
-        fontFamily: "Inter, sans-serif",
-        color: COLOR.inkSoft,
-        marginBottom: 48,
-        opacity: transOp,
-        transform: `translateY(${transY}px)`,
-      }}>
+      <div
+        style={{
+          fontSize: 20,
+          fontWeight: 400,
+          fontFamily: "Inter, sans-serif",
+          color: COLOR.inkSoft,
+          marginBottom: 56,
+          opacity: transSpring,
+          transform: `translate3d(0, ${(1 - transSpring) * 15}px, 0)`,
+          filter: `blur(${(1 - transSpring) * 6}px)`,
+        }}
+      >
         Your car, your price.
       </div>
 
       {/* Domain */}
-      <div style={{
-        display: "flex",
-        fontSize: 80,
-        fontWeight: 700,
-        fontFamily: "Inter, system-ui, sans-serif",
-        color: COLOR.brandInk,
-        letterSpacing: "-0.04em",
-        marginBottom: 52,
-        lineHeight: 1,
-      }}>
-        {DOMAIN.split("").map((char, i) => (
-          <span key={i} style={{ opacity: domainCharOps[i] }}>
-            {char}
+      <div
+        style={{
+          display: "flex",
+          fontSize: 88,
+          fontWeight: 800,
+          fontFamily: "Inter, system-ui, sans-serif",
+          color: COLOR.brand,
+          letterSpacing: "-0.04em",
+          marginBottom: 64,
+          lineHeight: 1,
+          textShadow: `0 0 60px ${COLOR.brandGlow}`,
+        }}
+      >
+        {domainChars.map((c, i) => (
+          <span
+            key={i}
+            style={{
+              opacity: c.opacity,
+              transform: c.transform,
+              filter: c.filter,
+              display: "inline-block",
+            }}
+          >
+            {c.char}
           </span>
         ))}
       </div>
 
-      {/* CTA button with pulse */}
-      <div style={{
-        opacity: btnOp,
-        transform: `translateY(${btnY}px)`,
-      }}>
-        <div style={{
+      {/* CTA button with glow */}
+      <div
+        style={{
+          opacity: btnSpring,
+          transform: `translate3d(0, ${(1 - btnSpring) * 20}px, 0)`,
+          filter: `blur(${(1 - btnSpring) * 6}px)`,
           position: "relative",
-        }}>
-          {/* Glow behind button */}
-          <div style={{
+        }}
+      >
+        {/* Glow behind button */}
+        <div
+          style={{
             position: "absolute",
-            inset: "-8px -16px",
-            background: `radial-gradient(ellipse at center, rgba(0,153,255,${btnGlow}) 0%, transparent 70%)`,
-            borderRadius: RADIUS.lg,
+            inset: "-12px -24px",
+            background: `radial-gradient(ellipse at center, rgba(245,166,35,${btnGlow}) 0%, transparent 70%)`,
+            borderRadius: 20,
             pointerEvents: "none",
-          }} />
-          <div style={{
-            background: COLOR.brand,
-            color: "#fff",
-            fontSize: 18,
-            fontWeight: 700,
+          }}
+        />
+
+        {/* Button */}
+        <div
+          style={{
+            background: `linear-gradient(135deg, ${COLOR.brand}, #D4891A)`,
+            color: "#0A0A0F",
+            fontSize: 20,
+            fontWeight: 800,
             fontFamily: "Inter, sans-serif",
-            padding: "18px 40px",
-            borderRadius: RADIUS.lg,
-            boxShadow: SHADOW.brand,
+            padding: "20px 48px",
+            borderRadius: 16,
             letterSpacing: "-0.01em",
             transform: `scale(${btnPulse})`,
             position: "relative",
-          }}>
-            List your car — Free →
-          </div>
+            boxShadow: `0 0 40px ${COLOR.brandGlow}, 0 4px 20px rgba(0,0,0,0.3)`,
+            cursor: "pointer",
+          }}
+        >
+          List your car — Free
+          <span style={{ marginLeft: 8 }}>→</span>
         </div>
+
+        {/* Click ring effect */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: 60,
+            height: 60,
+            borderRadius: "50%",
+            border: `2px solid ${COLOR.brand}`,
+            transform: `translate(-50%, -50%) scale(${clickEffect.scale})`,
+            opacity: clickEffect.opacity,
+            pointerEvents: "none",
+          }}
+        />
       </div>
+
+      {/* Cursor */}
+      {frame >= cursorStart && (
+        <div
+          style={{
+            position: "absolute",
+            left: cursorX,
+            top: cursorY,
+            pointerEvents: "none",
+            zIndex: 100,
+            transition: "none",
+          }}
+        >
+          <svg
+            width={20}
+            height={26}
+            viewBox="0 0 20 26"
+            fill="none"
+            style={{ transform: "scale(1.2)" }}
+          >
+            <path
+              d="M0 0L0 20L5 15L9 24L12 23L8 14L15 14Z"
+              fill="white"
+              stroke={COLOR.ink}
+              strokeWidth={1.5}
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      )}
     </div>
   );
 }

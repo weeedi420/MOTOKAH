@@ -1,100 +1,112 @@
-import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../design";
+import { useCurrentFrame, spring } from "remotion";
+import { COLOR, SPRING } from "../design";
 
 const PROBLEMS = [
-  { label: "WhatsApp groups." },
-  { label: "Random listings." },
-  { label: "Vague prices." },
+  "No more WhatsApp groups.",
+  "No more random listings.",
+  "No more vague prices.",
 ];
 
 export function Scene02_Problem() {
   const frame = useCurrentFrame();
-  const fadeOut = interpolate(frame, [120, 130], [1, 0], { extrapolateRight: "clamp" });
 
-  // Cards slide up staggered - FASTER
-  const cardAnims = PROBLEMS.map((_, i) => ({
-    op: interpolate(frame, [i * 4, i * 4 + 12], [0, 1], { extrapolateRight: "clamp", easing: EASE }),
-    y:  interpolate(frame, [i * 4, i * 4 + 12], [20, 0], { extrapolateRight: "clamp", easing: EASE }),
-  }));
+  // Title reveal
+  const titleSpring = spring({
+    frame: Math.max(0, frame - 2),
+    fps: 30,
+    config: SPRING.main,
+  });
 
-  // Strike-through lines draw - FASTER
-  const strikeAnims = PROBLEMS.map((_, i) => ({
-    offset: interpolate(frame, [45 + i * 4, 58 + i * 4], [280, 0], { extrapolateRight: "clamp", easing: EASE }),
-    op: interpolate(frame, [45 + i * 4, 50 + i * 4], [0, 1], { extrapolateRight: "clamp" }),
-  }));
+  // Problem lines: staggered spring reveal
+  const problems = PROBLEMS.map((text, i) => {
+    const delay = 12 + i * 14;
+    const t = Math.max(0, Math.min(1, (frame - delay) / 18));
+    const s = spring({ frame: t * 30, fps: 30, config: SPRING.elastic });
 
-  // Cards desaturate + dim after strikes - FASTER
-  const cardDim = interpolate(frame, [70, 85], [1, 0.35], { extrapolateRight: "clamp" });
+    return {
+      text,
+      opacity: s,
+      transform: `translate3d(${(1 - s) * -50}px, 0, 0)`,
+      filter: `blur(${(1 - s) * 8}px)`,
+    };
+  });
 
-  // Closing line - FASTER
-  const closeOp = interpolate(frame, [80, 95], [0, 1], { extrapolateRight: "clamp", easing: EASE });
-  const closeY  = interpolate(frame, [80, 95], [10, 0], { extrapolateRight: "clamp", easing: EASE });
+  // "There's a better way" reveal
+  const betterSpring = spring({
+    frame: Math.max(0, frame - 65),
+    fps: 30,
+    config: SPRING.punch,
+  });
+
+  // Fade out
+  const fadeOut = Math.max(0, 1 - Math.max(0, frame - 120) / 20);
 
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      background: COLOR.bg,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      opacity: fadeOut,
-    }}>
-      {/* Cards row */}
-      <div style={{ display: "flex", gap: 20, opacity: cardDim }}>
-        {PROBLEMS.map((p, i) => (
-          <div key={i} style={{
-            width: 210, height: 140,
-            background: COLOR.bg,
-            borderRadius: RADIUS.lg,
-            border: `1px solid ${COLOR.border}`,
-            boxShadow: SHADOW.card,
-            padding: 20,
-            position: "relative",
-            opacity: cardAnims[i].op,
-            transform: `translateY(${cardAnims[i].y}px)`,
-            display: "flex", flexDirection: "column", justifyContent: "space-between",
-          }}>
-            <div style={{
-              fontSize: 8, fontWeight: 700, color: COLOR.inkMute,
-              fontFamily: "Inter, sans-serif", letterSpacing: "0.08em", textTransform: "uppercase",
-            }}>
-              Before
-            </div>
-            <div style={{
-              fontSize: 22, fontWeight: 700, color: COLOR.ink,
-              fontFamily: "Inter, system-ui, sans-serif",
-              lineHeight: 1.2, letterSpacing: "-0.02em",
-            }}>
-              {p.label}
-            </div>
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "0 120px",
+        opacity: fadeOut,
+      }}
+    >
+      {/* Title */}
+      <div
+        style={{
+          fontSize: 13,
+          fontWeight: 700,
+          color: COLOR.inkMute,
+          fontFamily: "Inter, sans-serif",
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          marginBottom: 40,
+          opacity: titleSpring,
+          transform: `translate3d(0, ${(1 - titleSpring) * 15}px, 0)`,
+          filter: `blur(${(1 - titleSpring) * 4}px)`,
+        }}
+      >
+        The Problem
+      </div>
 
-            {/* Strike-through — THICKER */}
-            <svg
-              style={{ position: "absolute", inset: 0, overflow: "visible", pointerEvents: "none" }}
-              width={210} height={140}
-            >
-              <line
-                x1={10} y1={10} x2={200} y2={130}
-                stroke={COLOR.ink} strokeWidth={3.5} strokeLinecap="round"
-                strokeDasharray={280}
-                strokeDashoffset={strikeAnims[i].offset}
-                opacity={strikeAnims[i].op}
-              />
-            </svg>
+      {/* Problem lines */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 48 }}>
+        {problems.map((p, i) => (
+          <div
+            key={i}
+            style={{
+              fontSize: 36,
+              fontWeight: 700,
+              color: COLOR.ink,
+              fontFamily: "Inter, system-ui, sans-serif",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.2,
+              opacity: p.opacity,
+              transform: p.transform,
+              filter: p.filter,
+            }}
+          >
+            {p.text}
           </div>
         ))}
       </div>
 
-      {/* Closing line */}
-      <div style={{
-        marginTop: 44,
-        fontSize: 22,
-        fontWeight: 500,
-        fontFamily: "Inter, sans-serif",
-        color: COLOR.inkSoft,
-        opacity: closeOp,
-        transform: `translateY(${closeY}px)`,
-        letterSpacing: "-0.01em",
-      }}>
+      {/* Better way */}
+      <div
+        style={{
+          fontSize: 28,
+          fontWeight: 600,
+          color: COLOR.brand,
+          fontFamily: "Inter, sans-serif",
+          letterSpacing: "-0.01em",
+          opacity: betterSpring,
+          transform: `translate3d(0, ${(1 - betterSpring) * 20}px, 0)`,
+          filter: `blur(${(1 - betterSpring) * 6}px)`,
+          textShadow: `0 0 30px ${COLOR.brandGlow}`,
+        }}
+      >
         There's a better way.
       </div>
     </div>
