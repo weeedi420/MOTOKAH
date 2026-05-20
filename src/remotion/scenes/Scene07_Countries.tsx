@@ -3,10 +3,15 @@ import { COLOR, SPRING } from "../design";
 
 const COUNTRIES = [
   { name: "Tanzania", city: "Dar es Salaam", delay: 28, num: 1 },
-  { name: "Kenya",    city: "Nairobi",       delay: 53, num: 2 },
-  { name: "Uganda",   city: "Kampala",       delay: 69, num: 3 },
-  { name: "Rwanda",   city: "Kigali",        delay: 88, num: 4 },
-  { name: "Burundi",  city: "Bujumbura",     delay: 109, num: 5 },
+  { name: "Kenya",    city: "Nairobi",       delay: 48, num: 2 },
+  { name: "Uganda",   city: "Kampala",       delay: 65, num: 3 },
+  { name: "Rwanda",   city: "Kigali",        delay: 80, num: 4 },
+  { name: "Burundi",  city: "Bujumbura",     delay: 95, num: 5 },
+  { name: "Ethiopia", city: "Addis Ababa",   delay: 110, num: 6 },
+  { name: "Somalia",  city: "Mogadishu",     delay: 125, num: 7 },
+  { name: "S. Sudan", city: "Juba",          delay: 140, num: 8 },
+  { name: "Djibouti", city: "Djibouti City", delay: 155, num: 9 },
+  { name: "DRC",      city: "Kinshasa",      delay: 170, num: 10 },
 ];
 
 export function Scene07_Countries() {
@@ -97,17 +102,17 @@ export function Scene07_Countries() {
           opacity: titleSpring,
         }}
       >
-        From Dar es Salaam to Nairobi, Kampala to Kigali.
+        From Dar es Salaam to Nairobi, Kampala to Kinshasa.
       </div>
 
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: 14,
+          gap: 10,
           width: "100%",
-          maxWidth: 480,
-          marginBottom: 32,
+          maxWidth: 520,
+          marginBottom: 24,
         }}
       >
         {countries.map((country, i) => (
@@ -185,9 +190,9 @@ export function Scene07_Countries() {
         }}
       >
         {[
-          { value: "5", label: "Countries" },
+          { value: "10", label: "Countries" },
           { value: "10K+", label: "Listings" },
-          { value: "9", label: "Cities" },
+          { value: "25+", label: "Cities" },
         ].map((stat, i) => (
           <div
             key={i}
