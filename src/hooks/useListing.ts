@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { type Listing, mockListings } from "@/data/mockData";
+import { type Listing, mockListings, getShowroomListings } from "@/data/mockData";
 
 export interface ListingWithDescription extends Listing {
   description?: string | null;
@@ -16,7 +16,20 @@ export function useListing(id: string | undefined) {
 
     // Handle all non-Supabase listings (mock-, ig-, ib-, jiji-)
     if (id.startsWith("mock-") || id.startsWith("ig-") || id.startsWith("ib-") || id.startsWith("jiji-")) {
-      const mock = mockListings.find((m) => m.id === id);
+      let mock: Listing | undefined = mockListings.find((m) => m.id === id);
+
+      // ig- listings created by getShowroomListings aren't in mockListings
+      // Parse username from id format: ig-{username}-{shortcode}
+      if (!mock && id.startsWith("ig-")) {
+        const withoutPrefix = id.slice(3);
+        const lastDash = withoutPrefix.lastIndexOf("-");
+        if (lastDash > 0) {
+          const username = withoutPrefix.slice(0, lastDash);
+          const showroomListings = getShowroomListings(username);
+          mock = showroomListings.find(l => l.id === id);
+        }
+      }
+
       if (mock) {
         setListing({ ...mock, description: mock.description ?? null });
         setImages(mock.images?.length ? mock.images : mock.image ? [mock.image] : []);

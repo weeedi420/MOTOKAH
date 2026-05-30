@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconSearch, IconMapPin, IconStarFilled, IconBuildingStore, IconShieldCheck } from "@tabler/icons-react";
-import { mockDealers } from "@/data/mockData";
+import { mockDealers, getShowroomListings } from "@/data/mockData";
 
 type DealerProfile = {
   user_id: string;
@@ -30,16 +30,20 @@ export default function DealerDirectory() {
   useEffect(() => {
     (async () => {
       // Always start with Instagram/showroom dealers
-      const igDealers: DealerProfile[] = mockDealers.map(d => ({
-        user_id: d.user_id.replace("mock-dealer-", ""),
-        display_name: d.display_name,
-        avatar_url: d.avatar_url,
-        city: d.city,
-        phone: d.phone,
-        verified_at: d.verified_at,
-        listing_count: d.listing_count,
-        rating: d.rating,
-      }));
+      const igDealers: DealerProfile[] = mockDealers.map(d => {
+        const username = d.user_id.replace("mock-dealer-", "");
+        const realCount = getShowroomListings(username).length;
+        return {
+          user_id: username,
+          display_name: d.display_name,
+          avatar_url: d.avatar_url,
+          city: d.city,
+          phone: d.phone,
+          verified_at: d.verified_at,
+          listing_count: realCount > 0 ? realCount : (d.listing_count ?? 0),
+          rating: d.rating,
+        };
+      });
 
       // Merge real Supabase dealers (registered accounts) on top
       const { data } = await supabase
