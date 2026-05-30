@@ -97,11 +97,19 @@ L = instaloader.Instaloader(
 if os.path.exists(SESSION_FILE):
     print(f"Loading saved session from {SESSION_FILE}")
     try:
-        L.load_session_from_file("motokah_session", SESSION_FILE)
-        print("Session loaded OK.\n")
+        # Username arg used only to set context.username — explicit file path overrides it
+        L.load_session_from_file("motokah.kenya", SESSION_FILE)
+        actual = L.test_login()
+        if actual:
+            L.context.username = actual
+            print(f"Session loaded OK — logged in as @{actual}\n")
+        else:
+            print("Session expired — logging in fresh...")
+            os.remove(SESSION_FILE)
     except Exception as e:
         print(f"Session load failed ({e}), logging in fresh...")
-        os.remove(SESSION_FILE)
+        if os.path.exists(SESSION_FILE):
+            os.remove(SESSION_FILE)
 
 if not L.context.is_logged_in:
     print("=" * 50)
