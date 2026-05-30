@@ -47,8 +47,11 @@ export default function DealerProfile() {
       if (showroomListings.length > 0) {
         setListings(showroomListings);
       } else {
-        // Fallback: filter from pre-processed mockListings
-        setListings(mockListings.filter(l => l.sellerId === mockId || l.sellerId === username));
+        // Fallback: filter from pre-processed mockListings by sellerId or sellerName
+        const fallback = mockListings.filter(
+          l => l.sellerId === mockId || l.sellerId === username || l.sellerName === mock.display_name
+        );
+        setListings(fallback);
       }
       setLoading(false);
       return;

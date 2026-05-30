@@ -525,7 +525,7 @@ export const mockListings: Listing[] = [
     views: 890, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
     sellerListingCount: 18, sellerPhone: "+254700000000", badge: "hot" as const,
     make: "Toyota", model: "Land Cruiser", bodyType: "SUV", fuelType: "Diesel", cc: 4500, dutyPaid: true,
-    country: "KE",
+    country: "KE", sellerId: "ibaraki",
     description: "Toyota Land Cruiser V8 4.5 Diesel 2019. Full options, sunroof, leather interior. Clean title. Well maintained.",
   },
   {
@@ -535,7 +535,7 @@ export const mockListings: Listing[] = [
     views: 543, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
     sellerListingCount: 18, sellerPhone: "+254700000000",
     make: "Toyota", model: "Harrier", bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    country: "KE",
+    country: "KE", sellerId: "ibaraki",
     description: "Toyota Harrier 2020 2.0 Turbo. Push start, JBL sound, panoramic roof. Low mileage ex-Japan import.",
   },
   {
@@ -545,7 +545,7 @@ export const mockListings: Listing[] = [
     views: 378, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
     sellerListingCount: 18, sellerPhone: "+254700000000",
     make: "Subaru", model: "Forester", bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    country: "KE",
+    country: "KE", sellerId: "ibaraki",
     description: "Subaru Forester XT Turbo 2018 2.0L. AWD, EyeSight driver assist, heated seats. Great condition.",
   },
   {
@@ -555,7 +555,7 @@ export const mockListings: Listing[] = [
     views: 421, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
     sellerListingCount: 18, sellerPhone: "+254700000000",
     make: "Nissan", model: "X-Trail", bodyType: "SUV", fuelType: "Petrol", cc: 2500, dutyPaid: true,
-    country: "KE",
+    country: "KE", sellerId: "ibaraki",
     description: "Nissan X-Trail 2021 2.5L 4WD. 7-seater, 360 camera, ProPilot Assist. Ex-Japan, very low mileage.",
   },
   {
@@ -565,7 +565,7 @@ export const mockListings: Listing[] = [
     views: 312, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
     sellerListingCount: 18, sellerPhone: "+254700000000",
     make: "Mercedes-Benz", model: "C200", bodyType: "Sedan", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    country: "KE",
+    country: "KE", sellerId: "ibaraki",
     description: "Mercedes-Benz C200 AMG Line 2017. Leather interior, MBUX, parking sensors. Elegant sedan well cared for.",
   },
   {
@@ -575,7 +575,7 @@ export const mockListings: Listing[] = [
     views: 654, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
     sellerListingCount: 18, sellerPhone: "+254700000000", badge: "featured" as const,
     make: "Toyota", model: "RAV4", bodyType: "SUV", fuelType: "Hybrid", cc: 2500, dutyPaid: true,
-    country: "KE",
+    country: "KE", sellerId: "ibaraki",
     description: "Toyota RAV4 2022 2.5 Hybrid AWD. Toyota Safety Sense, digital mirrors, wireless charging. Nearly new.",
   },
 ];

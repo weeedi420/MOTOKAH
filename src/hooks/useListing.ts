@@ -14,12 +14,11 @@ export function useListing(id: string | undefined) {
   useEffect(() => {
     if (!id) { setLoading(false); return; }
 
-    // Handle mock listings (demo data)
-    if (id.startsWith("mock-")) {
+    // Handle all non-Supabase listings (mock-, ig-, ib-, jiji-)
+    if (id.startsWith("mock-") || id.startsWith("ig-") || id.startsWith("ib-") || id.startsWith("jiji-")) {
       const mock = mockListings.find((m) => m.id === id);
       if (mock) {
         setListing({ ...mock, description: mock.description ?? null });
-        // Use the listing's images array, falling back to single image
         setImages(mock.images?.length ? mock.images : mock.image ? [mock.image] : []);
       }
       setLoading(false);
