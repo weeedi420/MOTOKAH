@@ -1065,3 +1065,47 @@ export const mockDealers: MockDealer[] = [
 const _hardcodedIds = new Set(mockDealers.map(d => d.user_id));
 // Append auto-generated dealers for all other showroom accounts
 mockDealers.push(..._generateMissingDealers(_hardcodedIds));
+
+/**
+ * Returns all car listings for a specific Instagram dealer by username.
+ * Loads directly from the showroom JSON — no keyword filtering, all 20 posts included.
+ */
+export function getShowroomListings(username: string): Listing[] {
+  const key = Object.keys(_showroomMods).find(k => k.includes(`/${username}.json`));
+  if (!key) return [];
+  const dealer = (_showroomMods[key] as any).default;
+  if (!dealer?.posts?.length) return [];
+  return dealer.posts.map((post: any, i: number) => {
+    const info = _parseMgayaCaption(post.caption || "");
+    const imgs: string[] = Array.isArray(post.images) ? post.images : [];
+    return {
+      id: `ig-${username}-${post.shortcode || i}`,
+      title: info.title || `${username} — Vehicle`,
+      price: info.price || 0,
+      currency: "TZS",
+      condition: "Foreign Used" as const,
+      year: info.year || 0,
+      mileage: info.mileage || 0,
+      transmission: info.transmission || "Automatic",
+      location: _DEALER_CITY[username] || "Dar es Salaam, TZ",
+      country: "TZ",
+      image: imgs[0] || "",
+      images: imgs,
+      views: post.likes ? post.likes * 3 : 50,
+      sellerName: dealer.full_name || username,
+      sellerRating: 4.5,
+      sellerType: "dealer" as const,
+      sellerListingCount: dealer.posts.length,
+      sellerId: username,
+      sellerPhone: dealer.phone || "",
+      make: info.make ?? "Unknown",
+      model: info.model ?? "Unknown",
+      bodyType: info.bodyType,
+      fuelType: info.fuel,
+      cc: info.cc,
+      color: info.color,
+      description: (post.caption || "").slice(0, 300),
+      sourceUrl: post.url || "",
+    };
+  }).filter((l: Listing) => l.images.length > 0); // only posts with images
+}

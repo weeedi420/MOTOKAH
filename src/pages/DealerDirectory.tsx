@@ -29,13 +29,26 @@ export default function DealerDirectory() {
 
   useEffect(() => {
     (async () => {
+      // Always start with Instagram/showroom dealers
+      const igDealers: DealerProfile[] = mockDealers.map(d => ({
+        user_id: d.user_id.replace("mock-dealer-", ""),
+        display_name: d.display_name,
+        avatar_url: d.avatar_url,
+        city: d.city,
+        phone: d.phone,
+        verified_at: d.verified_at,
+        listing_count: d.listing_count,
+        rating: d.rating,
+      }));
+
+      // Merge real Supabase dealers (registered accounts) on top
       const { data } = await supabase
         .from("profiles")
         .select("user_id, display_name, avatar_url, city, phone, verified_at")
         .eq("seller_type", "dealer");
 
       if (data && data.length > 0) {
-        const dealersWithCounts = await Promise.all(
+        const realDealers = await Promise.all(
           data.map(async (dealer) => {
             const { count } = await supabase
               .from("listings")
@@ -45,9 +58,12 @@ export default function DealerDirectory() {
             return { ...dealer, listing_count: count || 0 };
           })
         );
-        setDealers(dealersWithCounts);
+        // Deduplicate: real dealers take priority over IG entries with same name
+        const realIds = new Set(realDealers.map(d => d.user_id));
+        const merged = [...realDealers, ...igDealers.filter(d => !realIds.has(d.user_id))];
+        setDealers(merged);
       } else {
-        setDealers(mockDealers);
+        setDealers(igDealers);
       }
       setLoading(false);
     })();

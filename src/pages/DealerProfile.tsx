@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/VehicleCard";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconMapPin, IconPhone, IconBuildingStore, IconShieldCheck, IconMail, IconStarFilled, IconBrandWhatsapp } from "@tabler/icons-react";
-import { mockDealers, mockListings, type Listing } from "@/data/mockData";
+import { mockDealers, mockListings, getShowroomListings, type Listing } from "@/data/mockData";
 
 type DealerData = {
   user_id: string;
@@ -34,12 +34,21 @@ export default function DealerProfile() {
     if (!id) return;
 
     // Mock dealer fallback
-    if (id.startsWith("mock-dealer-")) {
-      const mock = mockDealers.find(d => d.user_id === id);
-      if (mock) {
-        setDealer({ ...mock, seller_type: "dealer" });
-        // Match by sellerId (set in _convertAllShowroomsToListings) for reliable matching
-        setListings(mockListings.filter(l => l.sellerId === id));
+    // Handle both clean username URLs (/dealer/mgayamotors) and
+    // legacy mock-dealer- prefix (/dealer/mock-dealer-mgayamotors)
+    const username = id.startsWith("mock-dealer-") ? id.replace("mock-dealer-", "") : id;
+    const mockId = `mock-dealer-${username}`;
+    const mock = mockDealers.find(d => d.user_id === mockId || d.user_id === username || d.user_id === id);
+
+    if (mock) {
+      setDealer({ ...mock, seller_type: "dealer" });
+      // Load all posts from showroom JSON for this dealer (full data, no keyword filter)
+      const showroomListings = getShowroomListings(username);
+      if (showroomListings.length > 0) {
+        setListings(showroomListings);
+      } else {
+        // Fallback: filter from pre-processed mockListings
+        setListings(mockListings.filter(l => l.sellerId === mockId || l.sellerId === username));
       }
       setLoading(false);
       return;
