@@ -168,16 +168,21 @@
   // ─── Build storage row ──────────────────────────────────────
   function buildRow({ username, images, caption, postUrl }) {
     const { make, model, year, price, currency, condition } = parseCarInfo(caption);
+    // Extract shortcode from URL: /p/SHORTCODE/ or /reel/SHORTCODE/
+    const shortcodeMatch = postUrl.match(/\/(?:p|reel)\/([A-Za-z0-9_-]+)/);
+    const shortcode = shortcodeMatch ? shortcodeMatch[1] : '';
     return {
       username,
       post_url: postUrl,
+      shortcode,
       image_1: images[0] || '',
       image_2: images[1] || '',
       image_3: images[2] || '',
       images_all: images.slice(0, 8).join(' | '),
+      images,  // full array for JSON export
       make, model, year, price, currency, condition,
       phones: extractPhones(caption),
-      caption: caption.replace(/\n+/g, ' ').slice(0, 600),
+      caption: caption.replace(/\n+/g, ' ').slice(0, 800),
       source: 'instagram',
       scraped_at: new Date().toISOString()
     };
@@ -277,9 +282,15 @@
     let noNewCount = 0;
 
     while (!stopRequested) {
-      // Collect all unvisited post/reel links visible on page
-      const links = [...document.querySelectorAll('a[href*="/p/"], a[href*="/reel/"]')]
-        .filter(a => !scrapedUrls.has(a.href) && a.href && !a.href.endsWith('#'));
+      // Collect only image post links — exclude reels entirely
+      const links = [...document.querySelectorAll('a[href*="/p/"]')]
+        .filter(a => !scrapedUrls.has(a.href) && a.href && !a.href.endsWith('#'))
+        .filter(a => {
+          // Skip if the grid tile has a reel/video indicator overlay
+          const tile = a.closest('div[style], li, div._aagw, div._aabd') || a.parentElement;
+          const hasVideoIcon = tile?.querySelector('svg[aria-label*="Reel"], svg[aria-label*="Video"], [class*="reel"]');
+          return !hasVideoIcon;
+        });
 
       if (links.length === 0) {
         window.scrollBy({ top: window.innerHeight * 2, behavior: 'smooth' });

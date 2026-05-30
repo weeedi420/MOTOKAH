@@ -1,12 +1,13 @@
 """
 Instaloader batch downloader for Motokah car dealer profiles.
 Downloads photos + captions (.txt) for all accounts.
+Skips videos/reels automatically (download_videos=False + is_video check).
 
 Run with:
   python scripts/instaloader-run.py
 
 It will ask for your Instagram username/password ONCE,
-save a session file, then download all 25 accounts.
+save a session file, then download all accounts.
 """
 
 import instaloader
@@ -16,34 +17,62 @@ import getpass
 
 OUTPUT_DIR = r"D:\ig-captions"
 
+# 53 unique East African car dealer accounts — sorted alphabetically
 ACCOUNTS = [
-    "lomaautos_",
-    "khushimotorsdaressalaam",
-    "mgayamotors",
-    "ruge_magari",
-    "rakincars.tz",
-    "tgworldimports",
-    "rwanko_motors",
-    "fau_motors",
-    "amjad_motors_international_ltd",
-    "wazirmotor",
-    "barari_motorstz",
-    "breemotors",
-    "fkmotorstanzania",
-    "ezy_auto_motors",
-    "manzese_showrooms",
-    "evanamotors",
-    "njari_motors",
-    "cholloh_magari_tz",
-    "magari_empire1",
+    "_svgmotors",
     "al_husnainmotors",
-    "faharimotors_sales",
+    "amjad_motors_international_ltd",
+    "barari_motorstz",
+    "best_truck_tz",
+    "bongoauto_groups",
+    "boxerpoa",
+    "breemotors",
+    "cholloh_magari_tz",
+    "discountmotors_sales",
     "dula_magari",
+    "evanamotors",
+    "extreme_biketz_",
+    "ezy_auto_motors",
+    "fam_motors_mwanza",
+    "faharimotors_sales",
+    "fau_motors",
+    "fkmotorstanzania",
+    "gody_motorstz",
     "hanami.japan",
-    "ndinga_bei_poa",
-    "ukajapantz",
-    "carzone_tz",
+    "harabmotorstzltd",
+    "helianmotors",
+    "hupa_motors_ltd",
+    "jaja_motors",
+    "jambo_magari",
+    "justin_motors_ltd",
+    "keepitkeens",
+    "kei_cars",
+    "khushimotorsdaressalaam",
     "kk_magic_cars_",
+    "lomaautos_",
+    "magari_empire1",
+    "manzese_showrooms",
+    "mapigo_saba_magari",
+    "mcimotors",
+    "mgayamotors",
+    "mottocarsmarket",
+    "mr_pikipiki",
+    "msafiri_automobile_expert",
+    "nathan__motors",
+    "ndinga_bei_poa",
+    "njari_motors",
+    "pikipiki_quality_tanzania",
+    "rakincars.tz",
+    "ruge_magari",
+    "rwanko_motors",
+    "tajirimfupi_magari",
+    "tera_automobiles",
+    "tesha_pikipiki_usedtz",
+    "tgworldimports",
+    "twenderide",
+    "ukajapantz",
+    "urassa_motors_company_limited",
+    "wazirmotor",
 ]
 
 SESSION_FILE = os.path.join(os.path.expanduser("~"), ".motokah_ig_session")
@@ -102,14 +131,18 @@ for i, username in enumerate(ACCOUNTS, 1):
     try:
         profile = instaloader.Profile.from_username(L.context, username)
         count = 0
+        skipped_reels = 0
         for post in profile.get_posts():
+            if post.is_video:
+                skipped_reels += 1
+                continue  # skip reels and videos entirely
             try:
                 L.download_post(post, target=username)
                 count += 1
             except Exception as e:
                 print(f"  Skipped post {post.shortcode}: {e}")
         total_posts += count
-        print(f"  Done: {count} posts")
+        print(f"  Done: {count} posts (skipped {skipped_reels} reels/videos)")
     except instaloader.exceptions.ProfileNotExistsException:
         print(f"  Profile @{username} not found — skipping")
         failed.append(username)

@@ -179,17 +179,18 @@ function _parseMgayaCaption(caption: string) {
   return { title, make, model, year, price, fuel, mileage, color, transmission, cc, bodyType };
 }
 
-function _isMgayaCarPost(caption: string): boolean {
+function _isMgayaCarPost(caption: string, isVideo = false): boolean {
+  if (isVideo) return false; // skip reels and video posts
   const low = caption.toLowerCase();
-  return ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi","ford","range rover","land rover","maserati","yamaha"].some((b) => low.includes(b)) ||
+  return ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi","ford","range rover","land rover","maserati","yamaha","bajaj","tvs","ktm","piaggio"].some((b) => low.includes(b)) ||
     /\b(19|20)\d{2}\b/.test(caption) ||
     /(?:price|bei)[:\s]/i.test(caption) ||
     /(?:fuel|cc|engine|transmission|mileage|km|make|model)\s*[:/]/i.test(caption);
 }
 
 function _convertMgayaToListings(): Listing[] {
-  const posts = (mgayaJson.posts as Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string }>)
-    .filter((p) => _isMgayaCarPost(p.caption))
+  const posts = (mgayaJson.posts as Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; is_video?: boolean }>)
+    .filter((p) => _isMgayaCarPost(p.caption, p.is_video))
     .filter((p, i, arr) => {
       const key = p.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase();
       return arr.findIndex((x) => x.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase() === key) === i;
@@ -236,8 +237,8 @@ function _convertAllShowroomsToListings(): Listing[] {
     if (username === "mgayamotors") continue; // already handled separately
     const dealer = mod.default;
     const city = _DEALER_CITY[username] ?? "Dar es Salaam, TZ";
-    const carPosts = dealer.posts
-      .filter((p) => _isMgayaCarPost(p.caption))
+    const carPosts = (dealer.posts as Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; is_video?: boolean }>)
+      .filter((p) => _isMgayaCarPost(p.caption, p.is_video))
       .filter((p, i, arr) => {
         const key = p.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase();
         return arr.findIndex((x) => x.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase() === key) === i;
