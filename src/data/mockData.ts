@@ -600,9 +600,60 @@ export interface MockDealer {
   description: string;
   address?: string;
   postal_code?: string;
+  instagram?: string;
 }
 
-// display_name values MUST match sellerName in mockListings exactly
+// Strip Unicode decorative/bold chars from Instagram display names
+function _cleanName(s: string): string {
+  return s.replace(/[^\x20-\x7EÀ-ɏЀ-ӿ]/g, "").replace(/\s+/g, " ").trim();
+}
+
+// Detect city from bio text
+function _cityFromBio(bio: string, username: string): string {
+  const b = (bio || "").toLowerCase();
+  if (/nairobi|kenya|nbi/.test(b)) return "Nairobi";
+  if (/kampala|uganda/.test(b)) return "Kampala";
+  if (/mwanza/.test(b)) return "Mwanza";
+  if (/arusha/.test(b)) return "Arusha";
+  if (/mombasa/.test(b)) return "Mombasa";
+  if (/zanzibar/.test(b)) return "Zanzibar";
+  if (/dodoma/.test(b)) return "Dodoma";
+  return _DEALER_CITY[username]?.split(",")[0] ?? "Dar es Salaam";
+}
+
+// Auto-generate dealer entries for showroom accounts not already in the hardcoded list
+function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
+  return Object.entries(_showroomMods)
+    .filter(([path]) => {
+      const username = path.split("/").pop()!.replace(".json", "");
+      return !existingIds.has(`mock-dealer-${username}`);
+    })
+    .map(([path, mod]) => {
+      const username = path.split("/").pop()!.replace(".json", "");
+      const dealer = mod.default;
+      const rawName = dealer.full_name || "";
+      const displayName = _cleanName(rawName) || username.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const bio = dealer.bio || "";
+      const phone = (dealer.phone || "").replace(/\s+/g, " ").trim();
+      const city = _cityFromBio(bio, username);
+      const postCount = (dealer.posts || []).length;
+      return {
+        user_id: `mock-dealer-${username}`,
+        display_name: displayName,
+        city,
+        phone,
+        avatar_url: null,
+        verified_at: "2026-01-01T00:00:00Z",
+        listing_count: postCount,
+        rating: 4.4,
+        description: bio ? `${displayName} — ${_cleanName(bio).slice(0, 120)}` : `${displayName} — Quality vehicles in East Africa.`,
+        address: `${city}, Tanzania`,
+        postal_code: "",
+        instagram: username,
+      };
+    });
+}
+
 export const mockDealers: MockDealer[] = [
   {
     user_id: "mock-dealer-mgayamotors",
@@ -1006,5 +1057,11 @@ export const mockDealers: MockDealer[] = [
     description: "Buy & sell new and used cars, exchange, top-up deals, and importation. Kinondoni, Dar es Salaam.",
     address: "Kinondoni, Dar es Salaam, Tanzania",
     postal_code: "",
+    instagram: "kk_magic_cars_",
   },
 ];
+
+// Collect IDs of hardcoded dealers so we don't duplicate
+const _hardcodedIds = new Set(mockDealers.map(d => d.user_id));
+// Append auto-generated dealers for all other showroom accounts
+mockDealers.push(..._generateMissingDealers(_hardcodedIds));

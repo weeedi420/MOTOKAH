@@ -38,7 +38,8 @@ export default function DealerProfile() {
       const mock = mockDealers.find(d => d.user_id === id);
       if (mock) {
         setDealer({ ...mock, seller_type: "dealer" });
-        setListings(mockListings.filter(l => l.sellerName === mock.display_name));
+        // Match by sellerId (set in _convertAllShowroomsToListings) for reliable matching
+        setListings(mockListings.filter(l => l.sellerId === id));
       }
       setLoading(false);
       return;
@@ -176,6 +177,11 @@ export default function DealerProfile() {
 
                 <p className="text-sm font-medium text-foreground">
                   {listings.length} active listing{listings.length !== 1 ? "s" : ""}
+                  {(dealer as any).instagram && (
+                    <Link to={`/showroom/${(dealer as any).instagram}`} className="ml-3 text-primary text-xs hover:underline">
+                      View all on Instagram Showroom →
+                    </Link>
+                  )}
                 </p>
               </div>
 
