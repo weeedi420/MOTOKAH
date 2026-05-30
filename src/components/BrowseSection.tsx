@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { cityToCountry } from "@/data/mockData";
 
 const allCategories = [
   { name: "Saloon",           icon: "/icons/sedan.png",       param: "bodyType=Sedan" },
@@ -125,13 +126,19 @@ export default function BrowseSection() {
       {/* Cities Tab */}
       {activeTab === "Cities" && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
-          {cityItems.map((item) => (
-            <button key={item}
-              onClick={() => navigate(`/search?city=${encodeURIComponent(item)}`)}
-              className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97]">
-              {item}
-            </button>
-          ))}
+          {cityItems.map((item) => {
+            const country = cityToCountry[item];
+            const params = country
+              ? `city=${encodeURIComponent(item)}&country=${encodeURIComponent(country)}`
+              : `city=${encodeURIComponent(item)}`;
+            return (
+              <button key={item}
+                onClick={() => navigate(`/search?${params}`)}
+                className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97]">
+                {item}
+              </button>
+            );
+          })}
         </div>
       )}
 

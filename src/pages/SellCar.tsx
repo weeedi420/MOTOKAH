@@ -13,7 +13,20 @@ import { africanCities, carMakes } from "@/data/mockData";
 
 const tanzaniaCities = africanCities;
 const carBrands = carMakes;
-const bodyTypes = ["Sedan", "SUV / 4x4", "Hatchback", "Double Cab / Pickup", "Van", "Minibus", "Bus", "Truck", "Coupe", "Wagon", "Convertible"];
+const bodyTypes = [
+  { label: "Sedan / Saloon",        value: "Sedan" },
+  { label: "SUV / 4x4 / Jeep",     value: "SUV" },
+  { label: "Small Car / Hatchback", value: "Hatchback" },
+  { label: "Double Cab / Pickup",   value: "Pickup" },
+  { label: "Van",                   value: "Van" },
+  { label: "Minibus / Daladala",    value: "Minibus" },
+  { label: "Bus",                   value: "Bus" },
+  { label: "Truck / Lorry",         value: "Truck" },
+  { label: "Coupe",                 value: "Coupe" },
+  { label: "Wagon / Estate",        value: "Wagon" },
+  { label: "Convertible",           value: "Convertible" },
+  { label: "Motorcycle / Boda Boda",value: "Motorcycle" },
+];
 const transmissions = ["Automatic", "Manual", "CVT"];
 const fuelTypes = ["Petrol", "Diesel", "Hybrid", "Electric"];
 const conditions = ["Used", "New", "Certified Pre-owned"];
@@ -79,6 +92,7 @@ export default function SellCar() {
   const handleSubmit = async () => {
     if (!user) { navigate("/auth"); return; }
     if (!form.make || !form.model) { toast({ title: "Required", description: "Please fill in Make and Model.", variant: "destructive" }); return; }
+    if (!form.bodyType) { toast({ title: "Required", description: "Please select a Body Type.", variant: "destructive" }); return; }
     if (!form.price) { toast({ title: "Required", description: "Please enter a price.", variant: "destructive" }); return; }
 
     const isVerified = user.email_confirmed_at || user.confirmed_at;
@@ -113,10 +127,9 @@ export default function SellCar() {
       localStorage.removeItem("sellCarDraft");
       toast({ title: "Listing submitted!", description: "Your listing is pending review and will go live once approved." });
       navigate("/profile");
-    } catch {
-      localStorage.removeItem("sellCarDraft");
-      toast({ title: "Listing submitted!", description: "Your listing is pending review." });
-      navigate("/profile");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      toast({ title: "Submission failed", description: msg, variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -217,16 +230,16 @@ export default function SellCar() {
   }
 
   // Sheet / bottom drawer for option selection
-  const sheetOptions: Record<string, string[]> = {
-    make: carBrands,
+  const sheetOptions: Record<string, { label: string; value: string }[]> = {
+    make: carBrands.map(b => ({ label: b, value: b })),
     bodyType: bodyTypes,
-    transmission: transmissions,
-    fuelType: fuelTypes,
-    color: colors,
-    condition: conditions,
-    city: tanzaniaCities,
-    registeredIn: tanzaniaCities,
-    assembly: assemblies,
+    transmission: transmissions.map(t => ({ label: t, value: t })),
+    fuelType: fuelTypes.map(f => ({ label: f, value: f })),
+    color: colors.map(c => ({ label: c, value: c })),
+    condition: conditions.map(c => ({ label: c, value: c })),
+    city: tanzaniaCities.map(c => ({ label: c, value: c })),
+    registeredIn: tanzaniaCities.map(c => ({ label: c, value: c })),
+    assembly: assemblies.map(a => ({ label: a, value: a })),
   };
 
   const sheetLabels: Record<string, string> = {
@@ -405,8 +418,10 @@ export default function SellCar() {
             {/* Body Type */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("bodyType")}>
               <div>
-                <p className="text-xs text-muted-foreground">Body Type</p>
-                <p className={`text-sm mt-0.5 ${form.bodyType ? "text-foreground" : "text-muted-foreground"}`}>{form.bodyType || "Select Body Type"}</p>
+                <p className="text-xs text-muted-foreground">Body Type <span className="text-destructive">*</span></p>
+                <p className={`text-sm mt-0.5 ${form.bodyType ? "text-foreground" : "text-muted-foreground"}`}>
+                  {form.bodyType ? (bodyTypes.find(b => b.value === form.bodyType)?.label ?? form.bodyType) : "Select Body Type"}
+                </p>
               </div>
               <IconChevronRight size={16} className="text-muted-foreground" />
             </div>
@@ -539,12 +554,12 @@ export default function SellCar() {
             <div className="overflow-y-auto flex-1">
               {(sheetOptions[sheet] || []).map((opt) => (
                 <button
-                  key={opt}
+                  key={opt.value}
                   className="w-full flex items-center justify-between px-4 py-3 text-sm text-left hover:bg-muted/50 border-b border-border last:border-b-0"
-                  onClick={() => { update(sheet as keyof FormData, opt); setSheet(null); }}
+                  onClick={() => { update(sheet as keyof FormData, opt.value); setSheet(null); }}
                 >
-                  {opt}
-                  {form[sheet as keyof FormData] === opt && <IconCheck size={16} className="text-primary" />}
+                  {opt.label}
+                  {form[sheet as keyof FormData] === opt.value && <IconCheck size={16} className="text-primary" />}
                 </button>
               ))}
             </div>

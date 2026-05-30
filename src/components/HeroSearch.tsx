@@ -1,6 +1,6 @@
 import { IconSearch, IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
-import { carMakes, bodyTypes, conditions, transmissions, africanCities, bikeMakes, bikeTypes, ccRanges, commercialTypes } from "@/data/mockData";
+import { carMakes, bodyTypes, conditions, transmissions, africanCities, bikeMakes, bikeTypes, ccRanges, commercialTypes, cityToCountry } from "@/data/mockData";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -26,7 +26,7 @@ export default function HeroSearch() {
       if (carF.bodyType) p.set("bodyType", carF.bodyType);
       if (carF.condition) p.set("condition", carF.condition);
       if (carF.transmission) p.set("transmission", carF.transmission);
-      if (carF.city) p.set("city", carF.city);
+      if (carF.city) { p.set("city", carF.city); const cc = cityToCountry[carF.city]; if (cc) p.set("country", cc); }
       if (carF.minPrice) p.set("minPrice", carF.minPrice);
       if (carF.maxPrice) p.set("maxPrice", carF.maxPrice);
       if (carF.maxMileage) p.set("maxMileage", carF.maxMileage);
@@ -36,13 +36,13 @@ export default function HeroSearch() {
       if (bikeF.type) p.set("bodyType", bikeF.type);
       if (bikeF.cc) p.set("cc", bikeF.cc);
       if (bikeF.condition) p.set("condition", bikeF.condition);
-      if (bikeF.city) p.set("city", bikeF.city);
+      if (bikeF.city) { p.set("city", bikeF.city); const cc = cityToCountry[bikeF.city]; if (cc) p.set("country", cc); }
     } else {
       p.set("vehicleType", "commercial");
       if (comF.vehicleType) p.set("bodyType", comF.vehicleType);
       if (comF.make) p.set("make", comF.make);
       if (comF.condition) p.set("condition", comF.condition);
-      if (comF.city) p.set("city", comF.city);
+      if (comF.city) { p.set("city", comF.city); const cc = cityToCountry[comF.city]; if (cc) p.set("country", cc); }
     }
     navigate(`/search?${p.toString()}`);
   };

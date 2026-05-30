@@ -51,6 +51,7 @@ import InstagramShowroom from "./pages/InstagramShowroom.tsx";
 import PromoVideo from "./pages/PromoVideo.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
+import { usePageTracking } from "@/hooks/usePageTracking";
 
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LocationProvider } from "@/contexts/LocationContext";
@@ -61,6 +62,7 @@ const queryClient = new QueryClient();
 function AnimatedRoutes() {
   const location = useLocation();
   const welcomeCompleted = localStorage.getItem("motokah_welcome_completed");
+  usePageTracking();
   
   return (
     <AnimatePresence mode="wait" initial={false}>

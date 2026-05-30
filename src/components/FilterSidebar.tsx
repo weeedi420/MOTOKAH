@@ -15,14 +15,13 @@ export interface Filters {
   maxMileage: string;
   city: string;
   country: string;
-  dutyPaid: "" | "true" | "false";
   vehicleType: "" | "car" | "bike" | "commercial" | "spare";
 }
 
 export const defaultFilters: Filters = {
   make: "", model: "", condition: "", bodyType: [], transmission: "",
   fuelType: [], yearFrom: "", yearTo: "", minPrice: "", maxPrice: "",
-  maxMileage: "", city: "", country: "", dutyPaid: "", vehicleType: "",
+  maxMileage: "", city: "", country: "", vehicleType: "",
 };
 
 interface FilterSidebarProps {
@@ -165,16 +164,6 @@ export default function FilterSidebar({ filters, onChange, onClear }: FilterSide
         </select>
       </div>
 
-      {/* Duty Status */}
-      <div>
-        <label className="text-sm font-medium mb-1 block">Duty Status</label>
-        <select value={filters.dutyPaid} onChange={e => update("dutyPaid", e.target.value as "" | "true" | "false")}
-          className="w-full h-9 rounded-md border border-input bg-background px-2 text-sm">
-          <option value="">All</option>
-          <option value="true">✅ Duty Paid</option>
-          <option value="false">⏳ Duty Not Paid</option>
-        </select>
-      </div>
     </div>
   );
 }

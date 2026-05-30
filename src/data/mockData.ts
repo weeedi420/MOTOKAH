@@ -45,7 +45,19 @@ export const africanCities = [
   "Dar es Salaam", "Dodoma", "Arusha", "Mwanza", "Zanzibar", "Mbeya", "Moshi", "Tanga",
   "Nairobi", "Mombasa", "Kisumu", "Nakuru",
   "Kampala", "Kigali", "Addis Ababa",
+  "Lagos", "Abuja",
 ];
+
+export const cityToCountry: Record<string, string> = {
+  "Dar es Salaam": "Tanzania", "Dodoma": "Tanzania", "Arusha": "Tanzania",
+  "Mwanza": "Tanzania", "Zanzibar": "Tanzania", "Mbeya": "Tanzania",
+  "Moshi": "Tanzania", "Tanga": "Tanzania",
+  "Nairobi": "Kenya", "Mombasa": "Kenya", "Kisumu": "Kenya", "Nakuru": "Kenya",
+  "Kampala": "Uganda",
+  "Kigali": "Rwanda",
+  "Addis Ababa": "Ethiopia",
+  "Lagos": "Nigeria", "Abuja": "Nigeria",
+};
 
 export const currencies = [
   { code: "TZS", symbol: "TSh", name: "Tanzanian Shilling" },
@@ -194,6 +206,7 @@ function _convertMgayaToListings(): Listing[] {
       mileage: info.mileage,
       transmission: info.transmission,
       location: "Dar es Salaam, TZ",
+      country: "TZ",
       image: post.images[0] || "",
       images: post.images,
       views: Math.max(post.likes * 3, 50),
@@ -274,7 +287,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-11", title: "2018 Toyota Vitz F 1.0 Hatchback", price: 18_500_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 42000, transmission: "Automatic",
-    location: "Arusha, TZ", image: "/cars/patrol-2022-1.jpg", images: ["/cars/patrol-2022-1.jpg"],
+    location: "Arusha, TZ", country: "TZ", image: "/cars/patrol-2022-1.jpg", images: ["/cars/patrol-2022-1.jpg"],
     views: 312, sellerName: "Arusha Auto Center", sellerRating: 4.3, sellerType: "dealer",
     sellerListingCount: 8, sellerPhone: "+255754000011", make: "Toyota", model: "Vitz",
     bodyType: "Hatchback", fuelType: "Petrol", cc: 1000, dutyPaid: true,
@@ -283,7 +296,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-12", title: "2019 Mazda Demio 1.3 Hatchback", price: 22_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 38000, transmission: "Automatic",
-    location: "Mwanza, TZ", image: "/cars/hilux-gray-2019-1.jpg", images: ["/cars/hilux-gray-2019-1.jpg"],
+    location: "Mwanza, TZ", country: "TZ", image: "/cars/hilux-gray-2019-1.jpg", images: ["/cars/hilux-gray-2019-1.jpg"],
     views: 198, sellerName: "Hassan Mwanza", sellerRating: 4.0, sellerType: "private",
     sellerListingCount: 1, sellerPhone: "+255766000012", make: "Mazda", model: "Demio",
     bodyType: "Hatchback", fuelType: "Petrol", cc: 1300, dutyPaid: true,
@@ -292,7 +305,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-13", title: "2020 Toyota Rush 1.5 SUV", price: 48_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 28000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", image: "/cars/fortuner-white-2019-1.jpg", images: ["/cars/fortuner-white-2019-1.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/fortuner-white-2019-1.jpg", images: ["/cars/fortuner-white-2019-1.jpg"],
     views: 521, sellerName: "Dar Auto Hub", sellerRating: 4.5, sellerType: "dealer",
     sellerListingCount: 15, sellerPhone: "+255752000013", badge: "hot" as const, make: "Toyota", model: "Rush",
     bodyType: "SUV", fuelType: "Petrol", cc: 1500, dutyPaid: true,
@@ -301,7 +314,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-14", title: "2017 Toyota Wish 1.8 Minivan", price: 38_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2017, mileage: 65000, transmission: "Automatic",
-    location: "Zanzibar, TZ", image: "/cars/subaru-forester-2022-1.jpg", images: ["/cars/subaru-forester-2022-1.jpg"],
+    location: "Zanzibar, TZ", country: "TZ", image: "/cars/subaru-forester-2022-1.jpg", images: ["/cars/subaru-forester-2022-1.jpg"],
     views: 276, sellerName: "Zanzibar Cars", sellerRating: 4.1, sellerType: "dealer",
     sellerListingCount: 6, sellerPhone: "+255777000014", make: "Toyota", model: "Wish",
     bodyType: "Van", fuelType: "Petrol", cc: 1800, dutyPaid: true,
@@ -310,7 +323,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-15", title: "2016 Toyota Vanguard 2.0 4WD SUV", price: 55_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2016, mileage: 78000, transmission: "Automatic",
-    location: "Mbeya, TZ", image: "/cars/landrover-disco-2020-1.jpg", images: ["/cars/landrover-disco-2020-1.jpg"],
+    location: "Mbeya, TZ", country: "TZ", image: "/cars/landrover-disco-2020-1.jpg", images: ["/cars/landrover-disco-2020-1.jpg"],
     views: 189, sellerName: "Mbeya Motors", sellerRating: 3.9, sellerType: "dealer",
     sellerListingCount: 4, sellerPhone: "+255765000015", make: "Toyota", model: "Vanguard",
     bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
@@ -319,7 +332,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-16", title: "2021 Toyota Prius 1.8 Hybrid", price: 35_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2021, mileage: 22000, transmission: "CVT",
-    location: "Dar es Salaam, TZ", image: "/cars/hilux-white-2019-1.jpg", images: ["/cars/hilux-white-2019-1.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-white-2019-1.jpg", images: ["/cars/hilux-white-2019-1.jpg"],
     views: 445, sellerName: "EcoMotors TZ", sellerRating: 4.6, sellerType: "dealer",
     sellerListingCount: 11, sellerPhone: "+255752000016", badge: "featured" as const, make: "Toyota", model: "Prius",
     bodyType: "Sedan", fuelType: "Hybrid", cc: 1800, dutyPaid: true,
@@ -328,7 +341,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-17", title: "2020 Toyota Aqua 1.5 Hybrid", price: 25_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 35000, transmission: "CVT",
-    location: "Arusha, TZ", image: "/cars/navara-2017-1.jpg", images: ["/cars/navara-2017-1.jpg"],
+    location: "Arusha, TZ", country: "TZ", image: "/cars/navara-2017-1.jpg", images: ["/cars/navara-2017-1.jpg"],
     views: 367, sellerName: "Kilimanjaro Auto", sellerRating: 4.2, sellerType: "dealer",
     sellerListingCount: 7, sellerPhone: "+255754000017", make: "Toyota", model: "Aqua",
     bodyType: "Hatchback", fuelType: "Hybrid", cc: 1500, dutyPaid: true,
@@ -337,18 +350,18 @@ export const mockListings: Listing[] = [
   {
     id: "mock-18", title: "2015 BMW 320i 2.0 Turbo Sedan", price: 45_000_000, currency: "TZS",
     condition: "Used", year: 2015, mileage: 95000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", image: "/cars/wrangler-2016-1.jpg", images: ["/cars/wrangler-2016-1.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/wrangler-2016-1.jpg", images: ["/cars/wrangler-2016-1.jpg"],
     views: 534, sellerName: "Prestige Motors TZ", sellerRating: 4.4, sellerType: "dealer",
     sellerListingCount: 9, sellerPhone: "+255752000018", make: "BMW", model: "3 Series",
     bodyType: "Sedan", fuelType: "Petrol", cc: 2000, dutyPaid: true,
     description: "BMW 320i 2015 F30 2.0T. Luxury sedan in excellent condition. Leather interior, sunroof, navigation. Full service history. Locally used.",
   },
   {
-    id: "mock-19", title: "2016 Mercedes-Benz C200 1.8 Turbo", price: 50_000_000, currency: "TZS",
+    id: "mock-19", title: "2016 Mercedes-Benz C200 1.8 Turbo", price: 3_800_000, currency: "KES",
     condition: "Used", year: 2016, mileage: 87000, transmission: "Automatic",
     location: "Nairobi, KE", image: "/cars/hilux-arb-2019-1.jpg", images: ["/cars/hilux-arb-2019-1.jpg"],
     views: 412, sellerName: "Nairobi Premium Cars", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 13, sellerPhone: "+254720000019", currency: "KES", price: 3_800_000,
+    sellerListingCount: 13, sellerPhone: "+254720000019", country: "KE",
     make: "Mercedes-Benz", model: "C-Class", bodyType: "Sedan", fuelType: "Petrol",
     cc: 1800, dutyPaid: true,
     description: "Mercedes-Benz C200 2016 W205. Premium executive sedan. AMG styling package. Panoramic sunroof. Nairobi registered. Clean title.",
@@ -356,18 +369,18 @@ export const mockListings: Listing[] = [
   {
     id: "mock-20", title: "2018 Mazda CX-5 2.0 SUV", price: 52_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 52000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", image: "/cars/subaru-forester-2022b-1.jpg", images: ["/cars/subaru-forester-2022b-1.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/subaru-forester-2022b-1.jpg", images: ["/cars/subaru-forester-2022b-1.jpg"],
     views: 298, sellerName: "Mazda Centre TZ", sellerRating: 4.3, sellerType: "dealer",
     sellerListingCount: 5, sellerPhone: "+255752000020", make: "Mazda", model: "CX-5",
     bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
     description: "Mazda CX-5 2018 Skyactiv-G 2.0. Premium crossover SUV. BOSE sound system, leather, blind spot monitoring. Japanese import.",
   },
   {
-    id: "mock-21", title: "2019 Mitsubishi Outlander 2.4 SUV", price: 42_000_000, currency: "TZS",
+    id: "mock-21", title: "2019 Mitsubishi Outlander 2.4 SUV", price: 155_000_000, currency: "UGX",
     condition: "Foreign Used", year: 2019, mileage: 44000, transmission: "CVT",
     location: "Kampala, UG", image: "/cars/patrol-2022-2.jpg", images: ["/cars/patrol-2022-2.jpg"],
     views: 187, sellerName: "Kampala Cars Ltd", sellerRating: 4.0, sellerType: "dealer",
-    sellerListingCount: 6, sellerPhone: "+256700000021", currency: "UGX", price: 155_000_000,
+    sellerListingCount: 6, sellerPhone: "+256700000021", country: "UG",
     make: "Mitsubishi", model: "Outlander", bodyType: "SUV", fuelType: "Petrol",
     cc: 2400, dutyPaid: true,
     description: "Mitsubishi Outlander 2019 2.4L CVT. 7-seater SUV. All wheel drive. Well maintained, clean history. Available in Kampala.",
@@ -375,7 +388,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-26", title: "2022 Toyota Rumion 1.5 Hatchback", price: 28_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2022, mileage: 15000, transmission: "Automatic",
-    location: "Moshi, TZ", image: "/cars/navara-2017-2.jpg", images: ["/cars/navara-2017-2.jpg"],
+    location: "Moshi, TZ", country: "TZ", image: "/cars/navara-2017-2.jpg", images: ["/cars/navara-2017-2.jpg"],
     views: 245, sellerName: "Moshi Auto Sales", sellerRating: 4.1, sellerType: "dealer",
     sellerListingCount: 3, sellerPhone: "+255754000026", badge: "new" as const,
     make: "Toyota", model: "Rumion", bodyType: "Hatchback", fuelType: "Petrol",
@@ -383,11 +396,11 @@ export const mockListings: Listing[] = [
     description: "Toyota Rumion 2022 1.5L automatic. Brand new import with only 15,000km. Modern safety features, Apple CarPlay. Perfect condition.",
   },
   {
-    id: "mock-27", title: "2021 Toyota Kluger 3.5 V6 AWD SUV", price: 75_000_000, currency: "TZS",
+    id: "mock-27", title: "2021 Toyota Kluger 3.5 V6 AWD SUV", price: 5_700_000, currency: "KES",
     condition: "Foreign Used", year: 2021, mileage: 24000, transmission: "Automatic",
     location: "Nairobi, KE", image: "/cars/subaru-forester-2022-3.jpg", images: ["/cars/subaru-forester-2022-3.jpg"],
     views: 334, sellerName: "Westlands Auto KE", sellerRating: 4.4, sellerType: "dealer",
-    sellerListingCount: 11, sellerPhone: "+254720000027", currency: "KES", price: 5_700_000,
+    sellerListingCount: 11, sellerPhone: "+254720000027", country: "KE",
     make: "Toyota", model: "Kluger", bodyType: "SUV", fuelType: "Petrol",
     cc: 3500, dutyPaid: true,
     description: "Toyota Kluger 2021 3.5L V6 AWD. 8-seater premium SUV. Dual sunroof, captain seats, wireless charging. Excellent condition.",
@@ -395,7 +408,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-28", title: "2018 Mitsubishi Pajero 3.2 Diesel 4WD", price: 88_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 62000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", image: "/cars/hilux-arb-2019-2.jpg", images: ["/cars/hilux-arb-2019-2.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-arb-2019-2.jpg", images: ["/cars/hilux-arb-2019-2.jpg"],
     views: 467, sellerName: "Safari Auto TZ", sellerRating: 4.3, sellerType: "dealer",
     sellerListingCount: 8, sellerPhone: "+255752000028", make: "Mitsubishi", model: "Pajero",
     bodyType: "SUV", fuelType: "Diesel", cc: 3200, dutyPaid: true,
@@ -404,7 +417,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-29", title: "2020 Toyota Hilux Surf 3.0 4WD Diesel", price: 72_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 45000, transmission: "Automatic",
-    location: "Arusha, TZ", image: "/cars/patrol-2022-3.jpg", images: ["/cars/patrol-2022-3.jpg"],
+    location: "Arusha, TZ", country: "TZ", image: "/cars/patrol-2022-3.jpg", images: ["/cars/patrol-2022-3.jpg"],
     views: 389, sellerName: "Arusha 4x4 Centre", sellerRating: 4.2, sellerType: "dealer",
     sellerListingCount: 7, sellerPhone: "+255754000029", make: "Toyota", model: "Hilux Surf",
     bodyType: "SUV", fuelType: "Diesel", cc: 3000, dutyPaid: true,
@@ -413,7 +426,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-30", title: "2019 Nissan Civilian 4.2 Minibus 28-seater", price: 45_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 95000, transmission: "Manual",
-    location: "Dar es Salaam, TZ", image: "/cars/hilux-gray-2019-3.jpg", images: ["/cars/hilux-gray-2019-3.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-gray-2019-3.jpg", images: ["/cars/hilux-gray-2019-3.jpg"],
     views: 156, sellerName: "Daladala Motors TZ", sellerRating: 3.8, sellerType: "dealer",
     sellerListingCount: 4, sellerPhone: "+255752000030", make: "Nissan", model: "Civilian",
     bodyType: "Minibus", fuelType: "Diesel", cc: 4200, dutyPaid: false,
@@ -422,7 +435,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-31", title: "2020 Mitsubishi Canter 4WD Truck", price: 65_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 78000, transmission: "Manual",
-    location: "Mwanza, TZ", image: "/cars/hilux-white-2019-2.jpg", images: ["/cars/hilux-white-2019-2.jpg"],
+    location: "Mwanza, TZ", country: "TZ", image: "/cars/hilux-white-2019-2.jpg", images: ["/cars/hilux-white-2019-2.jpg"],
     views: 134, sellerName: "Mwanza Trucks", sellerRating: 4.0, sellerType: "dealer",
     sellerListingCount: 3, sellerPhone: "+255766000031", make: "Mitsubishi", model: "Canter",
     bodyType: "Truck", fuelType: "Diesel", cc: 3900, dutyPaid: false,
@@ -431,7 +444,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-32", title: "2022 Mazda Verisa 1.5 Hatchback", price: 22_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2022, mileage: 18000, transmission: "Automatic",
-    location: "Dodoma, TZ", image: "/cars/subaru-forester-2022b-2.jpg", images: ["/cars/subaru-forester-2022b-2.jpg"],
+    location: "Dodoma, TZ", country: "TZ", image: "/cars/subaru-forester-2022b-2.jpg", images: ["/cars/subaru-forester-2022b-2.jpg"],
     views: 212, sellerName: "Capital Cars Dodoma", sellerRating: 4.0, sellerType: "dealer",
     sellerListingCount: 5, sellerPhone: "+255763000032", badge: "new" as const,
     make: "Mazda", model: "Verisa", bodyType: "Hatchback", fuelType: "Petrol",
@@ -441,18 +454,18 @@ export const mockListings: Listing[] = [
   {
     id: "mock-33", title: "2019 Subaru Forester 2.0 AWD XT Turbo", price: 82_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 47000, transmission: "CVT",
-    location: "Dar es Salaam, TZ", image: "/cars/subaru-forester-2022-4.jpg", images: ["/cars/subaru-forester-2022-4.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/subaru-forester-2022-4.jpg", images: ["/cars/subaru-forester-2022-4.jpg"],
     views: 478, sellerName: "Subaru Specialists TZ", sellerRating: 4.5, sellerType: "dealer",
     sellerListingCount: 9, sellerPhone: "+255752000033", make: "Subaru", model: "Forester",
     bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
     description: "Subaru Forester 2019 2.0XT Turbo AWD. EyeSight driver assist, X-mode off-road, apple carplay. Turbocharged for mountain performance.",
   },
   {
-    id: "mock-34", title: "2021 Subaru Forester 2.5 AWD E-Boxer", price: 90_000_000, currency: "TZS",
+    id: "mock-34", title: "2021 Subaru Forester 2.5 AWD E-Boxer", price: 6_800_000, currency: "KES",
     condition: "Foreign Used", year: 2021, mileage: 29000, transmission: "CVT",
     location: "Nairobi, KE", image: "/cars/subaru-forester-2022b-3.jpg", images: ["/cars/subaru-forester-2022b-3.jpg"],
     views: 356, sellerName: "Subaru Kenya", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 12, sellerPhone: "+254720000034", currency: "KES", price: 6_800_000,
+    sellerListingCount: 12, sellerPhone: "+254720000034", country: "KE",
     badge: "featured" as const, make: "Subaru", model: "Forester", bodyType: "SUV",
     fuelType: "Hybrid", cc: 2500, dutyPaid: true,
     description: "Subaru Forester 2021 2.5L e-Boxer hybrid AWD. EyeSight 4.0, SI-drive, X-mode. Hybrid efficiency with Subaru all-terrain capability.",
@@ -460,7 +473,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-35", title: "2020 Toyota Corolla 1.8 Sedan", price: 32_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 38000, transmission: "CVT",
-    location: "Tanga, TZ", image: "/cars/hilux-gray-2019-4.jpg", images: ["/cars/hilux-gray-2019-4.jpg"],
+    location: "Tanga, TZ", country: "TZ", image: "/cars/hilux-gray-2019-4.jpg", images: ["/cars/hilux-gray-2019-4.jpg"],
     views: 287, sellerName: "Tanga Auto Sales", sellerRating: 4.0, sellerType: "dealer",
     sellerListingCount: 4, sellerPhone: "+255753000035", make: "Toyota", model: "Corolla",
     bodyType: "Sedan", fuelType: "Petrol", cc: 1800, dutyPaid: true,
@@ -469,7 +482,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-36", title: "2018 Toyota Ipsum 2.4 MPV 7-seater", price: 25_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 72000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", image: "/cars/navara-2017-3.jpg", images: ["/cars/navara-2017-3.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/navara-2017-3.jpg", images: ["/cars/navara-2017-3.jpg"],
     views: 198, sellerName: "Family Cars TZ", sellerRating: 3.9, sellerType: "private",
     sellerListingCount: 1, sellerPhone: "+255755000036", make: "Toyota", model: "Ipsum",
     bodyType: "Van", fuelType: "Petrol", cc: 2400, dutyPaid: true,
@@ -478,7 +491,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-37", title: "2019 Toyota IST 1.5 Hatchback", price: 20_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 41000, transmission: "Automatic",
-    location: "Moshi, TZ", image: "/cars/fortuner-white-2019-3.jpg", images: ["/cars/fortuner-white-2019-3.jpg"],
+    location: "Moshi, TZ", country: "TZ", image: "/cars/fortuner-white-2019-3.jpg", images: ["/cars/fortuner-white-2019-3.jpg"],
     views: 156, sellerName: "Kilimanjaro Autos", sellerRating: 4.0, sellerType: "dealer",
     sellerListingCount: 4, sellerPhone: "+255754000037", make: "Toyota", model: "IST",
     bodyType: "Hatchback", fuelType: "Petrol", cc: 1500, dutyPaid: true,
@@ -487,7 +500,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-38", title: "2022 Mazda CX-3 2.0 Crossover", price: 38_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2022, mileage: 16000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", image: "/cars/wrangler-2016-3.jpg", images: ["/cars/wrangler-2016-3.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/wrangler-2016-3.jpg", images: ["/cars/wrangler-2016-3.jpg"],
     views: 321, sellerName: "Mazda Centre TZ", sellerRating: 4.3, sellerType: "dealer",
     sellerListingCount: 5, sellerPhone: "+255752000020", badge: "new" as const,
     make: "Mazda", model: "CX-3", bodyType: "SUV", fuelType: "Petrol",
@@ -497,7 +510,7 @@ export const mockListings: Listing[] = [
   {
     id: "mock-39", title: "2020 Honda CR-V 1.5T AWD SUV", price: 55_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 33000, transmission: "CVT",
-    location: "Dar es Salaam, TZ", image: "/cars/patrol-2022-4.jpg", images: ["/cars/patrol-2022-4.jpg"],
+    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/patrol-2022-4.jpg", images: ["/cars/patrol-2022-4.jpg"],
     views: 412, sellerName: "Honda Centre TZ", sellerRating: 4.4, sellerType: "dealer",
     sellerListingCount: 8, sellerPhone: "+255752000039", make: "Honda", model: "CR-V",
     bodyType: "SUV", fuelType: "Petrol", cc: 1500, dutyPaid: true,

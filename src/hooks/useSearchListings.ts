@@ -17,7 +17,6 @@ export interface SearchFilters {
   yearFrom?: string;
   yearTo?: string;
   maxMileage?: string;
-  dutyPaid?: boolean;
   vehicleType?: "car" | "bike" | "commercial" | "spare";
 }
 
@@ -79,8 +78,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.yearFrom) query = query.gte("year", Number(filters.yearFrom));
       if (filters.yearTo) query = query.lte("year", Number(filters.yearTo));
       if (filters.maxMileage) query = query.lte("mileage", Number(filters.maxMileage));
-      if (filters.dutyPaid !== undefined) query = query.eq("duty_paid", filters.dutyPaid);
-      
+
       // Vehicle type filtering
       if (filters.vehicleType) {
         const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
@@ -192,10 +190,10 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         };
       });
 
-      const validateListing = (l: Listing) => {
+      const validateListing = (l: Listing, isMock = false) => {
         if (!l.price || l.price <= 0) return false;
-        // Instagram showroom and Jiji listings — skip strict mileage/transmission checks
         if (l.id?.startsWith("jiji-") || l.id?.startsWith("ig-")) return true;
+        if (!isMock) return true;
         if (l.mileage === 0 && l.condition !== "New") return false;
         if (!l.transmission) return false;
         return true;
@@ -255,14 +253,17 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       }
       
       // Apply validation to mock data
-      mocks = mocks.filter(validateListing);
+      mocks = mocks.filter(l => validateListing(l, true));
 
       // Merge: Supabase + mock + Jiji (deduplicate all three sources against each other)
-      const realIds = new Set(mapped.map(r => r.id));
-      const uniqueMocks = mocks.filter(m => !realIds.has(m.id));
+      // When a specific bodyType filter is active and DB returned results, skip mocks to avoid polluting results
+      const validMapped = mapped.filter(l => validateListing(l, false));
+      const shouldInjectMocks = !filters.bodyType?.length || validMapped.length < 5;
+      const realIds = new Set(validMapped.map(r => r.id));
+      const uniqueMocks = shouldInjectMocks ? mocks.filter(m => !realIds.has(m.id)) : [];
       const mockIds = new Set(uniqueMocks.map(m => m.id));
       const uniqueJiji = jijiFiltered.filter(m => !realIds.has(m.id) && !mockIds.has(m.id));
-      const combined = [...mapped.filter(validateListing), ...uniqueMocks, ...uniqueJiji];
+      const combined = [...validMapped, ...uniqueMocks, ...uniqueJiji];
       
       // Sort combined results
       if (sort === "price-low") combined.sort((a, b) => a.price - b.price);

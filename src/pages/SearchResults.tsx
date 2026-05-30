@@ -10,6 +10,7 @@ import { useSearchListings, type SearchFilters, type SortOption } from "@/hooks/
 import { IconFilter, IconX, IconSortDescending, IconSearch, IconLoader2, IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { cityToCountry } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -34,7 +35,9 @@ export default function SearchResults() {
     make: searchParams.get("make") || "",
     condition: searchParams.get("condition") || "",
     city: searchParams.get("city") || "",
-    country: searchParams.get("country") || (locationCountry !== "All" ? locationCountry : ""),
+    country: searchParams.get("country")
+      || (searchParams.get("city") ? cityToCountry[searchParams.get("city")!] || "" : "")
+      || (locationCountry !== "All" ? locationCountry : ""),
     bodyType: searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : [],
     transmission: searchParams.get("transmission") || "",
     minPrice: searchParams.get("minPrice") || "",
@@ -43,11 +46,14 @@ export default function SearchResults() {
   }));
 
   // Sync filters when the user changes country in the header
+  // Don't override if city URL param already resolved a specific country
   useEffect(() => {
-    setFilters(prev => ({
-      ...prev,
-      country: locationCountry !== "All" ? locationCountry : "",
-    }));
+    if (!searchParams.get("country") && !searchParams.get("city")) {
+      setFilters(prev => ({
+        ...prev,
+        country: locationCountry !== "All" ? locationCountry : "",
+      }));
+    }
   }, [locationCountry]);
 
   // Sync URL params when filters change
@@ -68,7 +74,6 @@ export default function SearchResults() {
     if (newFilters.yearFrom) params.set("yearFrom", newFilters.yearFrom);
     if (newFilters.yearTo) params.set("yearTo", newFilters.yearTo);
     if (newFilters.maxMileage) params.set("maxMileage", newFilters.maxMileage);
-    if (newFilters.dutyPaid) params.set("dutyPaid", newFilters.dutyPaid);
     newFilters.bodyType.forEach(bt => params.append("bodyType", bt));
     newFilters.fuelType.forEach(ft => params.append("fuelType", ft));
     
@@ -95,7 +100,6 @@ export default function SearchResults() {
     yearFrom: filters.yearFrom || undefined,
     yearTo: filters.yearTo || undefined,
     maxMileage: filters.maxMileage || undefined,
-    dutyPaid: filters.dutyPaid === "true" ? true : filters.dutyPaid === "false" ? false : undefined,
     vehicleType: filters.vehicleType || undefined,
   }), [filters]);
 
