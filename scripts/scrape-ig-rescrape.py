@@ -16,14 +16,15 @@ MIN_SLEEP     = 1.2
 MAX_SLEEP     = 2.8
 
 ACCOUNTS = [
-    "al_husnainmotors","barari_motorstz","breemotors","cholloh_magari_tz",
-    "dula_magari","evanamotors","extreme_biketz_","ezy_auto_motors","fau_motors",
-    "gody_motorstz","hanami.japan","hupa_motors_ltd","jambo_magari","justin_motors_ltd",
-    "khushimotorsdaressalaam","kk_magic_cars_","lomaautos_","magari_empire1","mapigo_saba_magari",
-    "mgayamotors","mr_pikipiki","ndinga_bei_poa","njari_motors","pikipiki_quality_tanzania",
-    "ruge_magari","rwanko_motors","tera_automobiles","tesha_pikipiki_usedtz","tgworldimports",
-    "urassa_motors_company_limited",
+    "extreme_biketz_", "hanami.japan",
 ]
+
+CAR_KEYWORDS = ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi",
+    "isuzu","suzuki","volkswagen","hyundai","kia","ford","hiace","prado","landcruiser",
+    "harrier","fortuner","hilux","navara","patrol","pikipiki","bodaboda","canter","truck",
+    "price","bei","tsh","kes","ugx","piaggio","boxer","scooter","bajaj","tvs","ktm",
+    "import","japan","yamaha","kawasaki","ducati","mcc","cc","engine","mileage",
+    "motorcycle","motorbike","ndugu","gari","magari","unauzwa","unauzwa",]
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -31,10 +32,6 @@ HEADERS = {
     "Referer": "https://www.instagram.com/",
 }
 COOKIES = {"sessionid": SESSION_ID}
-CAR_KEYWORDS = ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi",
-    "isuzu","suzuki","volkswagen","hyundai","kia","ford","hiace","prado","landcruiser",
-    "harrier","fortuner","hilux","navara","patrol","pikipiki","bodaboda","canter","truck",
-    "price","bei","tsh","kes","ugx",]
 
 def ig_get(url, retries=3):
     for attempt in range(retries):

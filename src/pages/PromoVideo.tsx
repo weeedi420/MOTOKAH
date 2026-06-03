@@ -1,12 +1,33 @@
+import { useState } from "react";
 import { Player } from "@remotion/player";
 import { MotokahPromo } from "@/remotion/Main";
+import { MotokahSaaSMotionAd } from "@/remotion/PremiumAd";
 import { TIMING, FPS } from "@/remotion/timing";
 
-const TOTAL = TIMING.totalDuration;
 const W = 1280;
 const H = 720;
 
+const ADS = [
+  {
+    id: "cinematic",
+    label: "Cinematic Ad",
+    component: MotokahPromo,
+    duration: TIMING.totalDuration,
+    description: "9 scenes · dark + golden amber · voiceover synced",
+  },
+  {
+    id: "premium",
+    label: "Premium Motion Ad",
+    component: MotokahSaaSMotionAd,
+    duration: 210,
+    description: "7s · orbiting nodes · spring physics · interface reveal",
+  },
+];
+
 export default function PromoVideo() {
+  const [active, setActive] = useState("premium");
+  const current = ADS.find((a) => a.id === active) || ADS[1];
+
   return (
     <div style={{
       minHeight: "100vh",
@@ -28,20 +49,49 @@ export default function PromoVideo() {
           fontSize: 24, fontWeight: 700, color: "#FFFFFF",
           letterSpacing: "-0.025em",
         }}>
-          Cinematic Ad
+          {current.label}
         </div>
+      </div>
+
+      {/* Ad Selector */}
+      <div style={{
+        display: "flex",
+        gap: 8,
+        marginBottom: 20,
+      }}>
+        {ADS.map((ad) => (
+          <button
+            key={ad.id}
+            onClick={() => setActive(ad.id)}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 8,
+              border: "1px solid",
+              borderColor: active === ad.id ? "#0066CC" : "#2A2A35",
+              background: active === ad.id ? "rgba(0, 102, 204, 0.15)" : "transparent",
+              color: active === ad.id ? "#0066CC" : "#6B6678",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+            }}
+          >
+            {ad.label}
+          </button>
+        ))}
       </div>
 
       {/* Player */}
       <div style={{
         width: "100%", maxWidth: 960,
         borderRadius: 16, overflow: "hidden",
-        boxShadow: "0 0 80px rgba(245,166,35,0.1), 0 40px 80px rgba(0,0,0,0.5)",
-        border: "1px solid rgba(245,166,35,0.1)",
+        boxShadow: "0 0 80px rgba(0,102,204,0.1), 0 40px 80px rgba(0,0,0,0.5)",
+        border: "1px solid rgba(0,102,204,0.15)",
       }}>
         <Player
-          component={MotokahPromo}
-          durationInFrames={TOTAL}
+          key={active}
+          component={current.component}
+          durationInFrames={current.duration}
           compositionWidth={W}
           compositionHeight={H}
           fps={FPS}
@@ -58,8 +108,8 @@ export default function PromoVideo() {
         marginTop: 16, display: "flex", flexWrap: "wrap", gap: 20,
         justifyContent: "center", color: "#6B6678", fontSize: 11,
       }}>
-        <span>{Math.round(TOTAL / FPS)}s · {FPS}fps · {W}×{H}</span>
-        <span>9 scenes · dark + golden amber</span>
+        <span>{Math.round(current.duration / FPS)}s · {FPS}fps · {W}×{H}</span>
+        <span>{current.description}</span>
         <span>
           Export: <code style={{ background: "#1A1A24", padding: "1px 5px", borderRadius: 4, border: "1px solid #2A2A35", color: "#B8B4C8" }}>
             npx remotion studio

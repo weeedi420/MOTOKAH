@@ -30,6 +30,8 @@ export default function SearchResults() {
   const [saving, setSaving] = useState(false);
   usePageTitle("Search Vehicles");
 
+  const [keyword, setKeyword] = useState(searchParams.get("q") || "");
+
   const [filters, setFilters] = useState<Filters>(() => ({
     ...defaultFilters,
     make: searchParams.get("make") || "",
@@ -38,7 +40,7 @@ export default function SearchResults() {
     country: searchParams.get("country")
       || (searchParams.get("city") ? cityToCountry[searchParams.get("city")!] || "" : "")
       || (locationCountry !== "All" ? locationCountry : ""),
-    bodyType: searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : [],
+    bodyType: searchParams.getAll("bodyType").length > 0 ? searchParams.getAll("bodyType") : (searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : []),
     transmission: searchParams.get("transmission") || "",
     minPrice: searchParams.get("minPrice") || "",
     maxPrice: searchParams.get("maxPrice") || "",
@@ -63,6 +65,7 @@ export default function SearchResults() {
     
     // Update URL to reflect current filters
     const params = new URLSearchParams();
+    if (keyword.trim()) params.set("q", keyword.trim());
     if (newFilters.make) params.set("make", newFilters.make);
     if (newFilters.condition) params.set("condition", newFilters.condition);
     if (newFilters.city) params.set("city", newFilters.city);
@@ -82,12 +85,14 @@ export default function SearchResults() {
 
   const clearFilters = () => {
     setFilters(defaultFilters);
+    setKeyword("");
     setPage(1);
     setSearchParams(new URLSearchParams());
   };
 
   // Convert Filters to SearchFilters for the hook
   const searchFilters: SearchFilters = useMemo(() => ({
+    q: keyword.trim() || undefined,
     make: filters.make || undefined,
     condition: filters.condition || undefined,
     transmission: filters.transmission || undefined,
@@ -101,7 +106,7 @@ export default function SearchResults() {
     yearTo: filters.yearTo || undefined,
     maxMileage: filters.maxMileage || undefined,
     vehicleType: filters.vehicleType || undefined,
-  }), [filters]);
+  }), [filters, keyword]);
 
   const { listings: filtered, loading } = useSearchListings(searchFilters, sort);
 

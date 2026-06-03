@@ -129,19 +129,30 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
         <h3 className="font-semibold text-sm text-foreground line-clamp-2 mb-1 group-hover:text-primary transition-colors">{listing.title}</h3>
 
         <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-lg font-bold text-primary">{listing.currency} {listing.price.toLocaleString()}</span>
-          {listing.originalPrice && (
+          {listing.price > 0 ? (
+            <span className="text-lg font-bold text-primary">{listing.currency} {listing.price.toLocaleString()}</span>
+          ) : (
+            <span className="text-lg font-bold text-primary">Contact for price</span>
+          )}
+          {listing.originalPrice && listing.originalPrice > 0 && (
             <span className="text-xs text-muted-foreground line-through">{listing.currency} {listing.originalPrice.toLocaleString()}</span>
           )}
         </div>
 
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex flex-wrap items-center gap-1.5 mb-2">
           <span className={`text-[10px] px-2 py-0.5 rounded-full border ${conditionColors[listing.condition] || "border-border text-muted-foreground"}`}>
             {listing.condition}
           </span>
-          <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-            <IconMapPin size={14} stroke={2.5} /> {(listing.location || "").split(",")[0].replace(/,?\s*(TZ|KE|UG|RW|ET|NG)$/i, "").trim()}
-          </span>
+          {listing.bodyType && (
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-medium">
+              {listing.bodyType}
+            </span>
+          )}
+          {listing.fuelType && (
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-medium">
+              {listing.fuelType}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
@@ -150,9 +161,14 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
           <span className="flex items-center gap-1"><IconManualGearbox size={14} stroke={2.5} />{listing.transmission || "N/A"}</span>
         </div>
 
-        {listing.cc && (
-          <span className="text-xs text-primary font-semibold">{listing.cc}cc</span>
-        )}
+        <div className="flex items-center gap-2 mb-1">
+          {listing.cc && (
+            <span className="text-xs text-primary font-semibold">{listing.cc}cc</span>
+          )}
+          <span className="text-xs text-muted-foreground flex items-center gap-0.5">
+            <IconMapPin size={13} stroke={2.5} /> {(listing.location || "").split(",")[0].replace(/,?\s*(TZ|KE|UG|RW|ET|NG)$/i, "").trim()}
+          </span>
+        </div>
 
         <div className="flex items-center justify-between pt-2 border-t border-border">
           <span className="text-xs text-muted-foreground truncate max-w-[60%] flex items-center gap-1">

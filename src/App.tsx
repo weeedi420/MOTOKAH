@@ -83,6 +83,8 @@ function AnimatedRoutes() {
               />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/search" element={<SearchResults />} />
+              <Route path="/cars" element={<Navigate to="/search" replace />} />
+              <Route path="/listings" element={<Navigate to="/search" replace />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/sell" element={<ProtectedRoute><SellCar /></ProtectedRoute>} />

@@ -126,7 +126,7 @@ export default function BikesSection() {
             className="w-8 h-8 rounded-full border border-border flex items-center justify-center disabled:opacity-30 hover:bg-accent/10 transition-colors">
             <IconChevronRight size={18} stroke={2.5} />
           </button>
-          <Link to={`/search?bodyType=${bikeTypes[0]}`} className="text-sm text-primary hover:underline ml-2">View All →</Link>
+          <Link to="/search?vehicleType=bike" className="text-sm text-primary hover:underline ml-2">View All →</Link>
         </div>
       </div>
       {loading ? (

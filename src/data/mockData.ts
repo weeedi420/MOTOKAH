@@ -6,6 +6,14 @@ const _showroomMods = import.meta.glob("./showrooms/*.json", { eager: true }) as
 const _DEALER_CITY: Record<string, string> = {
   hupa_motors_ltd: "Mwanza, TZ",
   justin_motors_ltd: "Dar es Salaam, TZ",
+  ibaraki: "Nairobi, KE",
+  kk_magic_cars_: "Dar es Salaam, TZ",
+  fau_motors: "Dodoma, TZ",
+  hanami_japan: "Dar es Salaam, TZ",
+};
+
+const _DEALER_CURRENCY: Record<string, string> = {
+  ibaraki: "KES",
 };
 
 export const carMakes = [
@@ -109,6 +117,23 @@ export interface Listing {
 
 // ─── Scraped Instagram listings — Mgaya Motors TZ ────────────────────────────
 
+// Normalize Unicode mathematical bold/italic chars (𝗧𝗼𝘆𝗼𝘁𝗮 → Toyota)
+// Must use Array.from() — split('') breaks surrogate pairs
+function _normalizeUnicode(s: string): string {
+  return Array.from(s).map(c => {
+    const cp = c.codePointAt(0) ?? 0;
+    if (cp >= 0x1D400 && cp <= 0x1D419) return String.fromCharCode(cp - 0x1D400 + 65); // Bold Cap A-Z
+    if (cp >= 0x1D41A && cp <= 0x1D433) return String.fromCharCode(cp - 0x1D41A + 97);  // Bold Small a-z
+    if (cp >= 0x1D468 && cp <= 0x1D481) return String.fromCharCode(cp - 0x1D468 + 65); // Bold Italic Cap
+    if (cp >= 0x1D482 && cp <= 0x1D49B) return String.fromCharCode(cp - 0x1D482 + 97);  // Bold Italic Small
+    if (cp >= 0x1D5D4 && cp <= 0x1D5ED) return String.fromCharCode(cp - 0x1D5D4 + 65); // Sans Bold Cap
+    if (cp >= 0x1D5EE && cp <= 0x1D607) return String.fromCharCode(cp - 0x1D5EE + 97);  // Sans Bold Small
+    if (cp >= 0x1D7CE && cp <= 0x1D7D7) return String.fromCharCode(cp - 0x1D7CE + 48);  // Bold Digits
+    if (cp >= 0x1D7EC && cp <= 0x1D7F5) return String.fromCharCode(cp - 0x1D7EC + 48);  // Sans Bold Digits
+    return c;
+  }).join("");
+}
+
 function _parseMgayaPrice(raw: string | null): number {
   if (!raw) return 0;
   const s = raw.replace(/[TZStsh,\s]/gi, "").replace(/[/=\-+➕]/g, "");
@@ -122,8 +147,34 @@ function _parseMgayaPrice(raw: string | null): number {
   return 0;
 }
 
+// Known East African car brands for first-line extraction
+const _CAR_BRANDS = ["toyota","nissan","mitsubishi","subaru","honda","mazda","bmw","mercedes","benz","mercedes-benz","audi","volkswagen","vw","land rover","range rover","hyundai","kia","isuzu","suzuki","ford","jeep","lexus","peugeot","volvo","porsche","maserati","ferrari","lamborghini","bentley","rolls royce","cadillac","dodge","chrysler","buick","opel","renault","fiat","alfa romeo","jaguar","infiniti","acura","lincoln","buick","hummer","pontiac","saturn","mercury","oldsmobile","daewoo","ssangyong","mahindra","tata","bajaj","tvs","yamaha","honda","kawasaki","ktm","piaggio","vespa","triumph","harley","ducati","royal enfield"];
+
+function _extractMakeModelFromLine(line: string): { make: string | null; model: string | null } {
+  const clean = line.replace(/[*#✅☎️▶️🚘🏎️💰➡️]/gu, "").trim();
+  const lower = clean.toLowerCase();
+  for (const brand of _CAR_BRANDS) {
+    if (lower.startsWith(brand) || lower.includes(` ${brand} `) || lower.includes(` ${brand}\n`)) {
+      const makeCapitalized = brand.replace(/\b\w/g, c => c.toUpperCase());
+      const rest = clean.slice(clean.toLowerCase().indexOf(brand) + brand.length).trim();
+      // Rest is the model — take up to 40 chars, drop price/number lines
+      const modelRaw = rest.replace(/^\s*[-:]\s*/, "")
+        .split(/[,\n|]/)[0]           // stop at comma, newline, or pipe (AL-HUSNAIN format)
+        .replace(/\b(19|20)\d{2}\b/g, "") // strip duplicate years from model
+        .replace(/\s{2,}/g, " ").trim().slice(0, 40);
+      return { make: makeCapitalized, model: modelRaw || null };
+    }
+  }
+  return { make: null, model: null };
+}
+
 function _parseMgayaCaption(caption: string) {
-  const lines = caption.split("\n").map((l) => l.trim()).filter(Boolean);
+  // Strip lone surrogates from source (corrupted emoji in some scraped JSON)
+  const caption_norm = _normalizeUnicode(caption).replace(/[\uD800-\uDFFF]/g, "");
+  // Strip leading bullets/symbols (•, *, -, ▶️, etc.) from each line
+  const lines = caption_norm.split("\n")
+    .map((l) => l.trim().replace(/^[•\-*▶️➡️✅🔹🔸◾◽▪▫►●○·⁃⊙⊚]\s*/, "").replace(/[\uD800-\uDFFF]/g, ""))
+    .filter(Boolean);
   const get = (...keys: string[]) => {
     for (const key of keys) {
       const re = new RegExp(`^${key}[:\\s]+(.+)`, "i");
@@ -134,27 +185,82 @@ function _parseMgayaCaption(caption: string) {
     }
     return null;
   };
-  const make = get("make", "brand");
-  const model = get("model");
-  const yearStr = get("year of manufacture", "year model", "year");
-  const year = yearStr ? parseInt(yearStr.match(/\d{4}/)?.[0] ?? "0") : 0;
-  const rawPrice = get("price", "bei", "price/bei", "bei/price") ||
-    (() => { for (const l of lines) { const m = l.match(/(?:price|bei)[:\s]+([0-9,.]+\s*(?:M|m|Million)?)/i); if (m) return m[1]; } return null; })();
+
+  // Labeled fields first
+  let make = get("make", "brand");
+  let modelRaw = get("model");
+
+  // If model value is a bare year (e.g. "Model:2014"), use it as year and grab next line as actual model
+  if (modelRaw && /^\d{4}$/.test(modelRaw.trim())) {
+    const modelIdx = lines.findIndex(l => /^model\s*[:]\s*\d{4}/i.test(l));
+    const nextLine = modelIdx >= 0 ? lines[modelIdx + 1] : null;
+    if (nextLine && !/^(?:price|bei|mileage|km|fuel|engine|trans|yom|year|color|colour|ext|int|drive|seats|cc)/i.test(nextLine)) {
+      modelRaw = nextLine.replace(/[\uD800-\uDFFF]/g, "").trim();
+    } else {
+      modelRaw = null;
+    }
+  }
+
+  const yearStr = get("year of manufacture", "year model", "year", "yom") ||
+    (() => { for (const l of lines.slice(0, 5)) { const m = l.match(/\b(19[89]\d|20[012]\d)\b/); if (m) return m[1]; } return null; })();
+  const year = yearStr ? parseInt(String(yearStr).match(/\d{4}/)?.[0] ?? "0") : 0;
+  let model: string | null = modelRaw;
+
+  // Fallback: extract make/model from first non-price/non-label/non-phone line
+  if (!make) {
+    for (const line of lines.slice(0, 5)) {
+      if (/^\d|price|bei|asking|☎|http|yom|ext:|int:|engine|trans|drive|seats|call\s*[\d☎]|whatsapp|official|date\s+reveal|follow|subscribe|www\.|\.com/i.test(line)) continue;
+      const extracted = _extractMakeModelFromLine(line);
+      if (extracted.make) { make = extracted.make; model = model || extracted.model; break; }
+    }
+  }
+
+  // "Price Starts From X TZS" must be checked FIRST — otherwise get("price") grabs "Starts From…" as garbage
+  const rawPrice =
+    (() => { for (const l of lines) { const m = l.match(/price\s+starts?\s+from\s+([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+)?price\s*[:/]\s*([\d,.]+\s*(?:M|m|Million)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/\bbei\s*[:/]\s*([\d,.]+\s*(?:M|m|Million)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+\s*(?:M|m|Million)?)\s*(?:\/[-=]|TZS|Tsh)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/([\d,.]+)\s*TZS/i); if (m) return m[1]; } return null; })() ||
+    get("bei", "price/bei", "bei/price");
   const price = _parseMgayaPrice(rawPrice);
-  const fuelRaw = get("fuel") ?? "Petrol";
+
+  const fuelRaw = get("fuel", "fuel type", "engine size") ?? caption_norm;
   const fuel = /diesel/i.test(fuelRaw) ? "Diesel" : "Petrol";
-  const mileageStr = get("mileage", "km", "kms");
-  const mileage = mileageStr ? parseInt(mileageStr.replace(/[^0-9]/g, "")) || 0 : 0;
-  const color = get("color", "colour") ?? undefined;
-  const transRaw = get("transmission") ?? "";
-  const transmission: "Automatic" | "Manual" = /manual/i.test(transRaw) ? "Manual" : "Automatic";
-  const ccRaw = get("cc", "engine capacity");
+
+  // "kilometer", "kilometres", "odometer" in addition to "mileage","km","kms"
+  const mileageStr = get("mileage", "odometer", "milleage", "kilometer", "kilometres", "kilometre");
+  // Inline scan: "81,000 km" but NOT "km/h" (acceleration specs like "0–100 km/h: 4.6s")
+  const mileageInline = !mileageStr
+    ? (() => { for (const l of lines) { const m = l.match(/(\d[\d,]+)\s*(?:km|kms)\b(?!\s*\/)/i); if (m) return m[1]; } return null; })()
+    : null;
+  const mileageRaw = mileageStr || mileageInline;
+  const parsedMileageRaw = mileageRaw ? parseInt(mileageRaw.replace(/[^0-9]/g, "")) || 0 : 0;
+  // Reject suspiciously low values — likely acceleration specs (0-100km), not odometer
+  const parsedMileage = parsedMileageRaw >= 500 ? parsedMileageRaw : 0;
+  // Default mileage estimate when none provided: based on year
+  const estimatedMileage = year >= 2020 ? 30000 : year >= 2015 ? 80000 : year >= 2010 ? 130000 : year >= 2005 ? 170000 : 200000;
+  const mileage = parsedMileage > 0 ? parsedMileage : estimatedMileage;
+
+  const color = get("color", "colour", "ext", "exterior") ?? undefined;
+  const transRaw = get("transmission") ?? caption_norm;
+  const transmission: "Automatic" | "Manual" = /\bmanual\b/i.test(transRaw) ? "Manual" : "Automatic";
+  const ccRaw = get("cc", "engine capacity", "engine cc", "capacity", "engine size");
   const ccNum = ccRaw ? parseFloat(ccRaw.replace(/[^0-9.]/g, "")) : 0;
   const cc = ccNum > 100 ? Math.round(ccNum) : ccNum > 0 ? Math.round(ccNum * 1000) : undefined;
   const emojiRe = /[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}☎️▶️✅🔥🥷🏻🙌🤝💸👇]/gu;
+  // Find first line that looks like a car name (not phone/promo/label)
+  const titleFallbackLine = lines.find(l =>
+    !(/^(?:call|☎|📞|tel|phone|whatsapp|official|follow|subscribe|www\.|\.com|\d{6,}|price|bei|yom|model:|ext:|int:|engine|trans|drive|seats|mileage|color|colour|fuel|km:|cc:|nearly|almost|very\s+clean|clean\s+car|top\s+of)/i.test(l))
+  ) || lines[0];
   let title = make && model
     ? `${year ? year + " " : ""}${make} ${model}`.trim()
-    : lines[0].replace(emojiRe, "").replace(/[*#]/g, "").trim().slice(0, 80) || "Vehicle";
+    : make
+    ? `${year ? year + " " : ""}${make}`.trim()
+    : model
+    ? `${year ? year + " " : ""}${model}`.trim()
+    : titleFallbackLine.replace(emojiRe, "").replace(/[*#]/g, "").trim().slice(0, 80) || "Vehicle";
+  title = title.split("|")[0].trim(); // strip "| description" suffix (AL-HUSNAIN format)
   title = title.replace(/\b\w/g, (c) => c.toUpperCase());
 
   // Detect bodyType from make+model+caption keywords
@@ -180,12 +286,17 @@ function _parseMgayaCaption(caption: string) {
 }
 
 function _isMgayaCarPost(caption: string, isVideo = false): boolean {
-  if (isVideo) return false; // skip reels and video posts
-  const low = caption.toLowerCase();
-  return ["toyota","nissan","honda","subaru","mazda","mitsubishi","bmw","mercedes","audi","ford","range rover","land rover","maserati","yamaha","bajaj","tvs","ktm","piaggio"].some((b) => low.includes(b)) ||
-    /\b(19|20)\d{2}\b/.test(caption) ||
-    /(?:price|bei)[:\s]/i.test(caption) ||
-    /(?:fuel|cc|engine|transmission|mileage|km|make|model)\s*[:/]/i.test(caption);
+  if (isVideo) return false;
+  const norm = _normalizeUnicode(caption).replace(/[\uD800-\uDFFF]/g, "");
+  // Reject obvious non-car promo/anniversary/event/social posts
+  if (/decade of trust|decade of movement|decade of excellence|years of (service|trust)|new season.*new stock|official.*date.*reveal|follow.*us|hiring|vacancy|we are looking|job opportunity|eid mubarak|happy.*new year|merry christmas|congratulat|grand opening|meet our team|thank.*customer|asante.*mteja|delivered.*customer|another unit deliver|customer delivery|handover|tumekabidhi|tumekagua na tumekabidhi|ilirushwa.*kuuzwa|ya mteja wetu imefika|wateja wetu kwa kutuamini|safari kwenda.*kwa supply|taarifa muhimu kwa wateja/i.test(norm)) return false;
+  // Word-boundary brand matching (prevents "kia" in "Tunawatakia" false-positives)
+  const hasBrand = /\b(toyota|nissan|honda|subaru|mazda|mitsubishi|bmw|mercedes|benz|audi|ford|range rover|land rover|maserati|yamaha|bajaj|tvs|ktm|piaggio|suzuki|hyundai|kia|isuzu|lexus|peugeot|volvo|jeep|porsche|crown|alphard|harrier|prado|hilux|corolla|vitz|axio|fielder|rush|raize|landcruiser|land.?cruiser|fortuner|navara|ranger|hilux)\b/i.test(norm);
+  const hasYear = /\b(19[89]\d|20[012]\d)\b/.test(norm);
+  // "bei" must be followed by a digit/colon (actual price) not a Swahili phrase like "bei nafuu"
+  const hasPriceLabel = /(?:price|bei)\s*[:/]\s*\d|price\s+starts?\s+from\s+\d|bei\s+\d[\d,]/i.test(norm);
+  const hasStructuredData = /(?:fuel|cc|engine|transmission|mileage|km|make|model|yom)\s*[:/]/i.test(norm);
+  return hasBrand || hasYear || hasPriceLabel || hasStructuredData;
 }
 
 function _convertMgayaToListings(): Listing[] {
@@ -1067,25 +1178,39 @@ const _hardcodedIds = new Set(mockDealers.map(d => d.user_id));
 mockDealers.push(..._generateMissingDealers(_hardcodedIds));
 
 /**
- * Returns all car listings for a specific Instagram dealer by username.
- * Loads directly from the showroom JSON — no keyword filtering, all 20 posts included.
+ * Returns car listings for a specific Instagram dealer by username.
+ * Filters non-car posts and deduplicates by caption prefix.
  */
 export function getShowroomListings(username: string): Listing[] {
   const key = Object.keys(_showroomMods).find(k => k.includes(`/${username}.json`));
   if (!key) return [];
   const dealer = (_showroomMods[key] as any).default;
   if (!dealer?.posts?.length) return [];
-  return dealer.posts.map((post: any, i: number) => {
+
+  // Filter to car posts only + deduplicate + sort newest-first (fresh CDN URLs float to top)
+  const seenCaptions = new Set<string>();
+  const carPosts = (dealer.posts as any[])
+    .slice()
+    .sort((a: any, b: any) => (b.date || "").localeCompare(a.date || ""))
+    .filter((post: any) => {
+      if (!_isMgayaCarPost(post.caption || "", post.is_video)) return false;
+      const dedupeKey = (post.caption || "").slice(0, 120).replace(/\s+/g, " ").toLowerCase();
+      if (seenCaptions.has(dedupeKey)) return false;
+      seenCaptions.add(dedupeKey);
+      return true;
+    });
+
+  return carPosts.map((post: any, i: number) => {
     const info = _parseMgayaCaption(post.caption || "");
     const imgs: string[] = Array.isArray(post.images) ? post.images : [];
     return {
       id: `ig-${username}-${post.shortcode || i}`,
       title: info.title || `${username} — Vehicle`,
       price: info.price || 0,
-      currency: "TZS",
+      currency: _DEALER_CURRENCY[username] || "TZS",
       condition: "Foreign Used" as const,
       year: info.year || 0,
-      mileage: info.mileage || 0,
+      mileage: info.mileage,
       transmission: info.transmission || "Automatic",
       location: _DEALER_CITY[username] || "Dar es Salaam, TZ",
       country: "TZ",
@@ -1095,11 +1220,11 @@ export function getShowroomListings(username: string): Listing[] {
       sellerName: dealer.full_name || username,
       sellerRating: 4.5,
       sellerType: "dealer" as const,
-      sellerListingCount: dealer.posts.length,
+      sellerListingCount: carPosts.length,
       sellerId: username,
       sellerPhone: dealer.phone || "",
-      make: info.make ?? "Unknown",
-      model: info.model ?? "Unknown",
+      make: info.make ?? undefined,
+      model: info.model ?? undefined,
       bodyType: info.bodyType,
       fuelType: info.fuel,
       cc: info.cc,
@@ -1107,5 +1232,5 @@ export function getShowroomListings(username: string): Listing[] {
       description: (post.caption || "").slice(0, 300),
       sourceUrl: post.url || "",
     };
-  }).filter((l: Listing) => l.images.length > 0); // only posts with images
+  }).filter((l: Listing) => l.images.length > 0);
 }

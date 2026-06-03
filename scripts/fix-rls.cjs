@@ -20,12 +20,28 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 async function main() {
   console.log("🔧 Fixing RLS policies...\n");
 
-  // Allow anyone to read approved listings
+  // Allow anyone to read approved listings and authenticated users to insert
   const { error: listingsErr } = await supabase.rpc("exec_sql", {
     sql: `
       CREATE POLICY IF NOT EXISTS "Anyone can read approved listings"
       ON public.listings FOR SELECT
       USING (status = 'approved');
+
+      CREATE POLICY IF NOT EXISTS "Authenticated users can insert their own listings"
+      ON public.listings FOR INSERT
+      TO authenticated
+      WITH CHECK (seller_id = auth.uid());
+
+      CREATE POLICY IF NOT EXISTS "Users can update their own listings"
+      ON public.listings FOR UPDATE
+      TO authenticated
+      USING (seller_id = auth.uid())
+      WITH CHECK (seller_id = auth.uid());
+
+      CREATE POLICY IF NOT EXISTS "Users can delete their own listings"
+      ON public.listings FOR DELETE
+      TO authenticated
+      USING (seller_id = auth.uid());
     `
   });
 
@@ -33,12 +49,28 @@ async function main() {
     // Try direct SQL if RPC doesn't exist
     const { error: sqlErr } = await supabase.from("listings").select("count()").limit(1);
     if (sqlErr?.code === "42501") {
-      console.log("⚠️ RLS is blocking reads. You need to add this policy manually:");
+      console.log("⚠️ RLS is blocking reads. You need to add these policies manually:");
       console.log(`
 -- Run this in Supabase SQL Editor:
 CREATE POLICY "Anyone can read approved listings"
 ON public.listings FOR SELECT
 USING (status = 'approved');
+
+CREATE POLICY "Authenticated users can insert their own listings"
+ON public.listings FOR INSERT
+TO authenticated
+WITH CHECK (seller_id = auth.uid());
+
+CREATE POLICY "Users can update their own listings"
+ON public.listings FOR UPDATE
+TO authenticated
+USING (seller_id = auth.uid())
+WITH CHECK (seller_id = auth.uid());
+
+CREATE POLICY "Users can delete their own listings"
+ON public.listings FOR DELETE
+TO authenticated
+USING (seller_id = auth.uid());
 
 CREATE POLICY "Anyone can read listing images"
 ON public.listing_images FOR SELECT

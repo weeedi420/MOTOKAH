@@ -4,6 +4,7 @@ import { type Listing, mockListings, commercialTypes as COMMERCIAL_TYPES } from 
 import { getJijiListings } from "@/data/jijiListings";
 
 export interface SearchFilters {
+  q?: string;
   make?: string;
   model?: string;
   condition?: string;
@@ -59,6 +60,12 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         .from("listings")
         .select("id, title, price, currency, condition, year, mileage, transmission, city, views, seller_id, body_type, fuel_type, make, model, created_at, listing_images(image_url, display_order)")
         .eq("status", "approved");
+
+      // Text search (keyword)
+      if (filters.q?.trim()) {
+        const kw = filters.q.trim();
+        query = query.or(`title.ilike.%${kw}%,make.ilike.%${kw}%,model.ilike.%${kw}%`);
+      }
 
       if (filters.make) query = query.eq("make", filters.make);
       if (filters.model) query = query.eq("model", filters.model);
@@ -126,6 +133,14 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         let errMocks = [...mockListings];
         let errJiji = [...jiji];
         const applyCommon = (arr: typeof errMocks) => {
+          if (filters.q?.trim()) {
+            const kw = filters.q.trim().toLowerCase();
+            arr = arr.filter(m => 
+              m.title?.toLowerCase().includes(kw) ||
+              m.make?.toLowerCase().includes(kw) ||
+              m.model?.toLowerCase().includes(kw)
+            );
+          }
           if (filters.make) arr = arr.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
           if (filters.model) arr = arr.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
           if (filters.condition) arr = arr.filter(m => m.condition === filters.condition);
@@ -192,15 +207,25 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       const validateListing = (l: Listing, isMock = false) => {
         if (!l.price || l.price <= 0) return false;
-        if (l.id?.startsWith("jiji-") || l.id?.startsWith("ig-")) return true;
         if (!isMock) return true;
         if (l.mileage === 0 && l.condition !== "New") return false;
         if (!l.transmission) return false;
         return true;
       };
 
+      // Fuzzy deduplication key based on make+model+year+location
+      const fuzzyKey = (l: Listing) => `${l.make?.toLowerCase()||''}|${l.model?.toLowerCase()||''}|${l.year}|${l.location?.split(',')[0].toLowerCase().trim()||''}`;
+
       const jiji = await getJijiListings(filters.country).catch(() => []);
       let jijiFiltered = [...jiji];
+      if (filters.q?.trim()) {
+        const kw = filters.q.trim().toLowerCase();
+        jijiFiltered = jijiFiltered.filter(m =>
+          m.title?.toLowerCase().includes(kw) ||
+          m.make?.toLowerCase().includes(kw) ||
+          m.model?.toLowerCase().includes(kw)
+        );
+      }
       if (filters.make) jijiFiltered = jijiFiltered.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
       if (filters.model) jijiFiltered = jijiFiltered.filter(m => m.model?.toLowerCase().includes(filters.model!.toLowerCase()));
       if (filters.condition) jijiFiltered = jijiFiltered.filter(m => m.condition === filters.condition);
@@ -221,6 +246,14 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       let mocks = [...mockListings];
       
       // Filter mock data with same filters
+      if (filters.q?.trim()) {
+        const kw = filters.q.trim().toLowerCase();
+        mocks = mocks.filter(m =>
+          m.title?.toLowerCase().includes(kw) ||
+          m.make?.toLowerCase().includes(kw) ||
+          m.model?.toLowerCase().includes(kw)
+        );
+      }
       if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
       if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
       if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
@@ -238,7 +271,6 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
       if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
       if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
-      if (filters.dutyPaid !== undefined) mocks = mocks.filter(m => (m.dutyPaid ?? true) === filters.dutyPaid);
       if (filters.fuelType?.length) mocks = mocks.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
       // Vehicle type filtering for mocks
       if (filters.vehicleType) {
@@ -263,7 +295,17 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       const uniqueMocks = shouldInjectMocks ? mocks.filter(m => !realIds.has(m.id)) : [];
       const mockIds = new Set(uniqueMocks.map(m => m.id));
       const uniqueJiji = jijiFiltered.filter(m => !realIds.has(m.id) && !mockIds.has(m.id));
-      const combined = [...validMapped, ...uniqueMocks, ...uniqueJiji];
+      
+      // Fuzzy deduplication: remove duplicates with same make+model+year+location
+      const seenKeys = new Set<string>();
+      const deduped = [...validMapped, ...uniqueMocks, ...uniqueJiji].filter(l => {
+        const key = fuzzyKey(l);
+        if (seenKeys.has(key)) return false;
+        seenKeys.add(key);
+        return true;
+      });
+      
+      const combined = deduped;
       
       // Sort combined results
       if (sort === "price-low") combined.sort((a, b) => a.price - b.price);
