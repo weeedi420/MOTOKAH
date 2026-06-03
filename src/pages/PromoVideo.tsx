@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Player } from "@remotion/player";
 import { MotokahPromo } from "@/remotion/Main";
-import { MotokahSaaSMotionAd } from "@/remotion/PremiumAd";
+import { MotokahPremiumAd } from "@/remotion/PremiumAd";
 import { TIMING, FPS } from "@/remotion/timing";
 
 const W = 1280;
@@ -18,7 +18,7 @@ const ADS = [
   {
     id: "premium",
     label: "Premium Motion Ad",
-    component: MotokahSaaSMotionAd,
+    component: MotokahPremiumAd,
     duration: 210,
     description: "7s · orbiting nodes · spring physics · interface reveal",
   },
