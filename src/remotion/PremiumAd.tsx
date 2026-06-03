@@ -515,4 +515,156 @@ export const MotokahPremiumAd = () => {
             gap: 24,
             maxWidth: 700,
             opacity: interpolate(s6, [0.2, 0.8], [0, 1]),
-         
+          }}>
+            {[
+              { icon: "✓", title: "Verified Sellers", desc: "ID-checked dealers" },
+              { icon: "💬", title: "Direct Chat", desc: "Talk to sellers instantly" },
+              { icon: "🔍", title: "Smart Search", desc: "Filter by price, make, location" },
+              { icon: "⭐", title: "Reviews", desc: "See ratings from real buyers" },
+              { icon: "🔒", title: "Secure Deals", desc: "Safe transactions guaranteed" },
+              { icon: "📱", title: "Mobile App", desc: "Buy & sell on the go" },
+            ].map((feature, i) => (
+              <div key={feature.title} style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 16,
+                padding: "24px 20px",
+                textAlign: "center",
+                opacity: interpolate(s6, [0.3 + i * 0.06, 0.8], [0, 1]),
+                transform: `translateY(${interpolate(s6, [0.3 + i * 0.06, 0.8], [20, 0])}px)`,
+              }}>
+                <div style={{ fontSize: 28, marginBottom: 10 }}>{feature.icon}</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "white", marginBottom: 6 }}>{feature.title}</div>
+                <div style={{ fontSize: 12, color: "#64748b", lineHeight: 1.4 }}>{feature.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ==================== SCENE 7: STATS ==================== */}
+      {s7 > 0 && (
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          opacity: s7Out,
+          background: "#F8FAFC",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          <div style={{
+            display: "flex",
+            gap: 48,
+            marginBottom: 48,
+          }}>
+            {[
+              { value: "150K+", label: "Vehicle Listings" },
+              { value: "2.5M", label: "Active Buyers" },
+              { value: "50+", label: "Cities Covered" },
+              { value: "100K+", label: "Safe Deals" },
+            ].map((stat, i) => (
+              <div key={stat.label} style={{
+                textAlign: "center",
+                opacity: interpolate(s7, [i * 0.08, 0.3 + i * 0.08], [0, 1]),
+                transform: `translateY(${interpolate(s7, [i * 0.08, 0.3 + i * 0.08], [30, 0])}px)`,
+              }}>
+                <div style={{ fontSize: 52, fontWeight: 900, color: "#0f172a", letterSpacing: "-0.03em" }}>{stat.value}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 8 }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ==================== SCENE 8: CTA ==================== */}
+      {s8 > 0 && (
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(160deg, #0a0e1a 0%, #1a2a4a 50%, #0a0e1a 100%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          {/* Animated particles */}
+          {Array.from({ length: 15 }).map((_, i) => (
+            <div key={i} style={{
+              position: "absolute",
+              width: 2,
+              height: 2,
+              background: "rgba(255,255,255,0.4)",
+              borderRadius: "50%",
+              left: `${(i * 73.3) % 100}%`,
+              top: `${(i * 61.7) % 100}%`,
+              transform: `translateY(${Math.sin(frame * 0.04 + i * 2) * 30}px)`,
+              opacity: 0.2 + Math.sin(frame * 0.02 + i) * 0.2,
+            }} />
+          ))}
+
+          <div style={{
+            textAlign: "center",
+            opacity: interpolate(s8, [0, 0.5], [0, 1]),
+            transform: `translateY(${interpolate(s8, [0, 0.5], [40, 0])}px)`,
+          }}>
+            <div style={{
+              fontSize: 56,
+              fontWeight: 900,
+              letterSpacing: "-0.03em",
+              lineHeight: 1.1,
+              color: "white",
+              marginBottom: 16,
+            }}>
+              Your perfect ride
+              <br />
+              is waiting
+            </div>
+
+            <div style={{
+              fontSize: 18,
+              fontWeight: 500,
+              color: "#94a3b8",
+              marginBottom: 40,
+              opacity: interpolate(s8, [0.2, 0.7], [0, 1]),
+            }}>
+              Join 2.5 million buyers across Africa
+            </div>
+
+            <div style={{
+              background: "linear-gradient(135deg, #0066CC 0%, #0052a3 100%)",
+              color: "white",
+              padding: "18px 48px",
+              borderRadius: 14,
+              fontSize: 18,
+              fontWeight: 700,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 12,
+              boxShadow: "0 20px 50px -15px rgba(0, 102, 204, 0.5)",
+              opacity: interpolate(s8, [0.3, 0.8], [0, 1]),
+              transform: `scale(${interpolate(s8, [0.3, 0.8], [0.9, 1])})`,
+            }}>
+              Start Your Search
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </div>
+
+            <div style={{
+              marginTop: 32,
+              fontSize: 14,
+              color: "#475569",
+              fontWeight: 500,
+              opacity: interpolate(s8, [0.5, 1], [0, 1]),
+            }}>
+              motokah.com • Free forever
+            </div>
+          </div>
+        </div>
+      )}
+    </AbsoluteFill>
+  );
+};
