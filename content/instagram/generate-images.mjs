@@ -46,56 +46,70 @@ function html(p, car) {
   const sub = esc(p.caption || '');
   const sw = esc(p.caption_sw || '');
 
-  // CAR CARD: photo prominent + price panel.  BRAND: dimmed full-bleed + centered.
+  // Website style: blue background, white text, Motokah wordmark.
+  // LISTING posts show the car inside a clean white card (site VehicleCard look).
   const body = carCard ? `
-    <div class="photo" style="background-image:url('${car.image}')"></div>
-    <div class="panel">
-      <div class="tag">${esc(p.pillar || 'Featured')}</div>
-      <div class="headline">${title}</div>
-      <div class="sub">${sub}</div>
-      <div class="sw">${sw}</div>
-      <div class="row">
-        <div class="pricewrap">${priceBadge}</div>
-        <div class="handle">@motokahafrica</div>
+    <div class="listing">
+      <div class="ltop">
+        <div class="logo">Motokah</div>
+        <div class="tag">${esc(p.pillar || 'Featured')}</div>
+      </div>
+      <div class="card">
+        <div class="cimg" style="background-image:url('${car.image}')"></div>
+        <div class="cbody">
+          <div class="ctitle">${esc(car.title)}</div>
+          <div class="cprice">${fmtPrice(car.price, car.currency)}</div>
+          <div class="cmeta">📍 ${esc(car.city)}</div>
+        </div>
+      </div>
+      <div class="lfoot">
+        <div class="lhead">${title}</div>
+        ${sub ? `<div class="lsub">${sub}</div>` : ''}
+        <div class="handle2">@motokahafrica</div>
       </div>
     </div>
   ` : `
-    <div class="bg" style="background-image:url('${car.image}')"></div>
-    <div class="overlay"></div>
+    <span class="deco d1"></span><span class="deco d2"></span>
     <div class="center">
-      <div class="wordmark">MOTOKAH</div>
+      <div class="logo big-logo">Motokah</div>
       <div class="tagline">AFRICA'S CAR MARKETPLACE</div>
       <div class="big">${title}</div>
       <div class="bigsub">${sub}</div>
-      <div class="bigsw">${sw}</div>
-      <div class="handle2">@motokahafrica</div>
+      ${sw ? `<div class="bigsw">${sw}</div>` : ''}
+      <div class="handle2 center-handle">@motokahafrica</div>
     </div>`;
 
   return `<!doctype html><html><head><meta charset="utf8"><style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-  .frame{width:1080px;height:1080px;position:relative;overflow:hidden;background:#0a0e15;color:#fff}
-  /* car card */
-  .photo{position:absolute;top:0;left:0;width:100%;height:600px;background-size:cover;background-position:center}
-  .photo:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,21,0) 55%,#0a0e15 100%)}
-  .panel{position:absolute;bottom:0;left:0;right:0;padding:48px 56px 56px}
-  .tag{display:inline-block;background:#e8b84b;color:#0a0e15;font-weight:800;font-size:20px;letter-spacing:1px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:18px}
-  .headline{font-size:62px;font-weight:800;line-height:1.05;margin-bottom:16px}
-  .sub{font-size:30px;color:#c7cedb;line-height:1.35;margin-bottom:10px}
-  .sw{font-size:26px;color:#e8b84b;font-style:italic;margin-bottom:28px}
-  .row{display:flex;align-items:flex-end;justify-content:space-between}
-  .price{font-size:46px;font-weight:800;color:#fff}
-  .meta{font-size:24px;color:#9aa3b2}
-  .handle{font-size:26px;font-weight:700;color:#e8b84b}
-  /* brand */
-  .bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(1.1)}
-  .overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,11,18,.82),rgba(8,11,18,.94))}
-  .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px}
-  .wordmark{font-size:40px;font-weight:900;letter-spacing:8px;color:#e8b84b}
-  .tagline{font-size:18px;letter-spacing:5px;color:#9aa3b2;margin-bottom:50px}
-  .big{font-size:78px;font-weight:900;line-height:1.05;margin-bottom:24px;max-width:880px}
-  .bigsub{font-size:34px;color:#dfe4ee;line-height:1.4;margin-bottom:16px;max-width:820px}
-  .bigsw{font-size:28px;color:#e8b84b;font-style:italic;margin-bottom:48px}
-  .handle2{font-size:30px;font-weight:700;color:#fff;border-top:2px solid #e8b84b;padding-top:24px}
+  .frame{width:1080px;height:1080px;position:relative;overflow:hidden;color:#fff;
+    background:linear-gradient(160deg,#0a78e0 0%,#0057b8 55%,#004a9e 100%)}
+  .deco{position:absolute;border-radius:50%;background:rgba(255,255,255,.06)}
+  .d1{width:560px;height:560px;top:-160px;right:-160px}
+  .d2{width:420px;height:420px;bottom:-150px;left:-130px;background:rgba(255,255,255,.05)}
+  .logo{font-size:46px;font-weight:900;color:#fff;letter-spacing:-1px}
+  .logo:after{content:'';display:inline-block;width:12px;height:12px;background:#f5a623;border-radius:50%;margin-left:4px;vertical-align:8px}
+  /* ── listing card ── */
+  .listing{position:absolute;inset:0;display:flex;flex-direction:column;padding:48px 52px}
+  .ltop{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .tag{background:rgba(255,255,255,.18);color:#fff;font-weight:700;font-size:22px;letter-spacing:1px;text-transform:uppercase;padding:8px 20px;border-radius:999px}
+  .card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.22)}
+  .cimg{width:100%;height:430px;background-size:cover;background-position:center}
+  .cbody{padding:24px 32px 28px}
+  .ctitle{color:#0f1b2d;font-size:38px;font-weight:800;line-height:1.1;margin-bottom:8px}
+  .cprice{color:#0066cc;font-size:48px;font-weight:900}
+  .cmeta{color:#6b7686;font-size:26px;margin-top:4px}
+  .lfoot{margin-top:auto;padding-top:28px}
+  .lhead{font-size:50px;font-weight:800;line-height:1.08;margin-bottom:12px}
+  .lsub{font-size:27px;color:rgba(255,255,255,.85);line-height:1.35;margin-bottom:18px}
+  .handle2{font-size:30px;font-weight:800;color:#fff}
+  /* ── brand ── */
+  .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px;z-index:2}
+  .big-logo{font-size:58px;margin-bottom:6px}
+  .tagline{font-size:20px;letter-spacing:6px;color:rgba(255,255,255,.7);margin-bottom:54px}
+  .big{font-size:84px;font-weight:900;line-height:1.04;margin-bottom:26px;max-width:880px}
+  .bigsub{font-size:36px;color:rgba(255,255,255,.92);line-height:1.4;margin-bottom:16px;max-width:820px}
+  .bigsw{font-size:29px;color:#ffd98a;font-style:italic;margin-bottom:54px}
+  .center-handle{position:static;border-top:2px solid rgba(255,255,255,.4);padding-top:26px}
   </style></head><body><div class="frame">${body}</div></body></html>`;
 }
 
