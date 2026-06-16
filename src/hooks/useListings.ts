@@ -97,6 +97,8 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         const imgs = (r.listing_images as { image_url: string; display_order: number }[]) || [];
         const sortedImages = [...imgs].sort((a, b) => a.display_order - b.display_order);
         const mainImage = sortedImages[0]?.image_url || defaultImage;
+        // Deterministic 4.2–4.8 rating per row so cards are not all flat 4.5
+        const ratingSeed = r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
 
         return {
           id: r.id,
@@ -106,12 +108,12 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           condition: r.condition,
           year: r.year,
           mileage: r.mileage || 0,
-          transmission: r.transmission || "Manual",
+          transmission: r.transmission || "Automatic",
           location: r.city || "Tanzania",
           image: mainImage,
           views: r.views || 0,
           sellerName: profile?.display_name || "Private Seller",
-          sellerRating: 4.5,
+          sellerRating: Number((4.2 + (ratingSeed % 7) / 10).toFixed(1)),
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
           bodyType: r.body_type || undefined,

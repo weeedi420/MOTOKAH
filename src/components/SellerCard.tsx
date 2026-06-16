@@ -108,7 +108,7 @@ export default function SellerCard({ listing }: SellerCardProps) {
       <div className="pt-3 border-t border-border">
         <p className="text-sm text-muted-foreground">Asking Price</p>
         <p className="text-2xl font-bold text-primary">
-          {listing.currency} {listing.price.toLocaleString()}
+          {listing.price > 0 ? `${listing.currency} ${listing.price.toLocaleString()}` : "Contact for price"}
         </p>
         {listing.originalPrice && (
           <p className="text-sm text-muted-foreground line-through">

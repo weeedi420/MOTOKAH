@@ -52,7 +52,8 @@ type SheetKey = "make" | "bodyType" | "transmission" | "fuelType" | "color" | "c
 
 export default function SellCar() {
   usePageTitle("Sell Your Car");
-  const [plan, setPlan] = useState<"self" | "agent" | null>(null);
+  const [plan, setPlan] = useState<"self" | "agent" | null>("self");
+  const [showMore, setShowMore] = useState(false);
   const [form, setForm] = useState<FormData>(() => {
     const saved = localStorage.getItem("sellCarDraft");
     return saved ? JSON.parse(saved) : defaultForm;
@@ -222,7 +223,7 @@ export default function SellCar() {
               </Button>
             </a>
           </div>
-          <button className="mt-8 text-sm text-muted-foreground hover:text-foreground" onClick={() => setPlan(null)}>← Back</button>
+          <button className="mt-8 text-sm text-muted-foreground hover:text-foreground" onClick={() => setPlan("self")}>← Back</button>
         </main>
         <Footer />
       </div>
@@ -258,7 +259,7 @@ export default function SellCar() {
       <main className="flex-1 container mx-auto max-w-lg px-0 sm:px-4 py-0 sm:py-6">
         {/* Toolbar */}
         <div className="flex items-center justify-between px-4 py-3 sm:hidden border-b border-border bg-background sticky top-0 z-10">
-          <button onClick={() => setPlan(null)} className="text-sm text-muted-foreground">← Back</button>
+          <button onClick={() => navigate(-1)} className="text-sm text-muted-foreground">← Back</button>
           <h1 className="text-base font-bold text-foreground">Sell your car</h1>
           <button
             className="text-sm font-semibold text-primary"
@@ -270,9 +271,9 @@ export default function SellCar() {
         </div>
 
         <div className="hidden sm:flex items-center justify-between px-1 pb-4">
-          <button onClick={() => setPlan(null)} className="text-sm text-muted-foreground">← Back</button>
+          <button onClick={() => navigate(-1)} className="text-sm text-muted-foreground">← Back</button>
           <h1 className="text-xl font-bold text-foreground">Sell your car</h1>
-          <div />
+          <button onClick={() => setPlan("agent")} className="text-sm font-medium text-primary hover:underline">Sell it for me</button>
         </div>
 
         {/* Photos */}
@@ -426,6 +427,17 @@ export default function SellCar() {
               <IconChevronRight size={16} className="text-muted-foreground" />
             </div>
 
+            {/* More details toggle */}
+            <button
+              type="button"
+              onClick={() => setShowMore((s) => !s)}
+              className="w-full flex items-center justify-between px-4 py-3 border-b border-border text-sm font-medium text-primary hover:bg-muted/30"
+            >
+              {showMore ? "Hide extra details" : "Add more details (optional)"}
+              <IconChevronRight size={16} className={`text-primary transition-transform ${showMore ? "rotate-90" : ""}`} />
+            </button>
+
+            {showMore && (<>
             {/* Transmission */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => setSheet("transmission")}>
               <div>
@@ -461,6 +473,7 @@ export default function SellCar() {
               </div>
               <IconChevronRight size={16} className="text-muted-foreground" />
             </div>
+            </>)}
 
             {/* Description */}
             <div className="flex flex-col px-4 py-3">
@@ -472,6 +485,21 @@ export default function SellCar() {
                 rows={3}
                 className="text-sm bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none resize-none"
               />
+              <div className="flex gap-2 flex-wrap mt-2">
+                {["Alloy Rims", "First Owner", "Full Service History", "Auction Sheet Available", "New Tyres", "Low Mileage", "Sunroof", "Leather Seats", "Accident Free"].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => {
+                      if (form.description.toLowerCase().includes(s.toLowerCase())) return;
+                      update("description", form.description ? `${form.description.replace(/\s*$/, "")}, ${s}` : s);
+                    }}
+                    className="text-xs px-3 py-1 rounded-full border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  >
+                    + {s}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

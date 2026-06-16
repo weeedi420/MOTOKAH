@@ -89,7 +89,13 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">&copy; 2026 Motokah. All rights reserved.</p>
+          <div className="text-xs text-muted-foreground text-center sm:text-left space-y-1">
+            <p>&copy; 2026 Motokah. All rights reserved.</p>
+            <p>
+              Owned by 1Point Solutions. Licensed to Motokah Africa Limited, operating under the
+              "Motokah" brand.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
