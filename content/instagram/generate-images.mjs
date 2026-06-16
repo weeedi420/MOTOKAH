@@ -37,7 +37,8 @@ function isCarCard(p) {
 }
 
 function html(p, car) {
-  const carCard = isCarCard(p);
+  const news = p.post_type === 'news';
+  const carCard = !news && isCarCard(p);
   const priceBadge = carCard
     ? `<div class="price">${fmtPrice(car.price, car.currency)}</div>
        <div class="meta">${esc(car.city)} · ${car.year}</div>`
@@ -48,7 +49,23 @@ function html(p, car) {
 
   // Website style: blue background, white text, Motokah wordmark.
   // LISTING posts show the car inside a clean white card (site VehicleCard look).
-  const body = carCard ? `
+  const newsTitle = esc(p.title);
+  const body = news ? `
+    <span class="deco d1"></span><span class="deco d2"></span>
+    <div class="news">
+      <div class="ntop">
+        <div class="logo">Motokah</div>
+        <div class="newsbadge">NEWS</div>
+      </div>
+      <div class="nrule"></div>
+      <div class="nbody">
+        <div class="nhead">${newsTitle}</div>
+        <div class="ncap">${sub}</div>
+        ${sw ? `<div class="nsw">${sw}</div>` : ''}
+      </div>
+      <div class="nfoot"><span>@motokahafrica</span><span class="ntag">${esc(p.pillar || 'News')}</span></div>
+    </div>
+  ` : carCard ? `
     <div class="listing">
       <div class="ltop">
         <div class="logo">Motokah</div>
@@ -110,6 +127,17 @@ function html(p, car) {
   .bigsub{font-size:36px;color:rgba(255,255,255,.92);line-height:1.4;margin-bottom:16px;max-width:820px}
   .bigsw{font-size:29px;color:#ffd98a;font-style:italic;margin-bottom:54px}
   .center-handle{position:static;border-top:2px solid rgba(255,255,255,.4);padding-top:26px}
+  /* ── news ── */
+  .news{position:absolute;inset:0;display:flex;flex-direction:column;padding:64px 60px;z-index:2}
+  .ntop{display:flex;align-items:center;justify-content:space-between}
+  .newsbadge{background:#f5a623;color:#0a1730;font-weight:900;font-size:26px;letter-spacing:3px;padding:8px 22px;border-radius:8px}
+  .nrule{height:4px;background:rgba(255,255,255,.35);border-radius:4px;margin:26px 0 0}
+  .nbody{margin-top:auto;margin-bottom:auto}
+  .nhead{font-size:74px;font-weight:900;line-height:1.06;margin-bottom:30px}
+  .ncap{font-size:38px;line-height:1.45;color:rgba(255,255,255,.95);margin-bottom:20px}
+  .nsw{font-size:29px;font-style:italic;color:#ffd98a}
+  .nfoot{display:flex;align-items:center;justify-content:space-between;font-size:28px;font-weight:800;color:#fff;border-top:2px solid rgba(255,255,255,.3);padding-top:26px}
+  .ntag{background:rgba(255,255,255,.16);font-weight:700;font-size:24px;padding:6px 18px;border-radius:999px}
   </style></head><body><div class="frame">${body}</div></body></html>`;
 }
 
