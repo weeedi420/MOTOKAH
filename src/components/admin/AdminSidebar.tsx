@@ -9,6 +9,7 @@ import {
   IconNews,
   IconBuildingStore,
   IconArrowLeft,
+  IconCalendarEvent,
 } from "@tabler/icons-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -35,6 +36,7 @@ const navItems = [
   { title: "Contact Messages", url: "/admin/contacts", icon: IconMail },
   { title: "Newsletter", url: "/admin/newsletter", icon: IconNews },
   { title: "Dealer Applications", url: "/admin/dealers", icon: IconBuildingStore, badgeKey: "dealerApps" },
+  { title: "Content Calendar", url: "/admin/content", icon: IconCalendarEvent },
 ];
 
 export function AdminSidebar() {

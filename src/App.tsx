@@ -41,6 +41,7 @@ import AdminBlog from "./pages/admin/AdminBlog.tsx";
 import AdminContacts from "./pages/admin/AdminContacts.tsx";
 import AdminNewsletter from "./pages/admin/AdminNewsletter.tsx";
 import AdminDealers from "./pages/admin/AdminDealers.tsx";
+import AdminContent from "./pages/admin/AdminContent.tsx";
 import MarketingPlan from "./pages/MarketingPlan.tsx";
 import DutyCalculator from "./pages/DutyCalculator.tsx";
 import DealerLeads from "./pages/DealerLeads.tsx";
@@ -115,6 +116,7 @@ function AnimatedRoutes() {
                 <Route path="contacts" element={<AdminContacts />} />
                 <Route path="newsletter" element={<AdminNewsletter />} />
                 <Route path="dealers" element={<AdminDealers />} />
+                <Route path="content" element={<AdminContent />} />
               </Route>
               <Route path="/marketing-plan" element={<MarketingPlan />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
