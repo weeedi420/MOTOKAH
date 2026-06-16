@@ -1,6 +1,7 @@
 import { Composition, registerRoot } from "remotion";
 import { MotokahPromo } from "./Main";
 import { MotokahPremiumAd } from "./PremiumAd";
+import { MotokahReel } from "./Reel";
 import { TIMING } from "./timing";
 
 function RemotionRoot() {
@@ -17,10 +18,18 @@ function RemotionRoot() {
       <Composition
         id="MotokahPremiumAd"
         component={MotokahPremiumAd}
-        durationInFrames={210}
+        durationInFrames={720}
         fps={30}
         width={1280}
         height={720}
+      />
+      <Composition
+        id="MotokahReel"
+        component={MotokahReel}
+        durationInFrames={TIMING.totalDuration}
+        fps={TIMING.fps}
+        width={1080}
+        height={1920}
       />
     </>
   );
