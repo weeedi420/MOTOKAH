@@ -13,6 +13,11 @@ lerna-debug.log*
 
 node_modules
 dist
+
+# Dealer showroom images are hosted on Supabase Storage, not the repo (too large)
+/public/instagram-cars
+# Rendered video artifacts
+/out
 dist-ssr
 *.local
 
