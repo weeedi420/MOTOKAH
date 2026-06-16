@@ -118,6 +118,8 @@ function AnimatedRoutes() {
                 <Route path="dealers" element={<AdminDealers />} />
                 <Route path="content" element={<AdminContent />} />
               </Route>
+              {/* TEMP: open content-calendar preview, no auth gate. Lock down later. */}
+              <Route path="/content" element={<div className="min-h-screen bg-background p-4 md:p-8 max-w-5xl mx-auto"><AdminContent /></div>} />
               <Route path="/marketing-plan" element={<MarketingPlan />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
               <Route path="/dealer-leads" element={<DealerLeads />} />
