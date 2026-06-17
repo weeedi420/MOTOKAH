@@ -40,10 +40,20 @@ for (const jf of fs.readdirSync(SHOWROOMS).filter(f => f.endsWith('.json'))) {
   const data = JSON.parse(fs.readFileSync(jpath, 'utf8'));
   let changed = false;
 
+  // Cap images per dealer (quality over quantity). Trim posts/images beyond cap.
+  const MAX_PER_DEALER = 24;
+  let dealerCount = 0;
+  const keptPosts = [];
+  for (const post of data.posts || []) {
+    post.images = (post.images || []).filter((u) => dealerCount < MAX_PER_DEALER ? (dealerCount++, true) : false);
+    if (post.images.length) keptPosts.push(post);
+  }
+  if (keptPosts.length !== (data.posts || []).length) changed = true;
+  data.posts = keptPosts;
+
   // collect all (dealer,file) to upload
   const tasks = [];
-  for (const post of data.posts || []) {
-    post.images = post.images || [];
+  for (const post of data.posts) {
     for (let i = 0; i < post.images.length; i++) {
       const m = localRe.exec(post.images[i]);
       if (m) tasks.push({ post, i, dealer: m[1], file: m[2] });
