@@ -160,11 +160,6 @@ export default function DealerDirectory() {
                         <Badge variant="secondary" className="text-xs">
                           {dealer.listing_count ?? 0} listing{(dealer.listing_count ?? 0) !== 1 ? "s" : ""}
                         </Badge>
-                        {dealer.rating && (
-                          <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
-                            <IconStarFilled size={12} className="text-accent" /> {dealer.rating.toFixed(1)}
-                          </span>
-                        )}
                         {dealer.verified_at && (
                           <span className="text-[10px] text-success font-medium">Verified</span>
                         )}

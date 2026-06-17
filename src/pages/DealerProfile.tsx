@@ -182,9 +182,6 @@ export default function DealerProfile() {
                       <IconPhone size={15} /> {dealer.phone}
                     </a>
                   )}
-                  <span className="flex items-center gap-1">
-                    <IconStarFilled size={15} className="text-accent" /> {avgRating.toFixed(1)} rating
-                  </span>
                 </div>
 
                 <p className="text-sm font-medium text-foreground">
