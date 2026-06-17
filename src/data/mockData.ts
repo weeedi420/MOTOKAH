@@ -10,6 +10,8 @@ const _DEALER_CITY: Record<string, string> = {
   kk_magic_cars_: "Dar es Salaam, TZ",
   fau_motors: "Dodoma, TZ",
   hanami_japan: "Dar es Salaam, TZ",
+  livy_motors_tz: "Dar es Salaam, TZ",
+  expert_motors_tz: "Dar es Salaam, TZ",
 };
 
 const _DEALER_CURRENCY: Record<string, string> = {
@@ -778,6 +780,34 @@ export const mockDealers: MockDealer[] = [
     description: "Mgaya Motors TZ — trusted importer of quality Japanese vehicles in Dar es Salaam. 129K+ Instagram followers.",
     address: "Kinondoni, Dar es Salaam, Tanzania",
     postal_code: "14111",
+  },
+  {
+    user_id: "mock-dealer-livy_motors_tz",
+    display_name: "Livy Motors TZ",
+    city: "Dar es Salaam",
+    phone: "+255765772216",
+    avatar_url: null,
+    verified_at: "2026-05-07T00:00:00Z",
+    listing_count: 11,
+    rating: 4.5,
+    description: "Livy Motors TZ — quality foreign used cars and Japanese imports in Dar es Salaam.",
+    address: "Dar es Salaam, Tanzania",
+    postal_code: "",
+    instagram: "livy_motors_tz",
+  },
+  {
+    user_id: "mock-dealer-expert_motors_tz",
+    display_name: "Expert Motors TZ",
+    city: "Dar es Salaam",
+    phone: "0657777001",
+    avatar_url: null,
+    verified_at: "2026-05-11T00:00:00Z",
+    listing_count: 21,
+    rating: 4.5,
+    description: "Expert Motors TZ — new stock arrivals. Registration free, services free, number plates free. Call 0657777001.",
+    address: "Dar es Salaam, Tanzania",
+    postal_code: "",
+    instagram: "expert_motors_tz",
   },
   {
     user_id: "mock-dealer-ibaraki",

@@ -1,6 +1,9 @@
 .env
 .env.local
 .env.production
+secrets/
+*-sa.json
+service-account*.json
 
 # Logs
 logs
@@ -66,4 +69,6 @@ public/instagram-cars/tesha_pikipiki_usedtz/
 public/instagram-cars/tgworldimports/
 public/instagram-cars/urassa_motors_company_limited/
 public/instagram-cars/_svgmotors/
+public/instagram-cars/livy_motors_tz/
+public/instagram-cars/expert_motors_tz/
 public/instagram-cars/mgayamotors/DY*.jpg
