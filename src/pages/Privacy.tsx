@@ -8,19 +8,29 @@ export default function Privacy() {
       <div className="container mx-auto px-4 py-12 max-w-2xl">
         <h1 className="text-3xl font-bold text-foreground mb-6">Privacy Policy</h1>
         <div className="prose prose-sm text-muted-foreground space-y-4">
-          <p>Last updated: {new Date().toLocaleDateString()}</p>
+          <p>Last updated: {new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</p>
           <p>
             Motokah respects your privacy. This Privacy Policy explains how we collect, use, share and
             protect your personal information when you use the Motokah website, mobile applications,
             listings and related services (the "Platform").
           </p>
 
-          <h2 className="text-xl font-bold text-foreground mt-6">Ownership &amp; Data Controller</h2>
+          <h2 className="text-xl font-bold text-foreground mt-6">Platform Ownership &amp; Data Controller</h2>
           <p>
-            The Platform is owned by <strong className="text-foreground">1Point Solutions</strong> and is
-            licensed to <strong className="text-foreground">Motokah Africa Limited</strong>, which
-            operates the Platform under the "Motokah" brand. Motokah Africa Limited acts as the data
-            controller for personal information processed through the Platform.
+            The Platform is the exclusive property of{" "}
+            <a
+              href="https://1pointsolutions.cloud"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-primary hover:underline"
+            >
+              1Point Solutions
+            </a>{" "}
+            (UK). 1Point Solutions has granted a conditional operational licence to{" "}
+            <strong className="text-foreground">Motokah Africa Limited</strong> to operate the Platform
+            under the "Motokah" brand. All intellectual property rights in the Platform remain the
+            exclusive property of 1Point Solutions. Motokah Africa Limited acts as the data controller
+            for personal information processed through the Platform during the licence period.
           </p>
 
           <h2 className="text-xl font-bold text-foreground mt-6">Information We Collect</h2>
@@ -68,7 +78,17 @@ export default function Privacy() {
 
           <h2 className="text-xl font-bold text-foreground mt-6">Contact</h2>
           <p>
-            For privacy questions or requests, contact Motokah Africa Limited via the Contact page.
+            For privacy questions or requests, contact Motokah Africa Limited via the{" "}
+            <a href="/contact" className="text-primary hover:underline">Contact page</a>. For matters
+            relating to platform ownership or data held by 1Point Solutions, contact{" "}
+            <a
+              href="https://1pointsolutions.cloud"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              1pointsolutions.cloud
+            </a>.
           </p>
         </div>
       </div>
