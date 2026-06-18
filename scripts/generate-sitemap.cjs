@@ -91,6 +91,18 @@ const cityMakePages = topCities.flatMap(city =>
   }))
 );
 
+// Blog posts (add slug here when publishing new posts)
+const blogPostSlugs = [
+  "how-to-import-a-car-to-kenya-2026",
+  "best-used-cars-under-2-million-nairobi-2026",
+  "bei-ya-magari-mitumba-tanzania-2026",
+];
+const blogPostPages = blogPostSlugs.map(slug => ({
+  path: `/blog/${slug}`,
+  freq: "monthly",
+  pri: 0.7,
+}));
+
 // Country-level search pages
 const countryPages = ["Kenya","Tanzania","Uganda","Rwanda","Ethiopia"].map(c => ({
   path: `/search?country=${encodeURIComponent(c)}`,
@@ -129,6 +141,9 @@ const lines = [
   "  <!-- Country search pages -->",
   ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
+  "  <!-- Blog posts -->",
+  ...blogPostPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  "",
   "</urlset>",
 ];
 
@@ -136,4 +151,4 @@ const out = lines.join("\n");
 const dest = path.join(__dirname, "../public/sitemap.xml");
 fs.writeFileSync(dest, out, "utf8");
 console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + countryPages.length}`);
+console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + countryPages.length + blogPostPages.length}`);
