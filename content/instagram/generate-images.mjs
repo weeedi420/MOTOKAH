@@ -43,7 +43,7 @@ function html(p, car) {
   const title = esc(stripDash(p.title.replace(/—.*$/, '')));
   const sub = esc(stripDash(p.caption || ''));
   const sw = esc(stripDash(p.caption_sw || ''));
-  const newsTitle = esc(p.title);
+  const newsTitle = esc(stripDash(p.title));
 
   // ── LISTING: clean white card, full car visible (no crop) ──────────────────
   const body = carCard ? `
@@ -127,9 +127,8 @@ function html(p, car) {
 .ltag{background:rgba(255,255,255,.22);color:#fff;font-weight:700;font-size:20px;letter-spacing:2px;text-transform:uppercase;padding:8px 22px;border-radius:999px}
 /* card fills middle space */
 .card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 16px 50px rgba(0,0,50,.3);flex:1;display:flex;flex-direction:column;min-height:0}
-/* image: object-fit:contain so NO ZOOM — shows full car on light blue-white bg */
-.cimg-wrap{flex:1;background:#f0f6ff;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0}
-.cimg{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.cimg-wrap{flex:1;overflow:hidden;min-height:0;background:#f0f6ff}
+.cimg{width:100%;height:100%;object-fit:cover;display:block}
 .cdivider{height:1px;background:#dde8f5;flex-shrink:0}
 .cbody{padding:20px 30px 24px;flex-shrink:0}
 .ctitle{color:#0d2040;font-size:32px;font-weight:800;line-height:1.2;margin-bottom:4px}
@@ -177,12 +176,12 @@ for (const p of posts) {
   const car = cars[i % cars.length];
   try {
     await page.setContent(html(p, car), { waitUntil: 'load' });
-    // wait for the car image to actually load
-    await page.waitForFunction(() => {
-      const el = document.querySelector('.photo, .bg');
-      return true; // background-image has no load event; small fixed wait below
-    }).catch(() => {});
-    await page.waitForTimeout(1400);
+    // wait for <img class="cimg"> to finish loading (complete = loaded or failed)
+    await page.waitForFunction(
+      () => { const img = document.querySelector('.cimg'); return !img || img.complete; },
+      { timeout: 8000 }
+    ).catch(() => {});
+    await page.waitForTimeout(400);
     const file = path.join(OUT, `${String(i).padStart(2, '0')}-${slug(p.title)}.png`);
     await page.locator('.frame').screenshot({ path: file });
     ok++;

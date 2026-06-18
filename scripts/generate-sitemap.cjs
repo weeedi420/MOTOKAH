@@ -14,6 +14,8 @@ const igShowrooms = [
   "rwanko_motors","cholloh_magari_tz","breemotors","ndinga_bei_poa",
   "tgworldimports","ezy_auto_motors","hanami.japan","fau_motors",
   "evanamotors","barari_motorstz",
+  "livy_motors_tz","expert_motors_tz","ibaraki",
+  "justin_motors_ltd","hupa_motors_ltd","kk_magic_cars_",
 ];
 
 const staticPages = [
@@ -77,16 +79,24 @@ const makePages = makes.map(make => ({
   pri: 0.8,
 }));
 
-// City + make combos (top cities × top makes)
-const topCities = ["dar-es-salaam", "nairobi", "kampala", "arusha", "mombasa", "kigali"];
-const topMakes = ["toyota", "nissan", "honda", "subaru", "land-rover"];
+// City + make combos (top cities × top makes) — proper URL params
+const topCities = ["dar-es-salaam", "nairobi", "kampala", "arusha", "mombasa", "kigali", "mwanza", "zanzibar"];
+const topMakes = ["toyota", "nissan", "honda", "subaru", "land-rover", "mitsubishi", "mazda", "isuzu"];
+const toTitleCase = s => s.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
 const cityMakePages = topCities.flatMap(city =>
   topMakes.map(make => ({
-    path: `/search?city=${city.replace(/-/g, "+")}+${make}`,
+    path: `/search?city=${encodeURIComponent(toTitleCase(city))}&make=${encodeURIComponent(toTitleCase(make))}`,
     freq: "weekly",
-    pri: 0.6,
+    pri: 0.65,
   }))
 );
+
+// Country-level search pages
+const countryPages = ["Kenya","Tanzania","Uganda","Rwanda","Ethiopia"].map(c => ({
+  path: `/search?country=${encodeURIComponent(c)}`,
+  freq: "daily",
+  pri: 0.85,
+}));
 
 function url(loc, changefreq, priority, lastmod = TODAY) {
   return `  <url>
@@ -116,6 +126,9 @@ const lines = [
   "  <!-- City + make combo pages -->",
   ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
+  "  <!-- Country search pages -->",
+  ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  "",
   "</urlset>",
 ];
 
@@ -123,4 +136,4 @@ const out = lines.join("\n");
 const dest = path.join(__dirname, "../public/sitemap.xml");
 fs.writeFileSync(dest, out, "utf8");
 console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length}`);
+console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + countryPages.length}`);

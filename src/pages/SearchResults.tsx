@@ -9,7 +9,7 @@ import MobileFilterDrawer from "@/components/MobileFilterDrawer";
 import { useSearchListings, type SearchFilters, type SortOption } from "@/hooks/useSearchListings";
 import { IconFilter, IconX, IconSortDescending, IconSearch, IconLoader2, IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { usePageTitle } from "@/hooks/usePageTitle";
+import { Helmet } from "react-helmet-async";
 import { cityToCountry } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,9 +28,36 @@ export default function SearchResults() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [saveName, setSaveName] = useState("");
   const [saving, setSaving] = useState(false);
-  usePageTitle("Search Vehicles");
 
   const [keyword, setKeyword] = useState(searchParams.get("q") || "");
+
+  // Dynamic SEO title/desc/canonical from URL params
+  const seoMake = searchParams.get("make") || "";
+  const seoCity = searchParams.get("city") || "";
+  const seoCountry = searchParams.get("country") || "";
+  const seoVehicleType = searchParams.get("vehicleType") || "";
+  const location = seoCity || seoCountry;
+  const vehicleLabel = seoVehicleType === "bike" ? "Bikes" : seoVehicleType === "commercial" ? "Commercial Vehicles" : "Cars";
+  const seoTitle = seoMake && location
+    ? `${seoMake} ${vehicleLabel} for Sale in ${location} | Motokah`
+    : seoMake
+    ? `${seoMake} ${vehicleLabel} for Sale in East Africa | Motokah`
+    : location
+    ? `${vehicleLabel} for Sale in ${location} | Motokah`
+    : `Search ${vehicleLabel} for Sale in East Africa | Motokah`;
+  const seoDesc = seoMake && location
+    ? `Buy ${seoMake} ${vehicleLabel.toLowerCase()} in ${location}. Browse verified listings from trusted dealers and private sellers on Motokah.`
+    : seoMake
+    ? `Find ${seoMake} ${vehicleLabel.toLowerCase()} for sale across East Africa. Compare prices, check mileage and contact sellers on Motokah.`
+    : location
+    ? `Browse ${vehicleLabel.toLowerCase()} for sale in ${location}. Thousands of verified listings from dealers and private sellers.`
+    : `Search thousands of ${vehicleLabel.toLowerCase()} for sale across Kenya, Tanzania, Uganda, Rwanda and East Africa on Motokah.`;
+  const canonicalParams = new URLSearchParams();
+  if (seoMake) canonicalParams.set("make", seoMake);
+  if (seoCity) canonicalParams.set("city", seoCity);
+  if (seoCountry) canonicalParams.set("country", seoCountry);
+  if (seoVehicleType) canonicalParams.set("vehicleType", seoVehicleType);
+  const seoCanonical = `https://www.motokah.com/search${canonicalParams.toString() ? "?" + canonicalParams.toString() : ""}`;
 
   const [filters, setFilters] = useState<Filters>(() => ({
     ...defaultFilters,
@@ -169,6 +196,13 @@ export default function SearchResults() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDesc} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDesc} />
+        <link rel="canonical" href={seoCanonical} />
+      </Helmet>
       <Header />
 
       <main className="container mx-auto px-4 py-6">
