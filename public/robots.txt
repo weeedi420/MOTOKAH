@@ -5,5 +5,11 @@ Disallow: /profile/
 Disallow: /auth/
 Disallow: /messages/
 Disallow: /wishlist/
+Disallow: /content
+Disallow: /marketing-plan
+Disallow: /promo
+Disallow: /dealer-leads
+Disallow: /dealer-dashboard/
+Disallow: /reset-password
 
 Sitemap: https://www.motokah.com/sitemap.xml
