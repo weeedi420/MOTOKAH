@@ -39,106 +39,133 @@ function isCarCard(p) {
 function html(p, car) {
   const news = p.post_type === 'news';
   const carCard = !news && isCarCard(p);
-  const priceBadge = carCard
-    ? `<div class="price">${fmtPrice(car.price, car.currency)}</div>
-       <div class="meta">${esc(car.city)} · ${car.year}</div>`
-    : '';
-  const title = esc(p.title.replace(/—.*$/, '').trim());
-  const sub = esc(p.caption || '');
-  const sw = esc(p.caption_sw || '');
-
-  // Website style: blue background, white text, Motokah wordmark.
-  // LISTING posts show the car inside a clean white card (site VehicleCard look).
+  const stripDash = s => s.replace(/\s*[—–]\s*/g, ' - ').replace(/\s+/g, ' ').trim();
+  const title = esc(stripDash(p.title.replace(/—.*$/, '')));
+  const sub = esc(stripDash(p.caption || ''));
+  const sw = esc(stripDash(p.caption_sw || ''));
   const newsTitle = esc(p.title);
-  const body = news ? `
+
+  // ── LISTING: clean white card, full car visible (no crop) ──────────────────
+  const body = carCard ? `
+    <div class="listing">
+      <div class="lheader">
+        <div class="logo">Motokah</div>
+        <div class="ltag">${esc(p.pillar || 'Featured Car')}</div>
+      </div>
+      <div class="card">
+        <div class="cimg-wrap">
+          <img class="cimg" src="${car.image}" alt="${esc(car.title)}" />
+        </div>
+        <div class="cdivider"></div>
+        <div class="cbody">
+          <div class="ctitle">${esc(car.title)}</div>
+          <div class="cprice">${fmtPrice(car.price, car.currency)}</div>
+          <div class="cmeta">${esc(car.city)} &nbsp;·&nbsp; ${car.year}</div>
+        </div>
+      </div>
+      <div class="lfooter">
+        <div class="lftxt">${title}${sub ? ` - ${sub}` : ''}</div>
+        <div class="lfhandle">@motokahafrica</div>
+      </div>
+    </div>
+
+  ` : news ? `
+  <!-- ── NEWS ── -->
     <span class="deco d1"></span><span class="deco d2"></span>
     <div class="news">
       <div class="ntop">
         <div class="logo">Motokah</div>
-        <div class="newsbadge">NEWS</div>
+        <div class="nbadge">NEWS</div>
       </div>
       <div class="nrule"></div>
       <div class="nbody">
         <div class="nhead">${newsTitle}</div>
-        <div class="ncap">${sub}</div>
-        ${sw ? `<div class="nsw">${sw}</div>` : ''}
+        ${sub ? `<div class="ncap">${sub}</div>` : ''}
+        ${sw  ? `<div class="nsw">${sw}</div>`  : ''}
       </div>
-      <div class="nfoot"><span>@motokahafrica</span><span class="ntag">${esc(p.pillar || 'News')}</span></div>
-    </div>
-  ` : carCard ? `
-    <div class="listing">
-      <div class="ltop">
-        <div class="logo">Motokah</div>
-        <div class="tag">${esc(p.pillar || 'Featured')}</div>
-      </div>
-      <div class="card">
-        <div class="cimg" style="background-image:url('${car.image}')"></div>
-        <div class="cbody">
-          <div class="ctitle">${esc(car.title)}</div>
-          <div class="cprice">${fmtPrice(car.price, car.currency)}</div>
-          <div class="cmeta">📍 ${esc(car.city)}</div>
-        </div>
-      </div>
-      <div class="lfoot">
-        <div class="lhead">${title}</div>
-        ${sub ? `<div class="lsub">${sub}</div>` : ''}
-        <div class="handle2">@motokahafrica</div>
+      <div class="nfoot">
+        <span class="nhandle">@motokahafrica</span>
+        <span class="ntag">${esc(p.pillar || 'News')}</span>
       </div>
     </div>
-  ` : `
-    <span class="deco d1"></span><span class="deco d2"></span>
-    <div class="center">
-      <div class="logo big-logo">Motokah</div>
-      <div class="tagline">AFRICA'S CAR MARKETPLACE</div>
-      <div class="big">${title}</div>
-      <div class="bigsub">${sub}</div>
-      ${sw ? `<div class="bigsw">${sw}</div>` : ''}
-      <div class="handle2 center-handle">@motokahafrica</div>
-    </div>`;
 
+  ` : `
+  <!-- ── BRAND ── -->
+    <span class="deco d1"></span><span class="deco d2"></span>
+    <div class="brand">
+      <div class="logo blg">Motokah</div>
+      <div class="bsub">AFRICA'S CAR MARKETPLACE</div>
+      <div class="btitle">${title}</div>
+      ${sub ? `<div class="bcap">${sub}</div>` : ''}
+      ${sw  ? `<div class="bsw">${sw}</div>`   : ''}
+      <div class="bhandle">@motokahafrica</div>
+    </div>
+  `;
+
+  /* Website exact blue: hsl(210,100%,40%) = #0066CC */
   return `<!doctype html><html><head><meta charset="utf8"><style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-  .frame{width:1080px;height:1080px;position:relative;overflow:hidden;color:#fff;
-    background:linear-gradient(160deg,#0a78e0 0%,#0057b8 55%,#004a9e 100%)}
-  .deco{position:absolute;border-radius:50%;background:rgba(255,255,255,.06)}
-  .d1{width:560px;height:560px;top:-160px;right:-160px}
-  .d2{width:420px;height:420px;bottom:-150px;left:-130px;background:rgba(255,255,255,.05)}
-  .logo{font-size:46px;font-weight:900;color:#fff;letter-spacing:-1px}
-  .logo:after{content:'';display:inline-block;width:12px;height:12px;background:#f5a623;border-radius:50%;margin-left:4px;vertical-align:8px}
-  /* ── listing card ── */
-  .listing{position:absolute;inset:0;display:flex;flex-direction:column;padding:48px 52px}
-  .ltop{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-  .tag{background:rgba(255,255,255,.18);color:#fff;font-weight:700;font-size:22px;letter-spacing:1px;text-transform:uppercase;padding:8px 20px;border-radius:999px}
-  .card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.22)}
-  .cimg{width:100%;height:430px;background-size:cover;background-position:center}
-  .cbody{padding:24px 32px 28px}
-  .ctitle{color:#0f1b2d;font-size:38px;font-weight:800;line-height:1.1;margin-bottom:8px}
-  .cprice{color:#0066cc;font-size:48px;font-weight:900}
-  .cmeta{color:#6b7686;font-size:26px;margin-top:4px}
-  .lfoot{margin-top:auto;padding-top:28px}
-  .lhead{font-size:50px;font-weight:800;line-height:1.08;margin-bottom:12px}
-  .lsub{font-size:27px;color:rgba(255,255,255,.85);line-height:1.35;margin-bottom:18px}
-  .handle2{font-size:30px;font-weight:800;color:#fff}
-  /* ── brand ── */
-  .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px;z-index:2}
-  .big-logo{font-size:58px;margin-bottom:6px}
-  .tagline{font-size:20px;letter-spacing:6px;color:rgba(255,255,255,.7);margin-bottom:54px}
-  .big{font-size:84px;font-weight:900;line-height:1.04;margin-bottom:26px;max-width:880px}
-  .bigsub{font-size:36px;color:rgba(255,255,255,.92);line-height:1.4;margin-bottom:16px;max-width:820px}
-  .bigsw{font-size:29px;color:#ffd98a;font-style:italic;margin-bottom:54px}
-  .center-handle{position:static;border-top:2px solid rgba(255,255,255,.4);padding-top:26px}
-  /* ── news ── */
-  .news{position:absolute;inset:0;display:flex;flex-direction:column;padding:64px 60px;z-index:2}
-  .ntop{display:flex;align-items:center;justify-content:space-between}
-  .newsbadge{background:#f5a623;color:#0a1730;font-weight:900;font-size:26px;letter-spacing:3px;padding:8px 22px;border-radius:8px}
-  .nrule{height:4px;background:rgba(255,255,255,.35);border-radius:4px;margin:26px 0 0}
-  .nbody{margin-top:auto;margin-bottom:auto}
-  .nhead{font-size:74px;font-weight:900;line-height:1.06;margin-bottom:30px}
-  .ncap{font-size:38px;line-height:1.45;color:rgba(255,255,255,.95);margin-bottom:20px}
-  .nsw{font-size:29px;font-style:italic;color:#ffd98a}
-  .nfoot{display:flex;align-items:center;justify-content:space-between;font-size:28px;font-weight:800;color:#fff;border-top:2px solid rgba(255,255,255,.3);padding-top:26px}
-  .ntag{background:rgba(255,255,255,.16);font-weight:700;font-size:24px;padding:6px 18px;border-radius:999px}
-  </style></head><body><div class="frame">${body}</div></body></html>`;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+
+/* ── canvas — exact Motokah brand blue ── */
+.frame{
+  width:1080px;height:1080px;position:relative;overflow:hidden;color:#fff;
+  background:linear-gradient(150deg,#0077ee 0%,#0066cc 45%,#0052a3 100%)
+}
+.deco{position:absolute;border-radius:50%}
+.d1{width:500px;height:500px;top:-120px;right:-120px;background:rgba(255,255,255,.08)}
+.d2{width:360px;height:360px;bottom:-110px;left:-90px;background:rgba(255,255,255,.05)}
+
+/* ── logo (always white) ── */
+.logo{font-size:42px;font-weight:900;letter-spacing:-1px;color:#fff;line-height:1;white-space:nowrap}
+.logo:after{content:'';display:inline-block;width:11px;height:11px;background:#f5a623;border-radius:50%;margin-left:4px;vertical-align:7px}
+
+/* ═══════════════════════════════════════════
+   LISTING CARD  (blue bg + white card)
+═══════════════════════════════════════════ */
+.listing{position:absolute;inset:0;display:flex;flex-direction:column;padding:50px 54px}
+.lheader{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-shrink:0}
+.ltag{background:rgba(255,255,255,.22);color:#fff;font-weight:700;font-size:20px;letter-spacing:2px;text-transform:uppercase;padding:8px 22px;border-radius:999px}
+/* card fills middle space */
+.card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 16px 50px rgba(0,0,50,.3);flex:1;display:flex;flex-direction:column;min-height:0}
+/* image: object-fit:contain so NO ZOOM — shows full car on light blue-white bg */
+.cimg-wrap{flex:1;background:#f0f6ff;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0}
+.cimg{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.cdivider{height:1px;background:#dde8f5;flex-shrink:0}
+.cbody{padding:20px 30px 24px;flex-shrink:0}
+.ctitle{color:#0d2040;font-size:32px;font-weight:800;line-height:1.2;margin-bottom:4px}
+.cprice{color:#0066cc;font-size:42px;font-weight:900;line-height:1;margin-bottom:4px}
+.cmeta{color:#5a7090;font-size:23px}
+/* footer strip outside card */
+.lfooter{flex-shrink:0;padding-top:22px;border-top:2px solid rgba(255,255,255,.22);margin-top:20px}
+.lftxt{font-size:28px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:8px}
+.lfhandle{font-size:26px;font-weight:800;color:rgba(255,255,255,.9)}
+
+/* ═══════════════════════════════════════════
+   NEWS  (all blue, orange badge)
+═══════════════════════════════════════════ */
+.news{position:absolute;inset:0;display:flex;flex-direction:column;padding:66px 62px;z-index:2}
+.ntop{display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.nbadge{background:#f5a623;color:#0a1730;font-weight:900;font-size:22px;letter-spacing:3px;padding:8px 22px;border-radius:8px}
+.nrule{height:4px;background:rgba(255,255,255,.28);border-radius:4px;margin:28px 0;flex-shrink:0}
+.nbody{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.nhead{font-size:64px;font-weight:900;line-height:1.07;margin-bottom:24px;color:#fff}
+.ncap{font-size:33px;line-height:1.5;color:rgba(255,255,255,.9);margin-bottom:16px}
+.nsw{font-size:27px;font-style:italic;color:#ffd98a;line-height:1.4}
+.nfoot{display:flex;align-items:center;justify-content:space-between;border-top:2px solid rgba(255,255,255,.22);padding-top:24px;margin-top:28px;flex-shrink:0}
+.nhandle{font-size:26px;font-weight:800;color:#fff}
+.ntag{background:rgba(255,255,255,.15);font-weight:700;font-size:21px;padding:6px 18px;border-radius:999px;color:#fff}
+
+/* ═══════════════════════════════════════════
+   BRAND  (blue gradient, centered white text)
+═══════════════════════════════════════════ */
+.brand{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 88px;z-index:2}
+.blg{font-size:52px;margin-bottom:8px}
+.bsub{font-size:17px;letter-spacing:7px;color:rgba(255,255,255,.6);margin-bottom:50px;text-transform:uppercase}
+.btitle{font-size:72px;font-weight:900;line-height:1.06;margin-bottom:22px;max-width:900px;color:#fff}
+.bcap{font-size:33px;color:rgba(255,255,255,.88);line-height:1.45;margin-bottom:14px;max-width:820px}
+.bsw{font-size:27px;font-style:italic;color:#ffd98a;margin-bottom:50px;line-height:1.4}
+.bhandle{font-size:27px;font-weight:800;color:#fff;border-top:2px solid rgba(255,255,255,.3);padding-top:24px;width:100%;text-align:center}
+</style></head><body><div class="frame">${body}</div></body></html>`;
 }
 
 const browser = await chromium.launch({ headless: true, executablePath: EXE });

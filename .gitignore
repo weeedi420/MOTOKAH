@@ -19,6 +19,9 @@ dist
 
 # Dealer showroom images are hosted on Supabase Storage, not the repo (too large)
 /public/instagram-cars
+# Generated Instagram post images (local only, serve from Supabase)
+content/instagram/generated/
+
 # Rendered video artifacts
 /out
 dist-ssr
