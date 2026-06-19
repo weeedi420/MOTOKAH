@@ -111,49 +111,102 @@ export function listingHtml(p, car) {
 
 export function brandHtml(p) {
   const title  = esc(clean(p.title));
-  const body   = esc(trunc(clean(p.caption),170));
-  const sw     = p.caption_sw ? esc(clean(p.caption_sw)) : '';
-  const tag    = esc(p.pillar||'Motokah');
+  const tag    = esc((p.pillar||'Motokah').toUpperCase());
   const isFact = ['Culture','Education'].includes(p.pillar);
+
+  // For fact/culture posts: show a "quick fact" callout instead of just title
+  const factLine = isFact ? esc(trunc(clean(p.caption), 120)) : '';
+
   return `<!doctype html><html><head><meta charset="utf-8"><style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,Arial,sans-serif}
-.frame{width:1080px;height:1080px;display:grid;grid-template-rows:80px 1fr 80px;
+
+/* Full-bleed frame — 3-row grid: logo bar | main content | handle bar */
+.frame{
+  width:1080px;height:1080px;
+  display:grid;grid-template-rows:100px 1fr 100px;
   background:linear-gradient(145deg,#0077ee 0%,#0055bb 55%,#003d8f 100%);
-  padding:50px 64px;color:#fff;overflow:hidden;position:relative}
-.frame::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;
-  background:rgba(255,255,255,.05);top:-300px;right:-250px}
-.frame::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;
-  background:rgba(255,255,255,.04);bottom:-150px;left:-120px}
-.topbar{display:flex;align-items:center;justify-content:space-between;z-index:1}
-.logo{font-size:40px;font-weight:900;letter-spacing:-1px;line-height:1}
-.logo span{display:inline-block;width:10px;height:10px;background:#f5a623;border-radius:50%;margin-left:3px;vertical-align:6px}
-.tag{background:rgba(255,255,255,.15);font-weight:700;font-size:19px;letter-spacing:2px;text-transform:uppercase;padding:7px 20px;border-radius:999px}
-.middle{display:flex;flex-direction:column;justify-content:center;gap:28px;z-index:1;padding:20px 0}
-.eyebrow{font-size:19px;font-weight:700;letter-spacing:5px;color:rgba(255,255,255,.6);text-transform:uppercase}
-.big-title{font-size:${isFact?'78':'88'}px;font-weight:900;line-height:1.03;letter-spacing:-2px}
-.fact-box{background:rgba(255,255,255,.11);border:2px solid rgba(255,255,255,.2);border-radius:18px;padding:28px 34px;display:flex;flex-direction:column;gap:8px}
-.fact-label{font-size:15px;font-weight:700;letter-spacing:4px;color:#f5a623;text-transform:uppercase}
-.fact-text{font-size:30px;font-weight:600;line-height:1.4}
-.body-text{font-size:33px;line-height:1.5;color:rgba(255,255,255,.88);max-width:900px}
-.sw-line{font-size:27px;font-style:italic;color:#ffd98a;border-left:3px solid #f5a623;padding-left:18px;line-height:1.45}
-.bottom{display:flex;align-items:center;justify-content:space-between;
-  border-top:2px solid rgba(255,255,255,.18);padding-top:20px;z-index:1}
-.handle{font-size:28px;font-weight:800}
-.website{font-size:21px;color:rgba(255,255,255,.5)}
+  color:#fff;overflow:hidden;position:relative
+}
+
+/* Big decorative circle — gives visual weight at grid thumb size */
+.bg-circle{
+  position:absolute;width:750px;height:750px;border-radius:50%;
+  background:rgba(255,255,255,.07);top:-180px;right:-180px;pointer-events:none
+}
+.bg-circle2{
+  position:absolute;width:350px;height:350px;border-radius:50%;
+  background:rgba(255,255,255,.05);bottom:-120px;left:-80px;pointer-events:none
+}
+/* Orange accent bar on left edge */
+.accent-bar{
+  position:absolute;left:0;top:0;bottom:0;width:10px;
+  background:linear-gradient(to bottom,#f5a623,#ff8c00)
+}
+
+/* ── TOP BAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 60px;z-index:1
+}
+.logo{font-size:44px;font-weight:900;letter-spacing:-1px;line-height:1}
+.logo-dot{display:inline-block;width:11px;height:11px;background:#f5a623;border-radius:50%;margin-left:4px;vertical-align:7px}
+.tag-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  font-size:18px;font-weight:700;letter-spacing:3px;padding:7px 22px;border-radius:999px}
+
+/* ── MAIN CONTENT — centered, left-aligned ── */
+.main{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 60px 0 70px;gap:30px;z-index:1
+}
+
+/* Big title — the ONE thing that must read at grid thumb */
+.title{
+  font-size:96px;font-weight:900;line-height:1.0;letter-spacing:-3px;
+  color:#fff;
+  /* cap at 2 lines cleanly */
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden
+}
+
+/* Fact callout box — for Culture / Education posts */
+.fact-box{
+  background:rgba(255,255,255,.12);
+  border-left:5px solid #f5a623;
+  border-radius:0 14px 14px 0;
+  padding:26px 32px;
+  display:flex;flex-direction:column;gap:8px
+}
+.fact-label{font-size:16px;font-weight:700;letter-spacing:4px;color:#f5a623;text-transform:uppercase}
+.fact-text{font-size:32px;font-weight:600;line-height:1.4;color:#fff}
+
+/* ── BOTTOM BAR ── */
+.bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 60px;border-top:2px solid rgba(255,255,255,.15);z-index:1
+}
+.handle{font-size:30px;font-weight:800}
+.url{font-size:22px;color:rgba(255,255,255,.5);letter-spacing:1px}
 </style></head><body><div class="frame">
+  <div class="bg-circle"></div>
+  <div class="bg-circle2"></div>
+  <div class="accent-bar"></div>
+
   <div class="topbar">
-    <div class="logo">Motokah<span></span></div>
-    <div class="tag">${tag}</div>
+    <div class="logo">Motokah<span class="logo-dot"></span></div>
+    <div class="tag-pill">${tag}</div>
   </div>
-  <div class="middle">
-    <div class="eyebrow">${isFact?"Did You Know":"East Africa's Car Marketplace"}</div>
-    <div class="big-title">${title}</div>
-    ${isFact&&body?`<div class="fact-box"><div class="fact-label">Quick Fact</div><div class="fact-text">${body}</div></div>`:body?`<div class="body-text">${body}</div>`:''}
-    ${sw?`<div class="sw-line">${sw}</div>`:''}
+
+  <div class="main">
+    <div class="title">${title}</div>
+    ${isFact && factLine ? `
+    <div class="fact-box">
+      <div class="fact-label">Quick Fact</div>
+      <div class="fact-text">${factLine}</div>
+    </div>` : ''}
   </div>
+
   <div class="bottom">
     <div class="handle">@motokahafrica</div>
-    <div class="website">motokah.com</div>
+    <div class="url">motokah.com</div>
   </div>
 </div></body></html>`;
 }
