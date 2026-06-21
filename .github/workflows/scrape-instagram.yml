@@ -1,6 +1,6 @@
 name: Scrape Instagram Dealers
 
-on:
+"on":
   schedule:
     - cron: '0 2 * * 0'
   workflow_dispatch:
@@ -36,4 +36,4 @@ jobs:
           git config user.name "Motokah Scraper Bot"
           git config user.email "bot@motokah.com"
           git add src/data/showrooms/
-          git diff --cached --quiet || git commit -m "chore: refresh Instagram dealer listings" && git push
+          git diff --cached --quiet || (git commit -m "chore: refresh Instagram dealer listings" && git push)
