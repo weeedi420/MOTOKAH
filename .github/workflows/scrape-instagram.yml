@@ -38,4 +38,6 @@ jobs:
           git config user.name "Motokah Scraper Bot"
           git config user.email "bot@motokah.com"
           git add src/data/showrooms/
-          git diff --cached --exit-code || (git commit -m "chore: update Instagram dealer listings" && git push)
+          git diff --cached --exit-code || (git commit -m "chore: update Instagram dealer listings" && git push origin main)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
