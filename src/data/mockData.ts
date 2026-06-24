@@ -12,10 +12,18 @@ const _DEALER_CITY: Record<string, string> = {
   hanami_japan: "Dar es Salaam, TZ",
   livy_motors_tz: "Dar es Salaam, TZ",
   expert_motors_tz: "Dar es Salaam, TZ",
+  // new accounts
+  servemarinekenya: "Mombasa, KE",
+  hondamotorcyclekenyaltd: "Nairobi, KE",
+  daressalaam__pikipikiusedtz: "Dar es Salaam, TZ",
+  pikipiki_bajaji_used: "Dar es Salaam, TZ",
+  bongoland_motors: "Dar es Salaam, TZ",
 };
 
 const _DEALER_CURRENCY: Record<string, string> = {
   ibaraki: "KES",
+  servemarinekenya: "KES",
+  hondamotorcyclekenyaltd: "KES",
 };
 
 export const carMakes = [
@@ -138,7 +146,10 @@ function _normalizeUnicode(s: string): string {
 
 function _parseMgayaPrice(raw: string | null): number {
   if (!raw) return 0;
-  const s = raw.replace(/[TZStsh,\s]/gi, "").replace(/[/=\-+➕]/g, "");
+  const s = raw
+    .replace(/\b(KES|KSH|TZS|TZshs|UGX|USD)\b/gi, "")
+    .replace(/[,\s]/g, "")
+    .replace(/[/=\-+➕]/g, "");
   const mMatch = s.match(/^(\d+(?:\.\d+)?)(?:m|million)/i);
   if (mMatch) return Math.round(parseFloat(mMatch[1]) * 1_000_000);
   const numMatch = s.match(/^(\d+(?:\.\d+)?)/);
@@ -370,7 +381,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         id: `ig-${username}-${post.shortcode}`,
         title: info.title,
         price: info.price,
-        currency: "TZS",
+        currency: _DEALER_CURRENCY[username] || "TZS",
         condition: "Foreign Used" as const,
         year: info.year || (post.date ? new Date(post.date).getFullYear() : 0),
         mileage: info.mileage,
