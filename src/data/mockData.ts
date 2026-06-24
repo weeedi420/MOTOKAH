@@ -40,7 +40,7 @@ export const carModels: Record<string, string[]> = {
   default: ["Select make first"],
 };
 
-export const bodyTypes = ["Sedan", "SUV", "Hatchback", "Coupe", "Wagon", "Pickup", "Van", "Minibus", "Bus", "Truck"];
+export const bodyTypes = ["Sedan", "SUV", "Hatchback", "Coupe", "Wagon", "Pickup", "Van", "Minibus", "Bus", "Truck", "Tipper", "Motorcycle", "Scooter", "Boat", "Tuk-tuk"];
 export const conditions = ["New", "Used", "Foreign Used"];
 export const transmissions = ["Manual", "Automatic", "CVT"];
 export const fuelTypes = ["Petrol", "Diesel", "Hybrid", "Electric"];
@@ -49,7 +49,7 @@ export const bikeTypes = ["Sport", "Cruiser", "Touring", "Scooter", "Dirt Bike"]
 export const bikeMakes = ["Honda", "Yamaha", "Suzuki", "Kawasaki", "Bajaj", "TVS", "KTM"];
 export const ccRanges = ["50cc", "125cc", "250cc", "500cc", "750cc", "1000cc+"];
 
-export const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper"];
+export const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper", "Tuk-tuk"];
 
 export const africanCities = [
   "Dar es Salaam", "Dodoma", "Arusha", "Mwanza", "Zanzibar", "Mbeya", "Moshi", "Tanga",
@@ -278,8 +278,16 @@ function _parseMgayaCaption(caption: string) {
     bodyType = "Bus";
   } else if (/hiace|noah|voxy|\bvan\b|probox|succeed/i.test(bodyHint)) {
     bodyType = "Van";
-  } else if (/motorbike|motorcycle|bodaboda|boda.?boda|pikipiki|scooter|tvs|bajaj|yamaha.{0,10}(125|150|250)/i.test(bodyHint)) {
+  } else if (/motorbike|motorcycle|bodaboda|boda.?boda|pikipiki|tvs|bajaj|yamaha.{0,10}(125|150|250)/i.test(bodyHint)) {
     bodyType = "Motorcycle";
+  } else if (/scooter|vespa|piaggio/i.test(bodyHint)) {
+    bodyType = "Scooter";
+  } else if (/\bboat\b|marine|vessel|ferry|speedboat|fibreglass|aluminium.{0,10}boat/i.test(bodyHint)) {
+    bodyType = "Boat";
+  } else if (/tuk.?tuk|bajaji|auto.?rickshaw/i.test(bodyHint)) {
+    bodyType = "Tuk-tuk";
+  } else if (/tipper|dumper|dump.?truck/i.test(bodyHint)) {
+    bodyType = "Tipper";
   } else if (/prado|landcruiser|land.?cruiser|patrol|fortuner|harrier|rav4|cx-5|tucson|santa.?fe|forester|outback|\bsuv\b/i.test(bodyHint)) {
     bodyType = "SUV";
   }
@@ -1262,5 +1270,5 @@ export function getShowroomListings(username: string): Listing[] {
       description: (post.caption || "").slice(0, 300),
       sourceUrl: post.url || "",
     };
-  }).filter((l: Listing) => l.images.length > 0);
+  });
 }

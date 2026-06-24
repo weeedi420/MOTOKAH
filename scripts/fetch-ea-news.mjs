@@ -28,8 +28,20 @@ const FEEDS = [
   { name: "AllAfrica East Africa", url: "https://allafrica.com/tools/headlines/rdf/eastafrica/headlines.rdf", country: "East Africa", pillar: "Regional News" },
 ];
 
-// CAR-FOCUSED keywords to filter news relevant to Motokah
-const CAR_KEYWORDS = ["car", "vehicle", "motor", "auto", "fuel", "petrol", "diesel", "traffic", "road", "transport", "import", "duty", "tax", "crb", "bank rate", "economy", "gdp", "inflation", "shilling", "kes", "tzs", "ugx"];
+// STRICT vehicle-only keywords — must match to be included
+const CAR_KEYWORDS = [
+  "car", "cars", "vehicle", "vehicles", "motor", "motors", "automobile", "auto",
+  "petrol", "diesel", "fuel price", "fuel levy",
+  "traffic", "road accident", "matatu", "boda boda", "bodaboda", "pikipiki",
+  "import duty", "car import", "vehicle import", "duty free",
+  "toyota", "nissan", "subaru", "mitsubishi", "honda", "mazda", "bmw", "mercedes",
+  "land cruiser", "hilux", "pickup", "truck", "lorry", "bus", "minibus", "daladala",
+  "motorcycle", "motorbike", "scooter", "bajaj", "tuk-tuk",
+  "boat", "marine", "vessel", "ferry",
+  "electric vehicle", "ev car", "hybrid car",
+  "car dealer", "car market", "car sales", "used car", "new car",
+  "ntsa", "tanroads", "traffic police", "driving licence", "vehicle registration",
+];
 
 function fetchRSS(urlStr) {
   return new Promise((resolve, reject) => {
@@ -77,8 +89,6 @@ function parseItems(xml) {
 
 function isRelevant(item, source) {
   const text = `${item.title} ${item.desc}`.toLowerCase();
-  // Always include from general EA news if it has broad relevance
-  if (source.country === "East Africa") return true;
   return CAR_KEYWORDS.some(k => text.includes(k));
 }
 

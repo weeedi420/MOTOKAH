@@ -3,17 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { cityToCountry } from "@/data/mockData";
 
 const allCategories = [
-  { name: "Saloon",           icon: "/icons/sedan.png",       param: "bodyType=Sedan" },
-  { name: "4x4 / Jeep",       icon: "/icons/suv.png",         param: "bodyType=SUV" },
-  { name: "Double Cab",       icon: "/icons/pickup.png",      param: "bodyType=Pickup" },
-  { name: "Small Car",        icon: "/icons/hatchback.png",   param: "bodyType=Hatchback" },
-  { name: "Daladala",         icon: "/icons/minibus.png",     param: "bodyType=Minibus" },
-  { name: "Bus",              icon: "/icons/minibus.png",     param: "bodyType=Bus" },
-  { name: "Lorry",            icon: "/icons/truck.png",       param: "bodyType=Truck" },
-  { name: "Van",              icon: "/icons/van.png",         param: "bodyType=Van" },
-  { name: "Boda Boda",        icon: "/icons/bike-sports.png", param: "bodyType=Motorcycle" },
-  { name: "Bajaji / Tuk-tuk", icon: "/icons/bajaji.png",      param: "bodyType=Tuk-tuk" },
-  { name: "Boat",             icon: "/icons/boat.png",        param: "bodyType=Boat" },
+  { name: "Saloon",           icon: "/icons/sedan.png",        param: "bodyType=Sedan" },
+  { name: "4x4 / SUV",        icon: "/icons/suv.png",          param: "bodyType=SUV" },
+  { name: "Double Cab",       icon: "/icons/pickup.png",       param: "bodyType=Pickup" },
+  { name: "Small Car",        icon: "/icons/hatchback.png",    param: "bodyType=Hatchback" },
+  { name: "Wagon / MPV",      icon: "/icons/mpv.png",          param: "bodyType=Wagon" },
+  { name: "Van",              icon: "/icons/van.png",          param: "bodyType=Van" },
+  { name: "Daladala",         icon: "/icons/minibus.png",      param: "bodyType=Minibus" },
+  { name: "Bus",              icon: "/icons/minibus.png",      param: "bodyType=Bus" },
+  { name: "Lorry",            icon: "/icons/truck.png",        param: "bodyType=Truck" },
+  { name: "Tipper",           icon: "/icons/tipper.png",       param: "bodyType=Tipper" },
+  { name: "Boda Boda",        icon: "/icons/bike-sports.png",  param: "bodyType=Motorcycle" },
+  { name: "Scooter",          icon: "/icons/bike-scooter.png", param: "bodyType=Scooter" },
+  { name: "Bajaji / Tuk-tuk", icon: "/icons/bajaji.png",       param: "bodyType=Tuk-tuk" },
+  { name: "Boat",             icon: "/icons/boat.png",         param: "bodyType=Boat" },
 ];
 
 
