@@ -87,7 +87,7 @@ export default function ListingDetail() {
     if (viewed.includes(id)) return;
     supabase.rpc("increment_listing_views", { _listing_id: id }).then(() => {
       sessionStorage.setItem("viewedListings", JSON.stringify([...viewed, id]));
-    });
+    }).catch(() => {});
   }, [id]);
 
   const handleSave = async () => {

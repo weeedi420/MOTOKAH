@@ -120,7 +120,7 @@ export default function SellCar() {
         const file = images[i];
         const path = `${user.id}/${listing.id}/${i}-${file.name}`;
         const { error: uploadErr } = await supabase.storage.from("listing-images").upload(path, file);
-        if (uploadErr) continue;
+        if (uploadErr) { console.error("Image upload failed:", uploadErr.message); continue; }
         const { data: urlData } = supabase.storage.from("listing-images").getPublicUrl(path);
         await supabase.from("listing_images").insert({ listing_id: listing.id, image_url: urlData.publicUrl, display_order: i });
       }
@@ -514,8 +514,8 @@ export default function SellCar() {
               <div>
                 <p className="text-xs text-muted-foreground">Name</p>
                 <Input
-                  value={form.title || displayName}
-                  onChange={(e) => update("title", e.target.value)}
+                  value={displayName}
+                  readOnly
                   placeholder="Your name"
                   className="border-none shadow-none p-0 h-auto text-sm bg-transparent focus-visible:ring-0"
                 />

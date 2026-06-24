@@ -41,12 +41,13 @@ export default function SellerCard({ listing }: SellerCardProps) {
       return;
     }
 
-    const { data: newConvo } = await supabase
+    const { data: newConvo, error: convoErr } = await supabase
       .from("conversations")
       .insert({ participant1_id: user.id, participant2_id: listing.sellerId, listing_id: listing.id })
       .select("id")
       .single();
 
+    if (convoErr) { console.error("Could not start conversation:", convoErr.message); return; }
     if (newConvo) navigate(`/messages`);
   };
 

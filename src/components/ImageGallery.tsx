@@ -10,6 +10,14 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
 
+  if (!images || images.length === 0) {
+    return (
+      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted flex items-center justify-center">
+        <span className="text-muted-foreground text-sm">No images available</span>
+      </div>
+    );
+  }
+
   const navigate = (dir: "prev" | "next") => {
     setActiveIndex((i) =>
       dir === "prev" ? (i === 0 ? images.length - 1 : i - 1) : (i === images.length - 1 ? 0 : i + 1)
