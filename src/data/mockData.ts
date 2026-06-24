@@ -18,6 +18,10 @@ const _DEALER_CITY: Record<string, string> = {
   daressalaam__pikipikiusedtz: "Dar es Salaam, TZ",
   pikipiki_bajaji_used: "Dar es Salaam, TZ",
   bongoland_motors: "Dar es Salaam, TZ",
+  dream_motors_safari: "Dar es Salaam, TZ",
+  autocomjapantanzaniacars: "Dar es Salaam, TZ",
+  usedcarstanzania: "Dar es Salaam, TZ",
+  epicmotors_tz: "Dar es Salaam, TZ",
 };
 
 const _DEALER_CURRENCY: Record<string, string> = {
@@ -317,7 +321,9 @@ function _isMgayaCarPost(caption: string, isVideo = false): boolean {
   // "bei" must be followed by a digit/colon (actual price) not a Swahili phrase like "bei nafuu"
   const hasPriceLabel = /(?:price|bei)\s*[:/]\s*\d|price\s+starts?\s+from\s+\d|bei\s+\d[\d,]/i.test(norm);
   const hasStructuredData = /(?:fuel|cc|engine|transmission|mileage|km|make|model|yom)\s*[:/]/i.test(norm);
-  return hasBrand || hasYear || hasPriceLabel || hasStructuredData;
+  const hasMarine = /\b(boat|boti|mashua|marine|panga|fiberglass|fibreglass|outboard|inboard|speedboat|vessel|dinghy)\b/i.test(norm);
+  const hasBike = /\b(pikipiki|bodaboda|motorcycle|motorbike|boxer|scooter|boda.?boda)\b/i.test(norm);
+  return hasBrand || hasYear || hasPriceLabel || hasStructuredData || hasMarine || hasBike;
 }
 
 function _convertMgayaToListings(): Listing[] {
