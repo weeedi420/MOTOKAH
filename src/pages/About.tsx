@@ -1,27 +1,21 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconCar, IconUsers, IconShieldCheck, IconMapPin, IconTargetArrow, IconEye, IconHeart, IconStar } from "@tabler/icons-react";
+import { IconCar, IconUsers, IconShieldCheck, IconMapPin, IconTargetArrow, IconEye, IconHeart } from "@tabler/icons-react";
 
 const stats = [
-  { label: "Listings", value: "500+", icon: IconCar },
-  { label: "Happy Buyers", value: "1,200+", icon: IconUsers },
-  { label: "Verified Sellers", value: "300+", icon: IconShieldCheck },
-  { label: "Cities Covered", value: "15+", icon: IconMapPin },
+  { label: "Listings", value: "1,000+", icon: IconCar },
+  { label: "Verified Dealers", value: "93", icon: IconShieldCheck },
+  { label: "Countries", value: "5+", icon: IconMapPin },
+  { label: "Cities Covered", value: "15+", icon: IconUsers },
 ];
 
 const values = [
-  { icon: IconTargetArrow, title: "Our Mission", text: "To create the most trusted and user-friendly car marketplace in Africa, starting with Tanzania." },
+  { icon: IconTargetArrow, title: "Our Mission", text: "To create the most trusted and user-friendly car marketplace in East Africa." },
   { icon: IconEye, title: "Our Vision", text: "A world where buying and selling a car is as simple, safe, and transparent as online shopping." },
   { icon: IconHeart, title: "Our Values", text: "Trust, transparency, simplicity, and putting our users first in every decision we make." },
 ];
 
-const team = [
-  { name: "Ahmed Hassan", role: "Founder & CEO", bio: "Car enthusiast with 10+ years in automotive tech." },
-  { name: "Fatima Mwangi", role: "Head of Operations", bio: "Expert in logistics and marketplace operations across East Africa." },
-  { name: "David Kimaro", role: "Lead Engineer", bio: "Full-stack developer passionate about building great products." },
-  { name: "Amina Said", role: "Customer Success", bio: "Dedicated to ensuring every buyer and seller has a great experience." },
-];
 
 export default function About() {
   usePageTitle("About Us");
@@ -35,8 +29,8 @@ export default function About() {
         <div className="container mx-auto px-4 text-center max-w-3xl">
           <h1 className="text-4xl font-extrabold text-foreground mb-4">About Motokah</h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Tanzania's premier online automotive marketplace, connecting buyers and sellers across East Africa.
-            Whether you're looking for a brand new car, a reliable used vehicle, or looking to sell your ride — Motokah makes it easy, safe, and fast.
+            East Africa's online car marketplace, connecting buyers and sellers across Kenya, Tanzania, Uganda, Ethiopia and beyond.
+            Whether you're looking for a reliable used vehicle or want to reach thousands of buyers — Motokah makes it easy, fast, and transparent.
           </p>
         </div>
       </section>
@@ -80,29 +74,19 @@ export default function About() {
         <div className="container mx-auto px-4 max-w-3xl">
           <h2 className="text-2xl font-bold text-foreground mb-6 text-center">Our Story</h2>
           <div className="prose prose-sm text-muted-foreground space-y-4 mx-auto">
-            <p>Motokah was born from a simple frustration: buying and selling cars in Tanzania was too complicated, risky, and time-consuming. Scattered listings across social media, no way to verify sellers, and zero transparency in pricing.</p>
-            <p>We set out to build something better — a dedicated platform where every listing is verified, every seller is accountable, and every buyer can make informed decisions. From our first 50 listings in Dar es Salaam, we've grown to cover cities across the country.</p>
-            <p>Today, Motokah is more than a marketplace. It's a community of car enthusiasts, dealers, and everyday people looking for their perfect ride. And we're just getting started.</p>
+            <p>Motokah was born from a simple frustration: finding and selling cars across East Africa was too complicated, risky, and time-consuming. Listings scattered across social media, no way to verify sellers, zero transparency in pricing.</p>
+            <p>We set out to build something better — a dedicated platform that brings dealers and buyers together, with real listings from real dealers you can actually contact. We started in Tanzania and have expanded to Kenya, Uganda, Ethiopia and beyond.</p>
+            <p>Today, Motokah is East Africa's fastest-growing car marketplace. Over 93 verified dealers list their stock with us. And we're just getting started.</p>
           </div>
         </div>
       </section>
 
-      {/* Team */}
+      {/* Join Us */}
       <section className="py-16">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-2xl font-bold text-foreground mb-8 text-center">Meet Our Team</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {team.map((m) => (
-              <div key={m.name} className="bg-card border border-border rounded-xl p-5 text-center">
-                <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
-                  <IconUsers size={24} className="text-primary" />
-                </div>
-                <h4 className="font-bold text-foreground">{m.name}</h4>
-                <p className="text-xs text-primary font-semibold mb-2">{m.role}</p>
-                <p className="text-xs text-muted-foreground">{m.bio}</p>
-              </div>
-            ))}
-          </div>
+        <div className="container mx-auto px-4 max-w-2xl text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Want to Join Us?</h2>
+          <p className="text-muted-foreground mb-6">We're a small team building something big for East Africa's automotive market. If you're passionate about cars, tech, or marketplaces, we'd love to hear from you.</p>
+          <a href="/careers" className="inline-block text-sm font-semibold text-primary underline underline-offset-4">View open positions</a>
         </div>
       </section>
 

@@ -5,7 +5,7 @@ import { IconMapPin, IconBriefcase, IconExternalLink } from "@tabler/icons-react
 import { Button } from "@/components/ui/button";
 
 const openings = [
-  { title: "Full-Stack Developer", type: "Full-time", location: "Dar es Salaam / Remote", desc: "Build and ship features for Tanzania's #1 car marketplace. React, TypeScript, Supabase stack." },
+  { title: "Full-Stack Developer", type: "Full-time", location: "Dar es Salaam / Remote", desc: "Build and ship features for East Africa's car marketplace. React, TypeScript, Supabase stack." },
   { title: "Product Designer (UI/UX)", type: "Full-time", location: "Dar es Salaam", desc: "Design delightful experiences for car buyers and sellers. Figma, prototyping, user research." },
   { title: "Marketing Manager", type: "Full-time", location: "Dar es Salaam", desc: "Drive growth through digital marketing, social media, and partnerships across East Africa." },
   { title: "Customer Support Lead", type: "Full-time", location: "Dar es Salaam", desc: "Lead our support team to ensure every buyer and seller has a great experience on Motokah." },

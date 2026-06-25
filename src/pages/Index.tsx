@@ -61,7 +61,8 @@ const Index = () => {
       <SellCTA />
       <Footer />
     </div>
-    </>;
+    </>
+  );
 };
 
 export default Index;

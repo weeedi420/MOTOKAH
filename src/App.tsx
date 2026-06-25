@@ -42,7 +42,6 @@ import AdminContacts from "./pages/admin/AdminContacts.tsx";
 import AdminNewsletter from "./pages/admin/AdminNewsletter.tsx";
 import AdminDealers from "./pages/admin/AdminDealers.tsx";
 import AdminContent from "./pages/admin/AdminContent.tsx";
-import MarketingPlan from "./pages/MarketingPlan.tsx";
 import DutyCalculator from "./pages/DutyCalculator.tsx";
 import DealerLeads from "./pages/DealerLeads.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -62,9 +61,8 @@ const queryClient = new QueryClient();
 
 function AnimatedRoutes() {
   const location = useLocation();
-  const welcomeCompleted = localStorage.getItem("motokah_welcome_completed");
   usePageTracking();
-  
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
@@ -78,10 +76,7 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
               <Route path="/welcome" element={<Welcome />} />
-              <Route 
-                path="/" 
-                element={welcomeCompleted ? <Index /> : <Navigate to="/welcome" replace />} 
-              />
+              <Route path="/" element={<Index />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/cars" element={<Navigate to="/search" replace />} />
@@ -119,7 +114,7 @@ function AnimatedRoutes() {
                 <Route path="content" element={<AdminContent />} />
               </Route>
               <Route path="/content" element={<ProtectedRoute><div className="min-h-screen bg-background p-4 md:p-8 max-w-5xl mx-auto"><AdminContent /></div></ProtectedRoute>} />
-              <Route path="/marketing-plan" element={<MarketingPlan />} />
+              <Route path="/marketing-plan" element={<Navigate to="/" replace />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
               <Route path="/dealer-leads" element={<DealerLeads />} />
               <Route path="/city/:slug" element={<CityLandingPage />} />

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconMail, IconPhone, IconMapPin, IconBrandWhatsapp, IconClock } from "@tabler/icons-react";
+import { IconMail, IconMapPin, IconClock } from "@tabler/icons-react";
 
 export default function Contact() {
   usePageTitle("Contact Us");
@@ -59,13 +59,6 @@ export default function Contact() {
                 <div>
                   <p className="font-semibold text-foreground text-sm">Email</p>
                   <p className="text-sm text-muted-foreground">info@motokah.com</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <IconBrandWhatsapp size={20} className="text-success mt-0.5 shrink-0" />
-                <div>
-                  <p className="font-semibold text-foreground text-sm">WhatsApp</p>
-                  <p className="text-sm text-muted-foreground">Available via email below</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
