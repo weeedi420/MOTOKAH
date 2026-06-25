@@ -3,7 +3,7 @@ import mgayaJson from "./showrooms/mgayamotors.json";
 // Load all other showroom JSONs
 const _showroomMods = import.meta.glob("./showrooms/*.json", { eager: true }) as Record<string, { default: { username: string; full_name: string; phone: string; posts: Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string }> } }>;
 
-const _DEALER_CITY: Record<string, string> = {
+export const DEALER_CITY: Record<string, string> = {
   hupa_motors_ltd: "Mwanza, TZ",
   justin_motors_ltd: "Dar es Salaam, TZ",
   ibaraki: "Nairobi, KE",
@@ -40,7 +40,7 @@ const _DEALER_CITY: Record<string, string> = {
   olpans_carsforsale: "Kigali, RW",
 };
 
-const _DEALER_CURRENCY: Record<string, string> = {
+export const DEALER_CURRENCY: Record<string, string> = {
   ibaraki: "KES",
   servemarinekenya: "KES",
   hondamotorcyclekenyaltd: "KES",
@@ -399,7 +399,7 @@ function _convertAllShowroomsToListings(): Listing[] {
     const username = path.split("/").pop()!.replace(".json", "");
     if (username === "mgayamotors") continue; // already handled separately
     const dealer = mod.default;
-    const city = _DEALER_CITY[username] ?? "Dar es Salaam, TZ";
+    const city = DEALER_CITY[username] ?? "Dar es Salaam, TZ";
     const carPosts = (dealer.posts as Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; is_video?: boolean }>)
       .filter((p) => _isMgayaCarPost(p.caption, p.is_video))
       .filter((p, i, arr) => {
@@ -412,7 +412,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         id: `ig-${username}-${post.shortcode}`,
         title: info.title,
         price: info.price,
-        currency: _DEALER_CURRENCY[username] || "TZS",
+        currency: DEALER_CURRENCY[username] || "TZS",
         condition: "Foreign Used" as const,
         year: info.year || (post.date ? new Date(post.date).getFullYear() : 0),
         mileage: info.mileage,

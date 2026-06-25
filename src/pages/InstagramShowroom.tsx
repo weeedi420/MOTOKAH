@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { DEALER_CITY } from "@/data/mockData";
 import {
   IconBrandWhatsapp,
   IconPhone,
@@ -347,6 +349,14 @@ function CarCard({ post, waPhone, dealerName, username }: { post: Post; waPhone:
   );
 }
 
+function getCountryCode(username: string): string {
+  const city = DEALER_CITY[username] ?? "Dar es Salaam, TZ";
+  if (city.endsWith(", KE")) return "254";
+  if (city.endsWith(", RW")) return "250";
+  if (city.endsWith(", UG")) return "256";
+  return "255"; // TZ default
+}
+
 export default function InstagramShowroom() {
   const { username } = useParams<{ username: string }>();
   const dealer = username ? SHOWROOMS[username] : null;
@@ -369,10 +379,34 @@ export default function InstagramShowroom() {
   }
 
   const phone = dealer.phone.replace(/[^0-9]/g, "");
-  const waPhone = phone.startsWith("0") ? `255${phone.slice(1)}` : phone;
+  const countryCode = getCountryCode(username!);
+  const waPhone = phone.startsWith("0") ? `${countryCode}${phone.slice(1)}` : phone;
+
+  const dealerName = dealer.full_name || dealer.username;
+  const city = DEALER_CITY[username!] ?? "Dar es Salaam, Tanzania";
+  const cityLabel = city.replace(/, \w{2}$/, "");
+  const carCount = dealer.posts.length;
+  const pageTitle = `${dealerName} — Used Cars for Sale in ${cityLabel} | Motokah`;
+  const pageDesc = `Browse ${carCount}+ cars from ${dealerName}, a verified car dealer in ${cityLabel}. View prices, specs and contact on Motokah — East Africa's #1 car marketplace.`;
+  const pageUrl = `https://www.motokah.com/showroom/${username}`;
+  const ogImage = dealer.posts.find(p => p.images?.[0])?.images?.[0] || "https://www.motokah.com/pwa-512x512.png";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href={pageUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDesc} />
+        <meta name="twitter:image" content={ogImage} />
+      </Helmet>
       <Header />
 
       {/* Hero / dealer profile */}

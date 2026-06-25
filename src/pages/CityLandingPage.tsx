@@ -85,9 +85,12 @@ export default function CityLandingPage() {
       <Helmet>
         <title>{`Cars for Sale in ${cityName} | Motokah`}</title>
         <meta name="description" content={description} />
+        <link rel="canonical" href={`https://www.motokah.com/city/${slug}`} />
         <meta property="og:title" content={`Cars for Sale in ${cityName} — Motokah`} />
         <meta property="og:description" content={description} />
-        <link rel="canonical" href={`https://motokah.com/city/${slug}`} />
+        <meta property="og:url" content={`https://www.motokah.com/city/${slug}`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
       </Helmet>
 
       <Header />
