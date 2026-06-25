@@ -276,26 +276,18 @@ function CarCard({ post, waPhone, dealerName, username }: { post: Post; waPhone:
 
           {/* Stats row */}
           <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
-            {info.year && (
-              <span className="flex items-center gap-1">
-                <IconCalendar size={11} stroke={2} /> {info.year}
-              </span>
-            )}
-            {info.mileage && (
-              <span className="flex items-center gap-1">
-                <IconGauge size={11} stroke={2} /> {info.mileage} km
-              </span>
-            )}
-            {info.transmission && (
-              <span className="flex items-center gap-1">
-                <IconManualGearbox size={11} stroke={2} /> {info.transmission}
-              </span>
-            )}
-            {(info.fuel || info.cc) && (
-              <span className="flex items-center gap-1">
-                <IconGasStation size={11} stroke={2} /> {[info.fuel, info.cc ? (/cc/i.test(info.cc) ? info.cc : `${info.cc}cc`) : ""].filter(Boolean).join(" · ")}
-              </span>
-            )}
+            <span className="flex items-center gap-1">
+              <IconCalendar size={11} stroke={2} /> {info.year || "Recent Import"}
+            </span>
+            <span className="flex items-center gap-1">
+              <IconGauge size={11} stroke={2} /> {info.mileage ? `${info.mileage} km` : "Ask Seller"}
+            </span>
+            <span className="flex items-center gap-1">
+              <IconManualGearbox size={11} stroke={2} /> {info.transmission || "Auto"}
+            </span>
+            <span className="flex items-center gap-1">
+              <IconGasStation size={11} stroke={2} /> {info.fuel || "Petrol"}{info.cc ? ` · ${/cc/i.test(info.cc) ? info.cc : `${info.cc}cc`}` : ""}
+            </span>
           </div>
 
           {/* Color badge */}
@@ -354,6 +346,7 @@ function getCountryCode(username: string): string {
   if (city.endsWith(", KE")) return "254";
   if (city.endsWith(", RW")) return "250";
   if (city.endsWith(", UG")) return "256";
+  if (city.endsWith(", ET")) return "251";
   return "255"; // TZ default
 }
 

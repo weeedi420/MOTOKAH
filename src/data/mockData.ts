@@ -38,6 +38,18 @@ export const DEALER_CITY: Record<string, string> = {
   house_of_cars_kenya: "Nairobi, KE",
   _used_cars_kenya: "Nairobi, KE",
   olpans_carsforsale: "Kigali, RW",
+  // Uganda
+  khushimotorsuganda: "Kampala, UG",
+  used_cars_in_kampala: "Kampala, UG",
+  mighty__rides: "Kampala, UG",
+  // Kenya new
+  nairobidrive: "Nairobi, KE",
+  peachcarske: "Nairobi, KE",
+  aminicar_: "Nairobi, KE",
+  magarideals: "Nairobi, KE",
+  // Ethiopia
+  ethiocarsmarket: "Addis Ababa, ET",
+  direcarsale: "Addis Ababa, ET",
 };
 
 export const DEALER_CURRENCY: Record<string, string> = {
@@ -51,6 +63,11 @@ export const DEALER_CURRENCY: Record<string, string> = {
   house_of_cars_kenya: "KES",
   _used_cars_kenya: "KES",
   olpans_carsforsale: "RWF",
+  khushimotorsuganda: "UGX",
+  used_cars_in_kampala: "UGX",
+  mighty__rides: "UGX",
+  ethiocarsmarket: "ETB",
+  direcarsale: "ETB",
 };
 
 export const carMakes = [
