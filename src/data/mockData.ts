@@ -50,6 +50,14 @@ export const DEALER_CITY: Record<string, string> = {
   // Ethiopia
   ethiocarsmarket: "Addis Ababa, ET",
   direcarsale: "Addis Ababa, ET",
+  // Discovered via hashtag
+  "toyota.tanzania": "Dar es Salaam, TZ",
+  "hm.autodealz": "Dar es Salaam, TZ",
+  inspiring_investment_ltd: "Dar es Salaam, TZ",
+  chimbo_la_magari_dodoma: "Dodoma, TZ",
+  magari_arusha_beipoa: "Arusha, TZ",
+  ufsautotanzania: "Dar es Salaam, TZ",
+  muu_motors: "Dar es Salaam, TZ",
 };
 
 export const DEALER_CURRENCY: Record<string, string> = {
