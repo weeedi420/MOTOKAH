@@ -177,7 +177,7 @@ function _parseMgayaPrice(raw: string | null): number {
     .replace(/\b(KES|KSH|TZS|TZshs|UGX|USD|RWF|RF)\b/gi, "")
     .replace(/[,\s]/g, "")
     .replace(/[/=\-+➕]/g, "");
-  const mMatch = s.match(/^(\d+(?:\.\d+)?)(?:m|million)/i);
+  const mMatch = s.match(/^(\d+(?:\.\d+)?)(?:m|mil(?:ion|lion))/i);
   if (mMatch) return Math.round(parseFloat(mMatch[1]) * 1_000_000);
   const numMatch = s.match(/^(\d+(?:\.\d+)?)/);
   if (numMatch) {
@@ -226,9 +226,9 @@ function _parseMgayaCaption(caption: string) {
     return null;
   };
 
-  // Labeled fields first
-  let make = get("make", "brand");
-  let modelRaw = get("model");
+  // Labeled fields first — "maker"/"name" handles Japan vehicle-info tab format
+  let make = get("make", "maker", "brand");
+  let modelRaw = get("model", "name");
 
   // If model value is a bare year (e.g. "Model:2014"), use it as year and grab next line as actual model
   if (modelRaw && /^\d{4}$/.test(modelRaw.trim())) {
@@ -258,10 +258,12 @@ function _parseMgayaCaption(caption: string) {
   // "Price Starts From X TZS" must be checked FIRST — otherwise get("price") grabs "Starts From…" as garbage
   const rawPrice =
     (() => { for (const l of lines) { const m = l.match(/price\s+starts?\s+from\s+([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+)?price\s*[:/]\s*([\d,.]+\s*(?:M|m|Million)?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/\bbei\s*[:/]\s*([\d,.]+\s*(?:M|m|Million)?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+\s*(?:M|m|Million)?)\s*(?:\/[-=]|TZS|Tsh)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+)?price\s*[:/]-?\s*([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/\bbei\s*[:/]\s*([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)\s*(?:\/[-=]|TZS|Tsh)/i); if (m) return m[1]; } return null; })() ||
     (() => { for (const l of lines) { const m = l.match(/([\d,.]+)\s*TZS/i); if (m) return m[1]; } return null; })() ||
+    // "Ask Price Milion 20.9" — million precedes number
+    (() => { for (const l of lines) { const m = l.match(/mil(?:ion|lion)\s+([\d,.]+)/i); if (m) return `${m[1]}m`; } return null; })() ||
     get("bei", "price/bei", "bei/price");
   const price = _parseMgayaPrice(rawPrice);
 
