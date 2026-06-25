@@ -302,7 +302,7 @@ function CarCard({ post, waPhone, dealerName, username }: { post: Post; waPhone:
 
           {/* Actions */}
           <div className="flex gap-2">
-            {hasPhone ? (
+            {hasPhone && (
               <a
                 href={`https://wa.me/${phone}?text=Hi, I saw your ${info.title} on Motokah and I'm interested. Can you give me a good price?`}
                 target="_blank"
@@ -313,25 +313,15 @@ function CarCard({ post, waPhone, dealerName, username }: { post: Post; waPhone:
                   <IconBrandWhatsapp size={13} /> WhatsApp
                 </Button>
               </a>
-            ) : (
-              <a
-                href={`https://ig.me/m/${username}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1"
-              >
-                <Button size="sm" className="w-full bg-[#E1306C] hover:bg-[#c0255c] text-white text-xs gap-1">
-                  <IconBrandInstagram size={13} /> DM Dealer
-                </Button>
-              </a>
             )}
             <a
               href={post.url}
               target="_blank"
               rel="noopener noreferrer"
+              className={hasPhone ? "" : "flex-1"}
             >
-              <Button size="sm" variant="outline" className="text-xs gap-1">
-                <IconBrandInstagram size={13} /> Post
+              <Button size="sm" variant="outline" className={`${hasPhone ? "" : "w-full"} text-xs gap-1`}>
+                <IconBrandInstagram size={13} /> {hasPhone ? "Post" : "View on Instagram"}
               </Button>
             </a>
           </div>
