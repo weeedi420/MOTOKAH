@@ -22,12 +22,35 @@ const _DEALER_CITY: Record<string, string> = {
   autocomjapantanzaniacars: "Dar es Salaam, TZ",
   usedcarstanzania: "Dar es Salaam, TZ",
   epicmotors_tz: "Dar es Salaam, TZ",
+  // confirmed real accounts batch
+  used_cars_magari_used: "Dar es Salaam, TZ",
+  "automark.tanzania": "Dar es Salaam, TZ",
+  international_cars_dealership: "Dar es Salaam, TZ",
+  magari_motors_co_ltd: "Dar es Salaam, TZ",
+  car_dealers_tanzania: "Dar es Salaam, TZ",
+  "hm.autodeals": "Dar es Salaam, TZ",
+  luxury_cars_tz: "Dar es Salaam, TZ",
+  carpointtanzania: "Dar es Salaam, TZ",
+  smartautoske: "Nairobi, KE",
+  gariguruske: "Nairobi, KE",
+  rnn_motors: "Nairobi, KE",
+  "affordable.cars.kenya": "Nairobi, KE",
+  house_of_cars_kenya: "Nairobi, KE",
+  _used_cars_kenya: "Nairobi, KE",
+  olpans_carsforsale: "Kigali, RW",
 };
 
 const _DEALER_CURRENCY: Record<string, string> = {
   ibaraki: "KES",
   servemarinekenya: "KES",
   hondamotorcyclekenyaltd: "KES",
+  smartautoske: "KES",
+  gariguruske: "KES",
+  rnn_motors: "KES",
+  "affordable.cars.kenya": "KES",
+  house_of_cars_kenya: "KES",
+  _used_cars_kenya: "KES",
+  olpans_carsforsale: "RWF",
 };
 
 export const carMakes = [
@@ -151,7 +174,7 @@ function _normalizeUnicode(s: string): string {
 function _parseMgayaPrice(raw: string | null): number {
   if (!raw) return 0;
   const s = raw
-    .replace(/\b(KES|KSH|TZS|TZshs|UGX|USD)\b/gi, "")
+    .replace(/\b(KES|KSH|TZS|TZshs|UGX|USD|RWF|RF)\b/gi, "")
     .replace(/[,\s]/g, "")
     .replace(/[/=\-+➕]/g, "");
   const mMatch = s.match(/^(\d+(?:\.\d+)?)(?:m|million)/i);
