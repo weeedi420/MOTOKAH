@@ -1,155 +1,57 @@
 {
   "username": "ibaraki",
   "full_name": "Ibaraki Motors",
-  "bio": "🚗 Premium Used Cars | Japanese Imports | Duty Paid\n📍 Nairobi, Kenya\n✅ Verified Dealer | 4.6 Rating\n📞 DM for price & test drive",
-  "phone": "+254",
-  "followers": 2100,
-  "website": "",
-  "scraped_at": "2026-06-16T00:00:00+00:00",
+  "bio": "Car dealer in Dar es Salaam",
+  "phone": "",
+  "followers": 0,
   "posts": [
     {
       "shortcode": "ibaraki_wa_001",
-      "date": "2026-06-10T10:00:00+00:00",
-      "caption": "Toyota Prado TX 2012\nMake: Toyota\nModel: Land Cruiser Prado TX\nYear: 2012\nEngine: 2TR-FE Petrol\nEngine Capacity: 2,700cc\nTransmission: Automatic\nDrive Type: 4x4\nExterior Color: Silver\nSeats: 7 | Doors: 5\nKilometers: 72,000\nDuty Paid | Full documents\nPrice: KES 4,200,000\nCall/WhatsApp: +254",
-      "likes": 142,
-      "images": [],
-      "url": ""
+      "caption": "2015 MAZDA CX-3 PEARL WHITE",
+      "images": [
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_1.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_2.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_3.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_4.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_5.jpg"
+      ],
+      "timestamp": 0,
+      "likes": 0,
+      "year": 2015
     },
     {
       "shortcode": "ibaraki_wa_002",
-      "date": "2026-06-10T10:01:00+00:00",
-      "caption": "Toyota Harrier 2014\nMake: Toyota\nModel: Harrier 240G\nYear: 2014\nEngine Capacity: 2,000cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 2WD\nExterior Color: White\nMileage: 65,000km\nPush Start | Sunroof | Leather Seats\nDuty Paid | Fully loaded\nPrice: KES 2,800,000\nCall/WhatsApp: +254",
-      "likes": 98,
-      "images": [],
-      "url": ""
+      "caption": "2010 BMW 320i BLACK",
+      "images": [
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_002_1.jpg"
+      ],
+      "timestamp": 0,
+      "likes": 0,
+      "year": 2010
     },
     {
       "shortcode": "ibaraki_wa_003",
-      "date": "2026-06-10T10:02:00+00:00",
-      "caption": "Nissan X-Trail 2015\nMake: Nissan\nModel: X-Trail\nYear: 2015\nEngine Capacity: 2,500cc\nFuel Type: Petrol\nTransmission: Automatic CVT\nDrive Type: 4WD\nExterior Color: Black\nMileage: 58,000km\nPush Start | Reverse Camera | Alloy Rims\nPrice: KES 2,200,000\nCall/WhatsApp: +254",
-      "likes": 76,
-      "images": [],
-      "url": ""
+      "caption": "2006 TOYOTA SPACIO BLACK",
+      "images": [
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_1.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_2.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_3.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_4.jpg"
+      ],
+      "timestamp": 0,
+      "likes": 0,
+      "year": 2006
     },
     {
       "shortcode": "ibaraki_wa_004",
-      "date": "2026-06-10T10:03:00+00:00",
-      "caption": "Subaru Forester XT 2013\nMake: Subaru\nModel: Forester XT\nYear: 2013\nEngine: FB25 Turbo\nEngine Capacity: 2,500cc\nFuel Type: Petrol\nTransmission: Automatic CVT\nDrive Type: AWD\nExterior Color: Dark Blue\nMileage: 83,000km\nEyeSight | Push Start | Sunroof\nPrice: KES 1,800,000\nCall/WhatsApp: +254",
-      "likes": 115,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_005",
-      "date": "2026-06-10T10:04:00+00:00",
-      "caption": "Mazda CX-5 2016\nMake: Mazda\nModel: CX-5\nYear: 2016\nEngine Capacity: 2,000cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 2WD\nExterior Color: Soul Red\nMileage: 61,000km\nKeyless Entry | Reverse Camera | Alloy Wheels\nPrice: KES 2,100,000\nCall/WhatsApp: +254",
-      "likes": 89,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_006",
-      "date": "2026-06-10T10:05:00+00:00",
-      "caption": "Toyota RAV4 2014\nMake: Toyota\nModel: RAV4\nYear: 2014\nEngine Capacity: 2,500cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 4WD\nExterior Color: Silver\nMileage: 78,000km\nPush Start | Back Camera | Leather Interior\nPrice: KES 2,500,000\nCall/WhatsApp: +254",
-      "likes": 103,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_007",
-      "date": "2026-06-10T10:06:00+00:00",
-      "caption": "Honda CR-V 2015\nMake: Honda\nModel: CR-V\nYear: 2015\nEngine Capacity: 2,400cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 4WD\nExterior Color: White\nMileage: 70,000km\nEco Mode | Panoramic Roof | Reverse Camera\nPrice: KES 2,300,000\nCall/WhatsApp: +254",
-      "likes": 67,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_008",
-      "date": "2026-06-10T10:07:00+00:00",
-      "caption": "Toyota Vanguard 2012\nMake: Toyota\nModel: Vanguard\nYear: 2012\nEngine: 2AZ-FE\nEngine Capacity: 2,400cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 4WD\nExterior Color: Black\nMileage: 88,000km\n7 Seats | Sunroof | Alloy Rims | Full Documents\nPrice: KES 1,900,000\nCall/WhatsApp: +254",
-      "likes": 84,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_009",
-      "date": "2026-06-10T10:08:00+00:00",
-      "caption": "Mitsubishi Outlander 2014\nMake: Mitsubishi\nModel: Outlander\nYear: 2014\nEngine Capacity: 2,400cc\nFuel Type: Petrol\nTransmission: Automatic CVT\nDrive Type: 4WD\nExterior Color: White\nMileage: 66,000km\nPush Start | Keyless | 7 Seats | Reverse Camera\nPrice: KES 1,700,000\nCall/WhatsApp: +254",
-      "likes": 55,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_010",
-      "date": "2026-06-10T10:09:00+00:00",
-      "caption": "BMW X3 2015\nMake: BMW\nModel: X3\nYear: 2015\nEngine Capacity: 2,000cc\nFuel Type: Petrol\nTransmission: Automatic ZF8\nDrive Type: AWD xDrive\nExterior Color: Alpine White\nMileage: 52,000km\nNavigation | Leather | Parking Sensors | Sunroof\nPrice: KES 3,100,000\nCall/WhatsApp: +254",
-      "likes": 134,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_011",
-      "date": "2026-06-10T10:10:00+00:00",
-      "caption": "Toyota Wish 2012\nMake: Toyota\nModel: Wish\nYear: 2012\nEngine Capacity: 1,800cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 2WD\nExterior Color: Silver\nMileage: 95,000km\n7 Seats | Android Radio | Reverse Camera\nPrice: KES 1,100,000\nCall/WhatsApp: +254",
-      "likes": 44,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_012",
-      "date": "2026-06-10T10:11:00+00:00",
-      "caption": "Mazda Atenza 2014\nMake: Mazda\nModel: Atenza (Mazda6)\nYear: 2014\nEngine Capacity: 2,500cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 2WD\nExterior Color: Black\nMileage: 62,000km\nSkyActiv | Bluetooth | Reverse Camera | Alloy Rims\nPrice: KES 1,500,000\nCall/WhatsApp: +254",
-      "likes": 71,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_013",
-      "date": "2026-06-10T10:12:00+00:00",
-      "caption": "Toyota Fortuner 2015\nMake: Toyota\nModel: Fortuner\nYear: 2015\nEngine Capacity: 2,700cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 4x4\nExterior Color: White\nMileage: 79,000km\nPush Start | Leather | 7 Seats | Roof Rails\nDuty Paid | Full documents\nPrice: KES 3,800,000\nCall/WhatsApp: +254",
-      "likes": 178,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_014",
-      "date": "2026-06-10T10:13:00+00:00",
-      "caption": "Toyota Vitz 2016\nMake: Toyota\nModel: Vitz\nYear: 2016\nEngine Capacity: 1,000cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 2WD\nExterior Color: Red\nMileage: 44,000km\nFuel Efficient | AC | Electric Windows | ABS\nPrice: KES 680,000\nCall/WhatsApp: +254",
-      "likes": 39,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_015",
-      "date": "2026-06-10T10:14:00+00:00",
-      "caption": "Volkswagen Golf 2013\nMake: Volkswagen\nModel: Golf VI\nYear: 2013\nEngine Capacity: 1,400cc Turbo\nFuel Type: Petrol\nTransmission: DSG Automatic\nDrive Type: 2WD\nExterior Color: Silver\nMileage: 68,000km\nTouch Screen | Bluetooth | Parking Sensors\nPrice: KES 1,200,000\nCall/WhatsApp: +254",
-      "likes": 62,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_016",
-      "date": "2026-06-10T10:15:00+00:00",
-      "caption": "Toyota Land Cruiser V8 2010\nMake: Toyota\nModel: Land Cruiser 200\nYear: 2010\nEngine Capacity: 4,600cc V8\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 4x4\nExterior Color: Black\nMileage: 110,000km\nFull options | Mark Levinson Audio | 8 Seats\nDuty Paid\nPrice: KES 7,500,000\nCall/WhatsApp: +254",
-      "likes": 221,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_017",
-      "date": "2026-06-10T10:16:00+00:00",
-      "caption": "Hyundai Tucson 2016\nMake: Hyundai\nModel: Tucson\nYear: 2016\nEngine Capacity: 2,000cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 4WD\nExterior Color: White\nMileage: 57,000km\nPanoramic Roof | Blind Spot | Reverse Camera\nPrice: KES 2,000,000\nCall/WhatsApp: +254",
-      "likes": 88,
-      "images": [],
-      "url": ""
-    },
-    {
-      "shortcode": "ibaraki_wa_018",
-      "date": "2026-06-10T10:17:00+00:00",
-      "caption": "Toyota Alphard 2015\nMake: Toyota\nModel: Alphard\nYear: 2015\nEngine Capacity: 2,500cc\nFuel Type: Petrol\nTransmission: Automatic\nDrive Type: 2WD\nExterior Color: Pearl White\nMileage: 48,000km\nPower Sliding Doors | Captain Seats | Rear AC\n7 Seats | Push Start | Navigation\nPrice: KES 5,500,000\nCall/WhatsApp: +254",
-      "likes": 193,
-      "images": [],
-      "url": ""
+      "caption": "Vehicle Details – Toyota Vanguard 2011\nSameer motors\nI think we already have him\nFrom Instagram\nAlready ‎<This message was edited>\nSameers not there in dealers\nI just checked\nOkay",
+      "images": [
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_004_1.jpg",
+        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_004_2.jpg"
+      ],
+      "timestamp": 0,
+      "likes": 0,
+      "year": 2011
     }
   ]
 }
