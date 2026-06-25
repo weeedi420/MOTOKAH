@@ -126,16 +126,15 @@ export default function Footer() {
             &copy; 2026 Motokah. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
-            Platform owned by{" "}
+            Powered by{" "}
             <a
               href="https://1pointsolutions.cloud"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-primary hover:underline"
+              className="hover:underline"
             >
               1Point Solutions
-            </a>{" "}
-            (UK). Licensed to Motokah Africa Limited, operating under the "Motokah" brand.
+            </a>
           </p>
         </div>
 

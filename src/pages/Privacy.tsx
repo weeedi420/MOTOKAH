@@ -15,9 +15,9 @@ export default function Privacy() {
             listings and related services (the "Platform").
           </p>
 
-          <h2 className="text-xl font-bold text-foreground mt-6">Platform Ownership &amp; Data Controller</h2>
+          <h2 className="text-xl font-bold text-foreground mt-6">Platform &amp; Data Controller</h2>
           <p>
-            The Platform is the exclusive property of{" "}
+            Motokah is currently powered by{" "}
             <a
               href="https://1pointsolutions.cloud"
               target="_blank"
@@ -26,11 +26,9 @@ export default function Privacy() {
             >
               1Point Solutions
             </a>{" "}
-            (UK). 1Point Solutions has granted a conditional operational licence to{" "}
-            <strong className="text-foreground">Motokah Africa Limited</strong> to operate the Platform
-            under the "Motokah" brand. All intellectual property rights in the Platform remain the
-            exclusive property of 1Point Solutions. Motokah Africa Limited acts as the data controller
-            for personal information processed through the Platform during the licence period.
+            (UK), licensed to <strong className="text-foreground">Motokah Africa Limited</strong>.
+            Motokah Africa Limited acts as the data controller for all personal information
+            processed through this Platform.
           </p>
 
           <h2 className="text-xl font-bold text-foreground mt-6">Information We Collect</h2>
