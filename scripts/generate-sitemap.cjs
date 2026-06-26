@@ -129,6 +129,7 @@ const blogPostSlugs = [
   "how-to-import-a-car-to-kenya-2026",
   "best-used-cars-under-2-million-nairobi-2026",
   "bei-ya-magari-mitumba-tanzania-2026",
+  "toyota-alphard-price-kenya-2026",
 ];
 const blogPostPages = blogPostSlugs.map(slug => ({
   path: `/blog/${slug}`,
