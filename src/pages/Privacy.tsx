@@ -1,9 +1,15 @@
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function Privacy() {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Privacy Policy | Motokah</title>
+        <meta name="robots" content="noindex,follow" />
+        <link rel="canonical" href="https://www.motokah.com/privacy" />
+      </Helmet>
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-2xl">
         <h1 className="text-3xl font-bold text-foreground mb-6">Privacy Policy</h1>
