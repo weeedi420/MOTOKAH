@@ -333,14 +333,16 @@ function _parseMgayaCaption(caption: string) {
   // Detect bodyType from make+model+caption keywords
   const bodyHint = `${make || ""} ${model || ""} ${caption}`.toLowerCase();
   let bodyType: string | undefined;
-  if (/hilux|navara|ranger|d-max|l200|double.?cab|single.?cab|dmax|pickup/i.test(bodyHint)) {
+  if (/hilux|navara|ranger|d-max|l200|double.?cab|single.?cab|dmax|tundra|triton|bt-50|\bpickup\b/i.test(bodyHint)) {
     bodyType = "Pickup";
-  } else if (/canter|dyna|tipper|lorry|elf\b|fuso|hino|actros|truck/i.test(bodyHint)) {
+  } else if (/canter|dyna|lorry|\belf\b|fuso|hino|actros|\btruck\b/i.test(bodyHint)) {
     bodyType = "Truck";
   } else if (/daladala|coaster|rosa|hiace.{0,10}bus|minibus|mini.?bus/i.test(bodyHint)) {
     bodyType = "Minibus";
   } else if (/\bbus\b/i.test(bodyHint) && !/airbus|minibus/i.test(bodyHint)) {
     bodyType = "Bus";
+  } else if (/alphard|vellfire|estima|serena|sienna|odyssey|elysion|\bmpv\b/i.test(bodyHint)) {
+    bodyType = "MPV";
   } else if (/hiace|noah|voxy|\bvan\b|probox|succeed/i.test(bodyHint)) {
     bodyType = "Van";
   } else if (/motorbike|motorcycle|bodaboda|boda.?boda|pikipiki|tvs|bajaj|yamaha.{0,10}(125|150|250)/i.test(bodyHint)) {
@@ -353,8 +355,14 @@ function _parseMgayaCaption(caption: string) {
     bodyType = "Tuk-tuk";
   } else if (/tipper|dumper|dump.?truck/i.test(bodyHint)) {
     bodyType = "Tipper";
-  } else if (/prado|landcruiser|land.?cruiser|patrol|fortuner|harrier|rav4|cx-5|tucson|santa.?fe|forester|outback|\bsuv\b/i.test(bodyHint)) {
+  } else if (/prado|landcruiser|land.?cruiser|patrol|fortuner|harrier|rav4|rav 4|rush|raize|vanguard|cx-3|cx-5|cx5|tucson|santa.?fe|forester|outback|x-trail|xtrail|escudo|airtrek|outlander|vitara|tiguan|crv|hr-v|brv|\bsuv\b/i.test(bodyHint)) {
     bodyType = "SUV";
+  } else if (/\bvitz\b|\bfit\b|demio|belta|\bnote\b|\bmarch\b|\bswift\b|auris|aqua|prius|\bhatchback\b/i.test(bodyHint)) {
+    bodyType = "Hatchback";
+  } else if (/fielder|estates?|\bwagon\b/i.test(bodyHint)) {
+    bodyType = "Wagon";
+  } else if (/crown|mark.?x|mark.?ii|premio|allion|\baxio\b|camry|accord|\bcivic\b|lancer|galant|corolla(?!.*suv)|impreza(?!.*suv)|\bsedan\b/i.test(bodyHint)) {
+    bodyType = "Sedan";
   }
 
   return { title, make, model, year, price, fuel, mileage, color, transmission, cc, bodyType };

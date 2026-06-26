@@ -6,6 +6,11 @@ import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 
+function thumbUrl(src: string, width = 600): string {
+  if (!src.includes("eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/")) return src;
+  return src.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + `?width=${width}&quality=75&resize=cover`;
+}
+
 export default function VehicleCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
   const { user } = useAuth();
   const { wishlistIds, toggle } = useWishlist();
@@ -16,6 +21,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   );
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [useOriginalSrc, setUseOriginalSrc] = useState(false);
 
   // Sync isCompared when other cards update localStorage
   useEffect(() => {
@@ -80,14 +86,14 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
         )}
         {listing.image && !imgError ? (
           <img
-            src={listing.image}
+            src={useOriginalSrc ? listing.image : thumbUrl(listing.image, priority ? 800 : 600)}
             alt={listing.title}
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             fetchpriority={priority ? "high" : "low"}
             onLoad={() => setImgLoaded(true)}
-            onError={() => setImgError(true)}
+            onError={() => useOriginalSrc ? setImgError(true) : setUseOriginalSrc(true)}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

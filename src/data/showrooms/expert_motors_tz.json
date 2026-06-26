@@ -6,21 +6,6 @@
   "followers": 0,
   "posts": [
     {
-      "shortcode": "expert_motors_tz_wa_001",
-      "caption": "Toyota",
-      "images": [
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/expert_motors_tz/wa_001_1.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/expert_motors_tz/wa_001_2.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/expert_motors_tz/wa_001_3.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/expert_motors_tz/wa_001_4.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/expert_motors_tz/wa_001_5.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/expert_motors_tz/wa_001_6.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/expert_motors_tz/wa_001_7.jpg"
-      ],
-      "timestamp": 0,
-      "likes": 0
-    },
-    {
       "shortcode": "expert_motors_tz_wa_002",
       "caption": "2011 BMW X1 1990CC PRICE TZS 27,000,000/=",
       "images": [
