@@ -31,12 +31,17 @@ export default function ListingDetail() {
   const [reportOpen, setReportOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
-  usePageTitle(listing?.title || "Listing");
+  const city = listing?.location?.split(",")[0] ?? "";
+  const seoTitle = listing
+    ? `${listing.year || ""} ${listing.make || ""} ${listing.model || ""} for Sale${city ? ` in ${city}` : ""} | Motokah`.trim()
+    : "Car for Sale | Motokah";
+  const seoDesc = listing
+    ? `Buy this ${listing.year || ""} ${listing.make || ""} ${listing.model || ""} in ${listing.location}. Price: ${listing.currency} ${listing.price > 0 ? listing.price.toLocaleString() : "Contact for price"}. ${listing.mileage > 0 ? `${listing.mileage.toLocaleString()}km,` : ""} ${listing.transmission || ""}. Verified on Motokah.`.replace(/\s+/g, " ").trim()
+    : undefined;
+  usePageTitle(seoTitle);
   useSEO({
-    title: listing?.title,
-    description: listing
-      ? `${listing.year} ${listing.title} — ${listing.condition} — ${listing.location} — ${listing.currency} ${listing.price.toLocaleString()}`
-      : undefined,
+    title: listing ? `${listing.year || ""} ${listing.make || ""} ${listing.model || ""} for Sale${city ? ` in ${city}` : ""}`.trim() : undefined,
+    description: seoDesc,
     image: images[0],
     type: "product",
   });
@@ -46,24 +51,25 @@ export default function ListingDetail() {
     if (!listing || !id) return;
     const schema = {
       "@context": "https://schema.org",
-      "@type": "Product",
+      "@type": "Car",
       name: listing.title,
-      description: `${listing.year} ${listing.make} ${listing.model} — ${listing.condition}`,
+      description: `${listing.year} ${listing.make} ${listing.model} for sale in ${listing.location}. ${listing.condition}, ${listing.mileage > 0 ? listing.mileage.toLocaleString() + "km" : ""} ${listing.transmission || ""}`.trim(),
       image: images,
       offers: {
         "@type": "Offer",
         priceCurrency: listing.currency,
-        price: listing.price,
+        price: listing.price > 0 ? listing.price : undefined,
         availability: "https://schema.org/InStock",
         url: window.location.href,
-        seller: { "@type": "Person", name: listing.sellerName },
+        seller: { "@type": "AutoDealer", name: listing.sellerName },
       },
       brand: { "@type": "Brand", name: listing.make },
       model: listing.model,
-      vehicleModelDate: String(listing.year),
+      vehicleModelDate: listing.year ? String(listing.year) : undefined,
       mileageFromOdometer: listing.mileage > 0 ? { "@type": "QuantitativeValue", value: listing.mileage, unitCode: "KMT" } : undefined,
       vehicleTransmission: listing.transmission,
       fuelType: listing.fuelType,
+      itemCondition: listing.condition === "New" ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition",
     };
 
     let scriptEl = document.querySelector('script[data-listing-ld]') as HTMLScriptElement | null;

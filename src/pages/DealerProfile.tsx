@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/VehicleCard";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useSEO } from "@/hooks/useSEO";
 import { IconMapPin, IconPhone, IconBuildingStore, IconShieldCheck, IconMail, IconStarFilled, IconBrandWhatsapp } from "@tabler/icons-react";
 import { mockDealers, mockListings, getShowroomListings, type Listing } from "@/data/mockData";
 
@@ -28,7 +29,22 @@ export default function DealerProfile() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
-  usePageTitle(dealer?.display_name ? `${dealer.display_name} — Motokah` : "Dealer — Motokah");
+  const dealerCity = dealer?.city || "";
+  const dealerTitle = dealer?.display_name
+    ? `${dealer.display_name} — Car Dealer${dealerCity ? ` in ${dealerCity}` : ""} | Motokah`
+    : "Car Dealer | Motokah";
+  const dealerDesc = dealer?.display_name
+    ? `Browse ${listings.length > 0 ? listings.length + " vehicles" : "cars"} from ${dealer.display_name}${dealerCity ? `, a verified car dealer in ${dealerCity}` : ""}. Toyota, Nissan, Subaru and more. Contact on Motokah.`
+    : undefined;
+  usePageTitle(dealerTitle);
+  useSEO({
+    title: dealer?.display_name
+      ? `${dealer.display_name} — Car Dealer${dealerCity ? ` in ${dealerCity}` : ""}`
+      : undefined,
+    description: dealerDesc,
+    image: listings[0]?.image,
+    type: "website",
+  });
 
   useEffect(() => {
     if (!id) return;

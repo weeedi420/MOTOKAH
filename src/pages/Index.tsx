@@ -20,10 +20,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Cars for Sale in East Africa | Motokah</title>
-        <meta name="description" content="Buy and sell cars across Kenya, Tanzania, Uganda and East Africa. Browse thousands of verified listings from trusted dealers. Find Toyota, Nissan, Subaru and more at the best prices." />
-        <meta property="og:title" content="Cars for Sale in East Africa | Motokah" />
-        <meta property="og:description" content="Africa's pan-African car marketplace. Browse used and new cars in Nairobi, Dar es Salaam, Kampala and beyond." />
+        <title>Used Cars for Sale in Kenya, Tanzania & East Africa | Motokah</title>
+        <meta name="description" content="Buy used cars in Kenya, Tanzania, Uganda and East Africa. 1,000+ verified vehicles from 93 trusted dealers. Toyota, Nissan, Subaru, Mazda and more — browse by city and contact sellers directly." />
+        <meta property="og:title" content="Used Cars for Sale in East Africa | Motokah" />
+        <meta property="og:description" content="East Africa's car marketplace — used cars in Nairobi, Dar es Salaam, Kampala and beyond. Verified dealers, real prices." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.motokah.com/" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
