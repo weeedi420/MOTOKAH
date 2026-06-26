@@ -1,5 +1,23 @@
+import { Component, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
+
+class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 32, fontFamily: "monospace" }}>
+          <h2>Something went wrong</h2>
+          <pre style={{ whiteSpace: "pre-wrap", color: "red" }}>{(this.state.error as Error).message}</pre>
+          <pre style={{ whiteSpace: "pre-wrap", fontSize: 12 }}>{(this.state.error as Error).stack}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { AnimatePresence, motion } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -128,29 +146,31 @@ function AnimatedRoutes() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-      <ThemeProvider>
-        <LanguageProvider>
-          <LocationProvider>
-            <AuthProvider>
-              <WishlistProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <PWAInstallBanner />
-                  <BrowserRouter>
-                    <BottomNav />
-                    <AnimatedRoutes />
-                  </BrowserRouter>
-                </TooltipProvider>
-              </WishlistProvider>
-            </AuthProvider>
-          </LocationProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <LocationProvider>
+              <AuthProvider>
+                <WishlistProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <PWAInstallBanner />
+                    <BrowserRouter>
+                      <BottomNav />
+                      <AnimatedRoutes />
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </WishlistProvider>
+              </AuthProvider>
+            </LocationProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </HelmetProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
