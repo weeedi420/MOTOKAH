@@ -46,6 +46,30 @@ export default function DealerProfile() {
     type: "website",
   });
 
+  // LocalBusiness schema for dealer pages
+  useEffect(() => {
+    if (!dealer?.display_name) return;
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "AutoDealer",
+      name: dealer.display_name,
+      description: dealerDesc,
+      url: `https://www.motokah.com/dealer/${id}`,
+      ...(dealerCity ? { address: { "@type": "PostalAddress", addressLocality: dealerCity } } : {}),
+      ...(dealer.phone ? { telephone: dealer.phone } : {}),
+      ...(dealer.verified_at ? { hasCredential: "Verified by Motokah" } : {}),
+    };
+    let el = document.querySelector('script[data-dealer-ld]') as HTMLScriptElement | null;
+    if (!el) {
+      el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.setAttribute("data-dealer-ld", "true");
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(schema);
+    return () => { document.querySelector('script[data-dealer-ld]')?.remove(); };
+  }, [dealer, dealerDesc, dealerCity, id]);
+
   useEffect(() => {
     if (!id) return;
 

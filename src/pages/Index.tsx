@@ -41,6 +41,21 @@ const Index = () => {
             "query-input": "required name=search_term_string"
           }
         })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Motokah",
+          "url": "https://www.motokah.com",
+          "logo": "https://www.motokah.com/pwa-512x512.png",
+          "description": "East Africa's trusted car marketplace. Buy and sell used cars in Kenya, Tanzania, Uganda and Rwanda from verified dealers.",
+          "areaServed": ["Kenya", "Tanzania", "Uganda", "Rwanda", "Ethiopia"],
+          "sameAs": [],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "url": "https://www.motokah.com/contact"
+          }
+        })}</script>
       </Helmet>
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />
