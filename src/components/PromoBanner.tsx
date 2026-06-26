@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { IconArrowRight } from "@tabler/icons-react";
 
@@ -10,8 +11,8 @@ export default function PromoBanner() {
             <h2 className="text-2xl md:text-3xl font-extrabold text-primary-foreground mb-2">Sell Your Vehicle in 5 Minutes!</h2>
             <p className="text-primary-foreground/80 text-sm md:text-base">Reach millions of buyers across Africa. Safe, secure, and easy.</p>
           </div>
-          <Button size="lg" className="bg-background text-foreground hover:bg-surface-3 font-bold gap-2 shrink-0">
-            Post Your Ad Now <IconArrowRight size={18} stroke={2.5} />
+          <Button size="lg" className="bg-background text-foreground hover:bg-surface-3 font-bold gap-2 shrink-0" asChild>
+            <Link to="/sell">Post Your Ad Now <IconArrowRight size={18} stroke={2.5} /></Link>
           </Button>
         </div>
         <div className="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-background/10" />

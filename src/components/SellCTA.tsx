@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { IconCamera, IconFileText, IconUpload, IconMessageCircle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 
@@ -27,7 +28,9 @@ export default function SellCTA() {
               </div>
             ))}
           </div>
-          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold">Start Selling Now</Button>
+          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold" asChild>
+            <Link to="/sell">Start Selling Now</Link>
+          </Button>
         </div>
         <div className="flex-1 text-center">
           <div className="grid grid-cols-2 gap-4">
