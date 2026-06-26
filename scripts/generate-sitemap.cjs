@@ -91,6 +91,39 @@ const cityMakePages = topCities.flatMap(city =>
   }))
 );
 
+// Model landing pages — /cars/:make/:model (high-volume keyword targets)
+const modelPages = [
+  { make: "toyota",   model: "alphard",      pri: 0.9 },
+  { make: "toyota",   model: "harrier",      pri: 0.9 },
+  { make: "toyota",   model: "probox",       pri: 0.9 },
+  { make: "toyota",   model: "fielder",      pri: 0.9 },
+  { make: "toyota",   model: "vitz",         pri: 0.9 },
+  { make: "toyota",   model: "land-cruiser", pri: 0.9 },
+  { make: "toyota",   model: "hilux",        pri: 0.9 },
+  { make: "toyota",   model: "prado",        pri: 0.8 },
+  { make: "toyota",   model: "noah",         pri: 0.8 },
+  { make: "toyota",   model: "succeed",      pri: 0.7 },
+  { make: "toyota",   model: "axio",         pri: 0.8 },
+  { make: "mazda",    model: "demio",        pri: 0.9 },
+  { make: "mazda",    model: "cx-5",         pri: 0.8 },
+  { make: "mazda",    model: "atenza",       pri: 0.7 },
+  { make: "honda",    model: "vezel",        pri: 0.9 },
+  { make: "honda",    model: "fit",          pri: 0.8 },
+  { make: "honda",    model: "crv",          pri: 0.8 },
+  { make: "subaru",   model: "forester",     pri: 0.9 },
+  { make: "subaru",   model: "outback",      pri: 0.8 },
+  { make: "subaru",   model: "impreza",      pri: 0.8 },
+  { make: "nissan",   model: "x-trail",      pri: 0.8 },
+  { make: "nissan",   model: "note",         pri: 0.8 },
+  { make: "nissan",   model: "navara",       pri: 0.8 },
+  { make: "mitsubishi", model: "pajero",     pri: 0.8 },
+  { make: "mitsubishi", model: "outlander",  pri: 0.7 },
+].map(({ make, model, pri }) => ({
+  path: `/cars/${make}/${model}`,
+  freq: "weekly",
+  pri,
+}));
+
 // Blog posts (add slug here when publishing new posts)
 const blogPostSlugs = [
   "how-to-import-a-car-to-kenya-2026",
@@ -141,6 +174,9 @@ const lines = [
   "  <!-- Country search pages -->",
   ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
+  "  <!-- Model landing pages -->",
+  ...modelPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  "",
   "  <!-- Blog posts -->",
   ...blogPostPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
@@ -151,4 +187,4 @@ const out = lines.join("\n");
 const dest = path.join(__dirname, "../public/sitemap.xml");
 fs.writeFileSync(dest, out, "utf8");
 console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + countryPages.length + blogPostPages.length}`);
+console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + countryPages.length + modelPages.length + blogPostPages.length}`);

@@ -30,6 +30,15 @@ export function useSEO({ title, description, image, url, type = "website" }: SEO
     document.title = fullTitle;
     setMeta("description", desc);
 
+    // Canonical
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = canonicalUrl;
+
     // Open Graph
     setMeta("og:title", fullTitle, true);
     setMeta("og:description", desc, true);
