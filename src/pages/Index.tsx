@@ -14,6 +14,7 @@ import PriceRangeFilter from "@/components/PriceRangeFilter";
 import SellCTA from "@/components/SellCTA";
 import StatsBar from "@/components/StatsBar";
 import LocationSection from "@/components/LocationSection";
+import PopularModelsSection from "@/components/PopularModelsSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -46,6 +47,7 @@ const Index = () => {
       <HeroSearch />
       <BrowseSection />
       <LocationSection />
+      <PopularModelsSection />
       <FeaturedListings />
       <LatestListingsGrid />
       <PromoBanner />

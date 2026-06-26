@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +21,14 @@ export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPostData | null>(null);
   const [loading, setLoading] = useState(true);
-  usePageTitle(post?.title || "Blog Post");
+  usePageTitle(post ? `${post.title} | Motokah Blog` : "Blog Post");
+
+  const seoDesc = post
+    ? post.content.replace(/\n+/g, " ").trim().slice(0, 160)
+    : undefined;
+  const canonicalUrl = post
+    ? `https://www.motokah.com/blog/${post.slug}`
+    : undefined;
 
   useEffect(() => {
     if (!slug) return;
@@ -38,6 +46,30 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-background">
+      {post && (
+        <Helmet>
+          <title>{post.title} | Motokah Blog</title>
+          <meta name="description" content={seoDesc} />
+          <link rel="canonical" href={canonicalUrl} />
+          <meta property="og:title" content={post.title} />
+          <meta property="og:description" content={seoDesc} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={canonicalUrl} />
+          {post.cover_image && <meta property="og:image" content={post.cover_image} />}
+          <script type="application/ld+json">{JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: seoDesc,
+            datePublished: post.created_at,
+            dateModified: post.created_at,
+            author: { "@type": "Organization", name: "Motokah" },
+            publisher: { "@type": "Organization", name: "Motokah", url: "https://www.motokah.com" },
+            url: canonicalUrl,
+            ...(post.cover_image ? { image: post.cover_image } : {}),
+          })}</script>
+        </Helmet>
+      )}
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         <Link to="/blog" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
