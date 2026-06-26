@@ -66,30 +66,11 @@ const cities = [
   { slug: "dire-dawa",      pri: 0.5 },
 ];
 
-const makes = [
-  "toyota", "nissan", "honda", "subaru", "mazda", "mitsubishi",
-  "land-rover", "bmw", "mercedes-benz", "audi", "ford", "volkswagen",
-  "hyundai", "kia", "suzuki", "isuzu", "jeep", "lexus",
-];
-
-// Search pages by make (high-value SEO)
-const makePages = makes.map(make => ({
-  path: `/search?make=${encodeURIComponent(make.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" "))}`,
-  freq: "daily",
-  pri: 0.8,
-}));
-
-// City + make combos (top cities × top makes) — proper URL params
-const topCities = ["dar-es-salaam", "nairobi", "kampala", "arusha", "mombasa", "kigali", "mwanza", "zanzibar"];
-const topMakes = ["toyota", "nissan", "honda", "subaru", "land-rover", "mitsubishi", "mazda", "isuzu"];
-const toTitleCase = s => s.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-const cityMakePages = topCities.flatMap(city =>
-  topMakes.map(make => ({
-    path: `/search?city=${encodeURIComponent(toTitleCase(city))}&make=${encodeURIComponent(toTitleCase(make))}`,
-    freq: "weekly",
-    pri: 0.65,
-  }))
-);
+// Removed: make search pages (?make=) and city+make combo pages (?city=&make=)
+// These are dynamic query-param pages with no unique canonical content.
+// Google discovers them via internal links; sitemap should only list canonical pages.
+const makePages = [];
+const cityMakePages = [];
 
 // Model landing pages — /cars/:make/:model (high-volume keyword targets)
 const modelPages = [
@@ -165,12 +146,6 @@ const lines = [
   "",
   "  <!-- City landing pages -->",
   ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
-  "",
-  "  <!-- Make search pages -->",
-  ...makePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
-  "  <!-- City + make combo pages -->",
-  ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
   "  <!-- Country search pages -->",
   ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
