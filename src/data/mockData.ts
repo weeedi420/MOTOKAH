@@ -806,7 +806,7 @@ function _cityFromBio(bio: string, username: string): string {
   if (/mombasa/.test(b)) return "Mombasa";
   if (/zanzibar/.test(b)) return "Zanzibar";
   if (/dodoma/.test(b)) return "Dodoma";
-  return _DEALER_CITY[username]?.split(",")[0] ?? "Dar es Salaam";
+  return DEALER_CITY[username]?.split(",")[0] ?? "Dar es Salaam";
 }
 
 // Auto-generate dealer entries for showroom accounts not already in the hardcoded list
@@ -1312,12 +1312,12 @@ export function getShowroomListings(username: string): Listing[] {
       id: `ig-${username}-${post.shortcode || i}`,
       title: info.title || `${username} — Vehicle`,
       price: info.price || 0,
-      currency: _DEALER_CURRENCY[username] || "TZS",
+      currency: DEALER_CURRENCY[username] || "TZS",
       condition: "Foreign Used" as const,
       year: info.year || 0,
       mileage: info.mileage,
       transmission: info.transmission || "Automatic",
-      location: _DEALER_CITY[username] || "Dar es Salaam, TZ",
+      location: DEALER_CITY[username] || "Dar es Salaam, TZ",
       country: "TZ",
       image: imgs[0] || "",
       images: imgs,
