@@ -103,7 +103,7 @@ function AnimatedRoutes() {
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/post-ad" element={<Navigate to="/sell" replace />} />
-              <Route path="/sell" element={<ProtectedRoute><SellCar /></ProtectedRoute>} />
+              <Route path="/sell" element={<SellCar />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
               <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />

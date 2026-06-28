@@ -1,10 +1,10 @@
-import { IconLock, IconShieldCheck, IconHeadphones, IconSearch } from "@tabler/icons-react";
+import { IconBrandWhatsapp, IconShieldCheck, IconInfoCircle, IconSearch } from "@tabler/icons-react";
 
 const trustItems = [
-  { icon: IconLock, title: "Secure Payment Gateway", desc: "All transactions protected with advanced encryption", stat: "100,000+ Safe Deals" },
-  { icon: IconShieldCheck, title: "Verified Seller Community", desc: "All sellers verified and rated by buyers", stat: "98% Positive Feedback" },
-  { icon: IconHeadphones, title: "24/7 Customer Support", desc: "Dedicated support team across Africa", stat: "Avg Response: 5 min" },
-  { icon: IconSearch, title: "Optional Vehicle Inspection", desc: "Get professional inspections for peace of mind", stat: "Available in 50+ Cities" },
+  { icon: IconBrandWhatsapp, title: "Direct Seller Contact", desc: "Call or WhatsApp sellers from the listing page", stat: "No middleman" },
+  { icon: IconShieldCheck, title: "Dealer-Focused Listings", desc: "Launch inventory prioritizes reachable showrooms and cleaner car data", stat: "Quality first" },
+  { icon: IconInfoCircle, title: "Clear Listing Details", desc: "Photos, location, specs and seller details are kept together for faster checks", stat: "Easy to compare" },
+  { icon: IconSearch, title: "Inspect Before Buying", desc: "Use trusted mechanics and original documents before paying any seller", stat: "Buyer safety" },
 ];
 
 export default function TrustSection() {

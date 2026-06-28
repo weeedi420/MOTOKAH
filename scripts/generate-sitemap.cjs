@@ -8,21 +8,56 @@ const path = require("path");
 const BASE = "https://www.motokah.com";
 const TODAY = new Date().toISOString().split("T")[0];
 
-const igShowrooms = [
-  "mgayamotors","khushimotorsdaressalaam","njari_motors","ruge_magari",
-  "al_husnainmotors","lomaautos_","magari_empire1","dula_magari",
-  "rwanko_motors","cholloh_magari_tz","breemotors","ndinga_bei_poa",
-  "tgworldimports","ezy_auto_motors","hanami.japan","fau_motors",
-  "evanamotors","barari_motorstz",
-  "livy_motors_tz","expert_motors_tz","ibaraki",
-  "justin_motors_ltd","hupa_motors_ltd","kk_magic_cars_",
-];
+const BLOCKED_SHOWROOM_USERS = new Set(["servemarinekenya", "ukajapantz", "twenderide", "toyota.tanzania"]);
+
+function normalizeDigits(value = "") {
+  return Array.from(value).map((c) => {
+    const cp = c.codePointAt(0) || 0;
+    if (cp >= 0x1D7CE && cp <= 0x1D7D7) return String.fromCharCode(cp - 0x1D7CE + 48);
+    if (cp >= 0x1D7EC && cp <= 0x1D7F5) return String.fromCharCode(cp - 0x1D7EC + 48);
+    return c;
+  }).join("");
+}
+
+function hasUsablePhone(phone = "") {
+  const digits = normalizeDigits(phone).replace(/\D/g, "");
+  if (digits.length < 9) return false;
+  if (/^(?:254)?700000000$/.test(digits)) return false;
+  if (/^(?:255)?700000000$/.test(digits)) return false;
+  return true;
+}
+
+function loadShowrooms() {
+  const showroomsDir = path.join(__dirname, "../src/data/showrooms");
+  return fs.readdirSync(showroomsDir)
+    .filter((file) => file.endsWith(".json"))
+    .map((file) => {
+      const fullPath = path.join(showroomsDir, file);
+      const data = JSON.parse(fs.readFileSync(fullPath, "utf8"));
+      const username = data.username || file.replace(/\.json$/, "");
+      return {
+        username,
+        phone: data.phone || "",
+        posts: Array.isArray(data.posts) ? data.posts : [],
+      };
+    })
+    .filter(({ username, phone, posts }) => (
+      !BLOCKED_SHOWROOM_USERS.has(username)
+      && username !== "ibaraki"
+      && hasUsablePhone(phone)
+      && posts.some((post) => Array.isArray(post.images) && post.images.length > 0)
+    ))
+    .map(({ username }) => username)
+    .sort((a, b) => a.localeCompare(b));
+}
+
+const igShowrooms = loadShowrooms();
 
 const staticPages = [
   { path: "/",               freq: "daily",   pri: 1.0 },
   { path: "/search",         freq: "daily",   pri: 0.9 },
   { path: "/sell",           freq: "weekly",  pri: 0.8 },
-  { path: "/dealer-leads",   freq: "weekly",  pri: 0.8 },
+  { path: "/dealers",        freq: "weekly",  pri: 0.8 },
   { path: "/how-it-works",   freq: "monthly", pri: 0.7 },
   { path: "/duty-calculator",freq: "monthly", pri: 0.7 },
   { path: "/compare",        freq: "weekly",  pri: 0.6 },
@@ -127,7 +162,7 @@ const countryPages = ["Kenya","Tanzania","Uganda","Rwanda","Ethiopia"].map(c => 
 
 function url(loc, changefreq, priority, lastmod = TODAY) {
   return `  <url>
-    <loc>${loc}</loc>
+    <loc>${loc.replace(/&/g, "&amp;")}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority.toFixed(1)}</priority>

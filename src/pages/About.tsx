@@ -4,10 +4,10 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconCar, IconUsers, IconShieldCheck, IconMapPin, IconTargetArrow, IconEye, IconHeart } from "@tabler/icons-react";
 
 const stats = [
-  { label: "Listings", value: "1,000+", icon: IconCar },
-  { label: "Verified Dealers", value: "93", icon: IconShieldCheck },
-  { label: "Countries", value: "5+", icon: IconMapPin },
-  { label: "Cities Covered", value: "15+", icon: IconUsers },
+  { label: "Dealer Listings", value: "Fresh", icon: IconCar },
+  { label: "Seller Contact", value: "Direct", icon: IconShieldCheck },
+  { label: "Country Focus", value: "EA", icon: IconMapPin },
+  { label: "City Browsing", value: "Local", icon: IconUsers },
 ];
 
 const values = [
@@ -30,7 +30,7 @@ export default function About() {
           <h1 className="text-4xl font-extrabold text-foreground mb-4">About Motokah</h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
             East Africa's online car marketplace, connecting buyers and sellers across Kenya, Tanzania, Uganda, Ethiopia and beyond.
-            Whether you're looking for a reliable used vehicle or want to reach thousands of buyers — Motokah makes it easy, fast, and transparent.
+            Whether you're looking for a reliable used vehicle or want to reach serious buyers, Motokah makes it easy, fast, and transparent.
           </p>
         </div>
       </section>
@@ -76,7 +76,7 @@ export default function About() {
           <div className="prose prose-sm text-muted-foreground space-y-4 mx-auto">
             <p>Motokah was born from a simple frustration: finding and selling cars across East Africa was too complicated, risky, and time-consuming. Listings scattered across social media, no way to verify sellers, zero transparency in pricing.</p>
             <p>We set out to build something better — a dedicated platform that brings dealers and buyers together, with real listings from real dealers you can actually contact. We started in Tanzania and have expanded to Kenya, Uganda, Ethiopia and beyond.</p>
-            <p>Today, Motokah is East Africa's fastest-growing car marketplace. Over 93 verified dealers list their stock with us. And we're just getting started.</p>
+            <p>Today, Motokah is focused on building a cleaner East African car marketplace with real listings from real sellers you can contact directly. And we're just getting started.</p>
           </div>
         </div>
       </section>

@@ -1,10 +1,10 @@
 import { IconCar, IconUsers, IconMapPin, IconShieldCheck } from "@tabler/icons-react";
 
 const stats = [
-  { icon: IconCar, value: "1,000+", label: "Vehicle Listings" },
-  { icon: IconUsers, value: "10,000+", label: "Monthly Visitors" },
-  { icon: IconMapPin, value: "15+", label: "Cities Covered" },
-  { icon: IconShieldCheck, value: "93", label: "Verified Dealers" },
+  { icon: IconCar, value: "Fresh", label: "Dealer Listings" },
+  { icon: IconUsers, value: "Direct", label: "Seller Contact" },
+  { icon: IconMapPin, value: "Local", label: "City Browsing" },
+  { icon: IconShieldCheck, value: "Clean", label: "Launch Inventory" },
 ];
 
 export default function StatsBar() {

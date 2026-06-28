@@ -2,17 +2,21 @@ import { Link } from "react-router-dom";
 import { IconMapPin } from "@tabler/icons-react";
 
 const locations = [
-  { city: "Dar es Salaam", country: "Tanzania", count: "2,400+" },
-  { city: "Arusha", country: "Tanzania", count: "800+" },
-  { city: "Mwanza", country: "Tanzania", count: "600+" },
-  { city: "Nairobi", country: "Kenya", count: "3,100+" },
-  { city: "Mombasa", country: "Kenya", count: "900+" },
-  { city: "Kampala", country: "Uganda", count: "1,200+" },
-  { city: "Kigali", country: "Rwanda", count: "400+" },
-  { city: "Addis Ababa", country: "Ethiopia", count: "700+" },
-  { city: "Lagos", country: "Nigeria", count: "2,800+" },
-  { city: "Abuja", country: "Nigeria", count: "1,500+" },
+  { city: "Dar es Salaam", country: "Tanzania" },
+  { city: "Arusha", country: "Tanzania" },
+  { city: "Mwanza", country: "Tanzania" },
+  { city: "Nairobi", country: "Kenya" },
+  { city: "Mombasa", country: "Kenya" },
+  { city: "Kampala", country: "Uganda" },
+  { city: "Kigali", country: "Rwanda" },
+  { city: "Addis Ababa", country: "Ethiopia" },
+  { city: "Lagos", country: "Nigeria" },
+  { city: "Abuja", country: "Nigeria" },
 ];
+
+function citySlug(city: string) {
+  return city.toLowerCase().replace(/\s+/g, "-");
+}
 
 export default function LocationSection() {
   return (
@@ -26,14 +30,14 @@ export default function LocationSection() {
           {locations.map((loc) => (
             <Link
               key={loc.city}
-              to={`/search?city=${encodeURIComponent(loc.city)}`}
+              to={`/city/${citySlug(loc.city)}`}
               className="group p-4 bg-card border border-border rounded-xl hover:border-primary hover:shadow-md transition-all"
             >
               <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
                 {loc.city}
               </div>
               <div className="text-xs text-muted-foreground">{loc.country}</div>
-              <div className="text-xs font-medium text-primary mt-1">{loc.count} cars</div>
+              <div className="text-xs font-medium text-primary mt-1">Browse cars</div>
             </Link>
           ))}
         </div>
