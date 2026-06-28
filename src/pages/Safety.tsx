@@ -27,7 +27,7 @@ const redFlags = [
   "Seller can't provide original documents",
   "VIN doesn't match registration papers",
   "Seller avoids answering direct questions",
-  "Offers from outside Tanzania",
+  "Offers from outside your country or region",
 ];
 
 export default function Safety() {

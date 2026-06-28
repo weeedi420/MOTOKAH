@@ -7,6 +7,7 @@ export const DEALER_CITY: Record<string, string> = {
   hupa_motors_ltd: "Mwanza, TZ",
   justin_motors_ltd: "Dar es Salaam, TZ",
   ibaraki: "Nairobi, KE",
+  al_husnainmotors: "Nairobi, KE",
   kk_magic_cars_: "Dar es Salaam, TZ",
   fau_motors: "Dodoma, TZ",
   hanami_japan: "Dar es Salaam, TZ",
@@ -62,6 +63,7 @@ export const DEALER_CITY: Record<string, string> = {
 
 export const DEALER_CURRENCY: Record<string, string> = {
   ibaraki: "KES",
+  al_husnainmotors: "KES",
   servemarinekenya: "KES",
   hondamotorcyclekenyaltd: "KES",
   smartautoske: "KES",
@@ -77,6 +79,42 @@ export const DEALER_CURRENCY: Record<string, string> = {
   ethiocarsmarket: "ETB",
   direcarsale: "ETB",
 };
+
+const LOCAL_SHOWROOM_IMAGE_USERS = new Set(["mgayamotors"]);
+const SUPABASE_STORAGE_BASE = "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images";
+
+function _dealerCountry(username: string): string {
+  return DEALER_CITY[username]?.match(/\b([A-Z]{2})$/)?.[1] || "TZ";
+}
+
+function _dealerCurrency(username: string): string {
+  return DEALER_CURRENCY[username] || "TZS";
+}
+
+function _supabaseImage(username: string, filename: string): string {
+  return `${SUPABASE_STORAGE_BASE}/${username}/${filename}`;
+}
+
+function _postImagePrefix(username: string, shortcode: string): string {
+  return shortcode.startsWith(`${username}_`) ? shortcode.slice(username.length + 1) : shortcode;
+}
+
+function _postImages(username: string, post: { shortcode?: string; images?: string[] }, index = 0): string[] {
+  const sourceImages = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
+  const shortcode = post.shortcode || `post_${index + 1}`;
+  const prefix = _postImagePrefix(username, shortcode);
+
+  if (sourceImages.length > 0) {
+    return sourceImages.map((image, imageIndex) => {
+      if (image.includes("supabase.co/storage")) return image;
+      if (/^https?:\/\//i.test(image)) return image;
+      if (LOCAL_SHOWROOM_IMAGE_USERS.has(username) && image.startsWith("/")) return image;
+      return _supabaseImage(username, `${prefix}_${imageIndex + 1}.jpg`);
+    });
+  }
+
+  return [];
+}
 
 export const carMakes = [
   "Toyota", "Nissan", "Subaru", "Land Rover", "Jeep", "Mitsubishi",
@@ -283,10 +321,11 @@ function _parseMgayaCaption(caption: string) {
   // "Price Starts From X TZS" must be checked FIRST — otherwise get("price") grabs "Starts From…" as garbage
   const rawPrice =
     (() => { for (const l of lines) { const m = l.match(/price\s+starts?\s+from\s+([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+)?price\s*[:/]-?\s*([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+)?price\s*[:/]-?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)\s*)?([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)/i); if (m) return m[1]; } return null; })() ||
     (() => { for (const l of lines) { const m = l.match(/\bbei\s*[:/]\s*([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)\s*(?:\/[-=]|TZS|Tsh)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/([\d,.]+)\s*TZS/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)\s*(?:\/[-=]|TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)\s*([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/([\d,.]+)\s*(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
     // "Ask Price Milion 20.9" — million precedes number
     (() => { for (const l of lines) { const m = l.match(/mil(?:ion|lion)\s+([\d,.]+)/i); if (m) return `${m[1]}m`; } return null; })() ||
     get("bei", "price/bei", "bei/price");
@@ -328,6 +367,8 @@ function _parseMgayaCaption(caption: string) {
     ? `${year ? year + " " : ""}${model}`.trim()
     : titleFallbackLine.replace(emojiRe, "").replace(/[*#]/g, "").trim().slice(0, 80) || "Vehicle";
   title = title.split("|")[0].trim(); // strip "| description" suffix (AL-HUSNAIN format)
+  title = title.replace(/\b(?:asking\s+)?price\s*[:/]?.*$/i, "").trim();
+  title = title.replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "").trim();
   title = title.replace(/\b\w/g, (c) => c.toUpperCase());
 
   // Detect bodyType from make+model+caption keywords
@@ -393,6 +434,7 @@ function _convertMgayaToListings(): Listing[] {
     });
   return posts.map((post, i) => {
     const info = _parseMgayaCaption(post.caption);
+    const images = _postImages("mgayamotors", post, i);
     return {
       id: `ig-mgaya-${post.shortcode}`,
       title: info.title,
@@ -404,8 +446,8 @@ function _convertMgayaToListings(): Listing[] {
       transmission: info.transmission,
       location: "Dar es Salaam, TZ",
       country: "TZ",
-      image: post.images[0] || "",
-      images: post.images,
+      image: images[0] || "",
+      images,
       views: Math.max(post.likes * 3, 50),
       sellerName: "Mgaya Motors TZ",
       sellerRating: 4.8,
@@ -433,6 +475,8 @@ function _convertAllShowroomsToListings(): Listing[] {
     if (username === "mgayamotors") continue; // already handled separately
     const dealer = mod.default;
     const city = DEALER_CITY[username] ?? "Dar es Salaam, TZ";
+    const currency = _dealerCurrency(username);
+    const country = _dealerCountry(username);
     const carPosts = (dealer.posts as Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; is_video?: boolean }>)
       .filter((p) => _isMgayaCarPost(p.caption, p.is_video))
       .filter((p, i, arr) => {
@@ -441,18 +485,19 @@ function _convertAllShowroomsToListings(): Listing[] {
       });
     for (const post of carPosts) {
       const info = _parseMgayaCaption(post.caption);
+      const images = _postImages(username, post);
       results.push({
         id: `ig-${username}-${post.shortcode}`,
         title: info.title,
         price: info.price,
-        currency: DEALER_CURRENCY[username] || "TZS",
+        currency,
         condition: "Foreign Used" as const,
         year: info.year || (post.date ? new Date(post.date).getFullYear() : 0),
         mileage: info.mileage,
         transmission: info.transmission,
         location: city,
-        image: post.images[0] || "",
-        images: post.images,
+        image: images[0] || "",
+        images,
         views: Math.max(post.likes * 3, 50),
         sellerName: dealer.full_name || username,
         sellerRating: 4.5,
@@ -469,7 +514,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         dutyPaid: false,
         description: post.caption.slice(0, 300).trim(),
         sourceUrl: post.url,
-        country: "TZ",
+        country,
       });
     }
   }
@@ -1315,18 +1360,18 @@ export function getShowroomListings(username: string): Listing[] {
 
   return carPosts.map((post: any, i: number) => {
     const info = _parseMgayaCaption(post.caption || "");
-    const imgs: string[] = Array.isArray(post.images) ? post.images : [];
+    const imgs = _postImages(username, post, i);
     return {
       id: `ig-${username}-${post.shortcode || i}`,
       title: info.title || `${username} — Vehicle`,
       price: info.price || 0,
-      currency: DEALER_CURRENCY[username] || "TZS",
+      currency: _dealerCurrency(username),
       condition: "Foreign Used" as const,
       year: info.year || 0,
       mileage: info.mileage,
       transmission: info.transmission || "Automatic",
       location: DEALER_CITY[username] || "Dar es Salaam, TZ",
-      country: "TZ",
+      country: _dealerCountry(username),
       image: imgs[0] || "",
       images: imgs,
       views: post.likes ? post.likes * 3 : 50,
