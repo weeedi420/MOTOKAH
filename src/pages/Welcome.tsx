@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck, IconHelpCircle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
@@ -187,6 +187,8 @@ const itemVariants = {
 
 export default function Welcome() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isChangingLocation = searchParams.get("change") === "location";
   const { location, loading: detecting, setManualLocation, countryCitiesMap } = useLocationDetection();
   
   const [step, setStep] = useState<"detecting" | "country" | "city" | "language" | "done">("detecting");
@@ -201,18 +203,25 @@ export default function Welcome() {
 
   useEffect(() => {
     const completed = localStorage.getItem("motokah_welcome_completed");
-    if (completed) {
+    if (completed && !isChangingLocation) {
       navigate("/");
     }
-  }, [navigate]);
+    if (completed && isChangingLocation) {
+      const savedCountry = localStorage.getItem("motokah_country") as Country | null;
+      const savedCity = localStorage.getItem("motokah_city");
+      if (savedCountry) setSelectedCountry(savedCountry);
+      if (savedCity) setSelectedCity(savedCity);
+      setStep("country");
+    }
+  }, [navigate, isChangingLocation]);
 
   useEffect(() => {
-    if (location && detecting === false && step === "detecting") {
+    if (!isChangingLocation && location && detecting === false && step === "detecting") {
       setSelectedCountry(location.country);
       setSelectedCity(location.city);
       setStep("language");
     }
-  }, [location, detecting, step]);
+  }, [location, detecting, step, isChangingLocation]);
 
   useEffect(() => {
     if (cities.length > 0 && !selectedCity) {

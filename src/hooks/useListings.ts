@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings } from "@/data/mockData";
 import { getJijiListings } from "@/data/jijiListings";
+import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
 
 const defaultImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop";
 
@@ -75,7 +76,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           // Jiji country field is unreliable (e.g. Nigerian cities tagged as TZ) — use city name only
           jijiItems = jijiItems.filter(m => cities.some(c => m.location?.includes(c)));
         }
-        const fallback = [...mocks, ...jijiItems];
+        const fallback = [...mocks.filter(isLaunchQualityListing), ...jijiItems.filter(isLaunchQualityListing)];
         fallback.sort(() => Math.random() - 0.5);
         setListings(fallback.slice(0, limit));
         setLoading(false);
@@ -85,7 +86,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
       const sellerIds = [...new Set(rows.map((r) => r.seller_id))];
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, display_name, seller_type")
+        .select("user_id, display_name, seller_type, phone")
         .in("user_id", sellerIds);
 
       const profileMap = new Map(
@@ -116,17 +117,22 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           sellerRating: Number((4.2 + (ratingSeed % 7) / 10).toFixed(1)),
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
+          sellerPhone: profile?.phone || undefined,
           bodyType: r.body_type || undefined,
           fuelType: r.fuel_type || undefined,
           make: r.make,
           model: r.model,
         };
+      }).filter((listing) => {
+        if (isJijiImage(listing.image)) return false;
+        if (isGenericScraperSeller(listing.sellerName)) return false;
+        return hasUsablePhone(listing.sellerPhone);
       });
 
       const dbIds = new Set(mapped.map((m) => m.id));
       const jiji = await getJijiListings(country);
-      let fillMocks = [...mockListings].filter((m) => !dbIds.has(m.id));
-      let fillJiji = [...jiji].filter((m) => !dbIds.has(m.id));
+      let fillMocks = [...mockListings].filter((m) => !dbIds.has(m.id) && isLaunchQualityListing(m));
+      let fillJiji = [...jiji].filter((m) => !dbIds.has(m.id) && isLaunchQualityListing(m));
 
       if (country && country !== "All") {
         const cities = countryCitiesMap[country] || [];
@@ -153,7 +159,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         catchMocks = catchMocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
         catchJiji = catchJiji.filter(m => cities.some(c => m.location?.includes(c)));
       }
-      const all = [...catchMocks, ...catchJiji];
+      const all = [...catchMocks.filter(isLaunchQualityListing), ...catchJiji.filter(isLaunchQualityListing)];
       all.sort(() => Math.random() - 0.5);
       setListings(all.slice(0, options?.limit || 20));
       setLoading(false);

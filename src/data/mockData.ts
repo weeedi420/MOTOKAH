@@ -81,6 +81,7 @@ export const DEALER_CURRENCY: Record<string, string> = {
 };
 
 const LOCAL_SHOWROOM_IMAGE_USERS = new Set(["mgayamotors"]);
+export const BLOCKED_SHOWROOM_USERS = new Set(["servemarinekenya", "ukajapantz", "twenderide", "toyota.tanzania"]);
 const SUPABASE_STORAGE_BASE = "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images";
 
 function _dealerCountry(username: string): string {
@@ -246,11 +247,13 @@ function _normalizeUnicode(s: string): string {
 
 function _parseMgayaPrice(raw: string | null): number {
   if (!raw) return 0;
+  const spacedMillion = raw.match(/\b(\d{2,3})\s+(\d)\s*(?:m|mil|mln|million|milion)\b/i);
+  if (spacedMillion) return Math.round(parseFloat(`${spacedMillion[1]}.${spacedMillion[2]}`) * 1_000_000);
   const s = raw
-    .replace(/\b(KES|KSH|TZS|TZshs|UGX|USD|RWF|RF)\b/gi, "")
+    .replace(/\b(KES|KSH|TZS|TZshs|TSh|UGX|USh|USD|RWF|RF|ETB)\b/gi, "")
     .replace(/[,\s]/g, "")
     .replace(/[/=\-+➕]/g, "");
-  const mMatch = s.match(/^(\d+(?:\.\d+)?)(?:m|mil(?:ion|lion))/i);
+  const mMatch = s.match(/^(\d+(?:\.\d+)?)(?:m|mln|mil(?:ion|lion))/i);
   if (mMatch) return Math.round(parseFloat(mMatch[1]) * 1_000_000);
   const numMatch = s.match(/^(\d+(?:\.\d+)?)/);
   if (numMatch) {
@@ -331,13 +334,14 @@ function _parseMgayaCaption(caption: string) {
   // "Price Starts From X TZS" must be checked FIRST — otherwise get("price") grabs "Starts From…" as garbage
   const rawPrice =
     (() => { for (const l of lines) { const m = l.match(/price\s+starts?\s+from\s+([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+)?price\s*[:/]-?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)\s*)?([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/\bbei\s*[:/]\s*([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+\s*(?:M|m|Mil(?:ion|lion))?)\s*(?:\/[-=]|TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)\s*([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/([\d,.]+)\s*(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+(?:only|price|for)?|ask(?:ing)?\s+price|price|bei)\s*[:/;-]?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*)?([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/\bbei\s*(?:ni|ya)?\s*[:/]?\s*([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:\/[-=]|TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
     // "Ask Price Milion 20.9" — million precedes number
-    (() => { for (const l of lines) { const m = l.match(/mil(?:ion|lion)\s+([\d,.]+)/i); if (m) return `${m[1]}m`; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:m(?:il(?:ion|lion)|illion)|mln)\s+([\d,.]+)/i); if (m) return `${m[1]}m`; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/([\d,.]+(?:\s+\d)?)\s*(?:m|mln|million|milion)\b/i); if (m) return `${m[1]}m`; } return null; })() ||
     get("bei", "price/bei", "bei/price");
   const price = _parseMgayaPrice(rawPrice);
 
@@ -483,6 +487,7 @@ function _convertAllShowroomsToListings(): Listing[] {
   for (const [path, mod] of Object.entries(_showroomMods)) {
     const username = path.split("/").pop()!.replace(".json", "");
     if (username === "mgayamotors") continue; // already handled separately
+    if (BLOCKED_SHOWROOM_USERS.has(username)) continue;
     const dealer = mod.default;
     if (!_hasUsableDealerPhone(dealer.phone)) continue;
     const city = DEALER_CITY[username] ?? "Dar es Salaam, TZ";
@@ -882,7 +887,7 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
   return Object.entries(_showroomMods)
     .filter(([path]) => {
       const username = path.split("/").pop()!.replace(".json", "");
-      return !existingIds.has(`mock-dealer-${username}`);
+      return !existingIds.has(`mock-dealer-${username}`) && !BLOCKED_SHOWROOM_USERS.has(username);
     })
     .map(([path, mod]) => {
       const username = path.split("/").pop()!.replace(".json", "");
@@ -1352,7 +1357,8 @@ const _hardcodedIds = new Set(mockDealers.map(d => d.user_id));
 // Append auto-generated dealers for all other showroom accounts
 mockDealers.push(..._generateMissingDealers(_hardcodedIds));
 for (let i = mockDealers.length - 1; i >= 0; i -= 1) {
-  if (mockDealers[i].user_id === "mock-dealer-ibaraki" || !_hasUsableDealerPhone(mockDealers[i].phone)) {
+  const username = mockDealers[i].instagram || mockDealers[i].user_id.replace(/^mock-dealer-/, "");
+  if (BLOCKED_SHOWROOM_USERS.has(username) || mockDealers[i].user_id === "mock-dealer-ibaraki" || !_hasUsableDealerPhone(mockDealers[i].phone)) {
     mockDealers.splice(i, 1);
   }
 }
@@ -1362,6 +1368,7 @@ for (let i = mockDealers.length - 1; i >= 0; i -= 1) {
  * Filters non-car posts and deduplicates by caption prefix.
  */
 export function getShowroomListings(username: string): Listing[] {
+  if (BLOCKED_SHOWROOM_USERS.has(username)) return [];
   const key = Object.keys(_showroomMods).find(k => k.includes(`/${username}.json`));
   if (!key) return [];
   const dealer = (_showroomMods[key] as any).default;

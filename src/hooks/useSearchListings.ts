@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings, commercialTypes as COMMERCIAL_TYPES } from "@/data/mockData";
 import { getJijiListings } from "@/data/jijiListings";
+import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
 
 export interface SearchFilters {
   q?: string;
@@ -130,8 +131,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (error) {
         console.error(error);
         const jiji = await getJijiListings(filters.country).catch(() => []);
-        let errMocks = [...mockListings];
-        let errJiji = [...jiji];
+        let errMocks = [...mockListings].filter(isLaunchQualityListing);
+        let errJiji = [...jiji].filter(isLaunchQualityListing);
         const applyCommon = (arr: typeof errMocks) => {
           if (filters.q?.trim()) {
             const kw = filters.q.trim().toLowerCase();
@@ -172,7 +173,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       const sellerIds = [...new Set((rows || []).map((r) => r.seller_id))];
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, display_name, seller_type")
+        .select("user_id, display_name, seller_type, phone")
         .in("user_id", sellerIds);
       const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
 
@@ -198,6 +199,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           sellerRating: Number((4.2 + (r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 7) / 10).toFixed(1)),
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
+          sellerPhone: profile?.phone || undefined,
           bodyType: r.body_type || undefined,
           fuelType: r.fuel_type || undefined,
           make: r.make,
@@ -289,12 +291,17 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       // Merge: Supabase + mock + Jiji (deduplicate all three sources against each other)
       // When a specific bodyType filter is active and DB returned results, skip mocks to avoid polluting results
-      const validMapped = mapped.filter(l => validateListing(l, false));
+      const validMapped = mapped.filter((l) => {
+        if (!validateListing(l, false)) return false;
+        if (isJijiImage(l.image) || l.images?.some(isJijiImage)) return false;
+        if (isGenericScraperSeller(l.sellerName)) return false;
+        return hasUsablePhone(l.sellerPhone);
+      });
       const shouldInjectMocks = !filters.bodyType?.length || validMapped.length < 5;
       const realIds = new Set(validMapped.map(r => r.id));
-      const uniqueMocks = shouldInjectMocks ? mocks.filter(m => !realIds.has(m.id)) : [];
+      const uniqueMocks = shouldInjectMocks ? mocks.filter(m => !realIds.has(m.id) && isLaunchQualityListing(m)) : [];
       const mockIds = new Set(uniqueMocks.map(m => m.id));
-      const uniqueJiji = jijiFiltered.filter(m => !realIds.has(m.id) && !mockIds.has(m.id));
+      const uniqueJiji = jijiFiltered.filter(m => !realIds.has(m.id) && !mockIds.has(m.id) && isLaunchQualityListing(m));
       
       // Fuzzy deduplication: remove duplicates with same make+model+year+location
       const seenKeys = new Set<string>();

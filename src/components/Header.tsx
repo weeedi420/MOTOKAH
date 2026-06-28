@@ -29,6 +29,8 @@ export default function Header() {
   const { city, country } = useLocation();
   const navigate = useNavigate();
   const [showHelp, setShowHelp] = useState(false);
+  const locationLabel = city || country;
+  const changeLocationPath = "/welcome?change=location";
 
   return (
     <>
@@ -53,13 +55,13 @@ export default function Header() {
         {/* Right Actions */}
         <div className="flex items-center gap-2">
           {/* Location Indicator */}
-          {city && (
+          {locationLabel && (
             <button 
-              onClick={() => navigate('/welcome')}
+              onClick={() => navigate(changeLocationPath)}
               className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
             >
               <IconMapPin size={14} />
-              <span className="max-w-[100px] truncate">{city}</span>
+              <span className="max-w-[100px] truncate">{locationLabel}</span>
               <IconChevronDown size={12} />
             </button>
           )}
@@ -107,6 +109,12 @@ export default function Header() {
                     </Link>
                   </SheetClose>
                 ))}
+                <SheetClose asChild>
+                  <Link to={changeLocationPath} className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
+                    <IconMapPin size={18} stroke={2.5} />
+                    Change Location{locationLabel ? ` (${locationLabel})` : ""}
+                  </Link>
+                </SheetClose>
                 {user && (
                   <>
                     <SheetClose asChild>

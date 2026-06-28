@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { DEALER_CITY } from "@/data/mockData";
+import { BLOCKED_SHOWROOM_USERS, DEALER_CITY } from "@/data/mockData";
 import {
   IconBrandWhatsapp,
   IconPhone,
@@ -48,7 +48,7 @@ const SHOWROOMS: Record<string, DealerData> = Object.fromEntries(
   Object.entries(_mods).map(([path, mod]) => {
     const username = path.split("/").pop()!.replace(".json", "");
     return [username, mod.default as DealerData];
-  })
+  }).filter(([username]) => !BLOCKED_SHOWROOM_USERS.has(username))
 );
 
 const EMOJI_RE = /[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{1F900}-\u{1F9FF}☎️▶️📍🤝💸🇹🇿🇯🇵👇✅⛽🔥🥷🏻🙌]/gu;
@@ -80,17 +80,21 @@ function parseCaption(caption: string) {
   const rawPrice = get("price", "bei", "price/bei", "bei/price", "bei:") ||
     (() => {
       for (const line of lines) {
-        let m = line.match(/(?:price|bei)[:/\s]+([0-9,.]+\s*(?:M|m|Million|TZS|TSH)?)/i);
+        let m = line.match(/(?:asking\s+(?:only|price|for)?|ask(?:ing)?\s+price|price|bei)\s*[:/;-]?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*)?([0-9,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i);
         if (m) return cleanText(m[1]);
         // handle ":TZS.22,000,000/-" style lines
-        m = line.match(/(?:^|:)\s*TZS[.\s]*([0-9,.]+)/i);
+        m = line.match(/(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)[.\s]*([0-9,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i);
         if (m) return cleanText(m[1]);
+        m = line.match(/([0-9,.]+(?:\s+\d)?)\s*(?:m|mln|million|milion)\b/i);
+        if (m) return cleanText(`${m[1]}M`);
       }
       return null;
     })();
   // Format price correctly
   let price = rawPrice;
   if (price) {
+    const spacedMillion = price.match(/\b(\d{2,3})\s+(\d)\s*(?:m|mil|mln|million|milion)\b/i);
+    if (spacedMillion) price = `${spacedMillion[1]}.${spacedMillion[2]}M TZS`;
     const bare = price.replace(/[,\s]/g, "");
     const num = parseFloat(bare);
     if (/^\d+(\.\d+)?$/.test(bare) && num >= 10) {
