@@ -203,15 +203,16 @@ export default function Welcome() {
 
   useEffect(() => {
     const completed = localStorage.getItem("motokah_welcome_completed");
-    if (completed && !isChangingLocation) {
-      navigate("/");
-    }
-    if (completed && isChangingLocation) {
+    if (isChangingLocation) {
       const savedCountry = localStorage.getItem("motokah_country") as Country | null;
       const savedCity = localStorage.getItem("motokah_city");
       if (savedCountry) setSelectedCountry(savedCountry);
       if (savedCity) setSelectedCity(savedCity);
       setStep("country");
+      return;
+    }
+    if (completed && !isChangingLocation) {
+      navigate("/");
     }
   }, [navigate, isChangingLocation]);
 

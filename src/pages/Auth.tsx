@@ -56,7 +56,8 @@ export default function Auth() {
   // Redirect already-logged-in users based on role (in effect to avoid render-phase navigation)
   useEffect(() => {
     if (user) {
-      if (isAdmin) navigate("/admin", { replace: true });
+      if (returnTo) navigate(returnTo, { replace: true });
+      else if (isAdmin) navigate("/admin", { replace: true });
       else if (userIsDealer) navigate("/dealer-dashboard", { replace: true });
       else navigate(returnTo || "/profile", { replace: true });
     }
