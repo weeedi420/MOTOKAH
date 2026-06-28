@@ -1,18 +1,27 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "@/contexts/LocationContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { IconX, IconCheck, IconCamera, IconChevronRight, IconBrandWhatsapp, IconPhone } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { africanCities, carMakes } from "@/data/mockData";
+import { africanCities, carMakes, cityToCountry, currencies } from "@/data/mockData";
 
-const tanzaniaCities = africanCities;
 const carBrands = carMakes;
+const countryCurrencyMap: Record<string, string> = {
+  Tanzania: "TZS",
+  Kenya: "KES",
+  Uganda: "UGX",
+  Rwanda: "RWF",
+  Burundi: "BIF",
+  Ethiopia: "ETB",
+  Nigeria: "NGN",
+};
 const bodyTypes = [
   { label: "Sedan / Saloon",        value: "Sedan" },
   { label: "SUV / 4x4 / Jeep",     value: "SUV" },
@@ -52,19 +61,43 @@ type SheetKey = "make" | "bodyType" | "transmission" | "fuelType" | "color" | "c
 
 export default function SellCar() {
   usePageTitle("Sell Your Car");
+  const { country, city } = useLocation();
   const [plan, setPlan] = useState<"self" | "agent" | null>("self");
   const [showMore, setShowMore] = useState(false);
   const [form, setForm] = useState<FormData>(() => {
     const saved = localStorage.getItem("sellCarDraft");
-    return saved ? JSON.parse(saved) : defaultForm;
+    return saved ? JSON.parse(saved) : {
+      ...defaultForm,
+      currency: countryCurrencyMap[country] || defaultForm.currency,
+      city: city || "",
+      registeredIn: city || "",
+    };
   });
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [sheet, setSheet] = useState<SheetKey>(null);
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const availableCities = useMemo(() => {
+    if (country === "All") return africanCities;
+    const countryCities = africanCities.filter((c) => cityToCountry[c] === country);
+    return countryCities.length > 0 ? countryCities : africanCities;
+  }, [country]);
+  const sellerPhone = profile?.phone || (user?.user_metadata?.phone as string | undefined) || "";
+
+  useEffect(() => {
+    const saved = localStorage.getItem("sellCarDraft");
+    if (saved) return;
+
+    setForm((current) => ({
+      ...current,
+      currency: countryCurrencyMap[country] || current.currency,
+      city: current.city || city || "",
+      registeredIn: current.registeredIn || city || "",
+    }));
+  }, [country, city]);
 
   const update = (key: keyof FormData, val: string | boolean) => {
     const next = { ...form, [key]: val };
@@ -95,6 +128,14 @@ export default function SellCar() {
     if (!form.make || !form.model) { toast({ title: "Required", description: "Please fill in Make and Model.", variant: "destructive" }); return; }
     if (!form.bodyType) { toast({ title: "Required", description: "Please select a Body Type.", variant: "destructive" }); return; }
     if (!form.price) { toast({ title: "Required", description: "Please enter a price.", variant: "destructive" }); return; }
+    if (!sellerPhone) {
+      toast({ title: "Phone number required", description: "Add your phone number in your profile before posting so buyers can contact you.", variant: "destructive" });
+      return;
+    }
+    if (user.id.startsWith("demo-")) {
+      toast({ title: "Demo account", description: "Demo accounts can preview the form, but cannot submit live listings.", variant: "destructive" });
+      return;
+    }
 
     const isVerified = user.email_confirmed_at || user.confirmed_at;
     if (!isVerified) {
@@ -238,8 +279,8 @@ export default function SellCar() {
     fuelType: fuelTypes.map(f => ({ label: f, value: f })),
     color: colors.map(c => ({ label: c, value: c })),
     condition: conditions.map(c => ({ label: c, value: c })),
-    city: tanzaniaCities.map(c => ({ label: c, value: c })),
-    registeredIn: tanzaniaCities.map(c => ({ label: c, value: c })),
+    city: availableCities.map(c => ({ label: c, value: c })),
+    registeredIn: availableCities.map(c => ({ label: c, value: c })),
     assembly: assemblies.map(a => ({ label: a, value: a })),
   };
 
@@ -250,7 +291,7 @@ export default function SellCar() {
   };
 
   const displayName = (user?.user_metadata?.display_name as string | undefined) || user?.email?.split("@")[0] || "";
-  const displayPhone = (user?.user_metadata?.phone as string | undefined) || "";
+  const displayPhone = sellerPhone;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -372,9 +413,9 @@ export default function SellCar() {
                   onChange={(e) => update("currency", e.target.value)}
                   className="text-sm bg-transparent text-muted-foreground focus:outline-none border-none p-0"
                 >
-                  <option value="TZS">TZS</option>
-                  <option value="USD">USD</option>
-                  <option value="KES">KES</option>
+                  {currencies.map((currency) => (
+                    <option key={currency.code} value={currency.code}>{currency.code}</option>
+                  ))}
                 </select>
                 <input
                   type="number"
@@ -527,9 +568,13 @@ export default function SellCar() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-border">
               <div className="flex-1">
                 <p className="text-xs text-muted-foreground">Mobile Number</p>
-                <p className="text-sm text-foreground mt-0.5">{displayPhone || user?.email || "—"}</p>
+                <p className={`text-sm mt-0.5 ${displayPhone ? "text-foreground" : "text-destructive"}`}>
+                  {displayPhone || "Add phone in profile"}
+                </p>
               </div>
-              {(displayPhone || user?.email) && <IconCheck size={16} className="text-success shrink-0" />}
+              {displayPhone ? <IconCheck size={16} className="text-success shrink-0" /> : (
+                <button onClick={() => navigate("/profile")} className="text-xs font-semibold text-primary">Update</button>
+              )}
             </div>
 
             {/* WhatsApp toggle */}

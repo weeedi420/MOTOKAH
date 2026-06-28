@@ -179,6 +179,9 @@ export const currencies = [
   { code: "KES", symbol: "KSh", name: "Kenyan Shilling" },
   { code: "UGX", symbol: "USh", name: "Ugandan Shilling" },
   { code: "RWF", symbol: "RF", name: "Rwandan Franc" },
+  { code: "BIF", symbol: "FBu", name: "Burundian Franc" },
+  { code: "ETB", symbol: "Br", name: "Ethiopian Birr" },
+  { code: "NGN", symbol: "₦", name: "Nigerian Naira" },
   { code: "USD", symbol: "$", name: "US Dollar" },
 ];
 

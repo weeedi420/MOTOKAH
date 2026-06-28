@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,9 @@ export default function Auth() {
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const { signIn, signUp, resetPassword, user, isAdmin, isDealer: userIsDealer } = useAuth();
   const navigate = useNavigate();
+  const routeLocation = useLocation();
   const { toast } = useToast();
+  const returnTo = (routeLocation.state as { from?: string } | null)?.from;
   usePageTitle(tab === "login" ? "Sign In" : tab === "register" ? "Create Account" : tab === "otp" ? "Magic Link" : "Reset Password");
 
   // Redirect already-logged-in users based on role (in effect to avoid render-phase navigation)
@@ -56,9 +58,9 @@ export default function Auth() {
     if (user) {
       if (isAdmin) navigate("/admin", { replace: true });
       else if (userIsDealer) navigate("/dealer-dashboard", { replace: true });
-      else navigate("/profile", { replace: true });
+      else navigate(returnTo || "/profile", { replace: true });
     }
-  }, [user, isAdmin, userIsDealer, navigate]);
+  }, [user, isAdmin, userIsDealer, navigate, returnTo]);
 
   if (user) return null;
 
@@ -105,6 +107,8 @@ export default function Auth() {
         toast({ title: "Account created!", description: "Check your email to verify your account." });
         if (isDealer) {
           setTimeout(() => navigate("/become-dealer"), 500);
+        } else if (returnTo) {
+          setTimeout(() => navigate(returnTo, { replace: true }), 500);
         }
       } else if (tab === "forgot") {
         const { error } = await resetPassword(email);
