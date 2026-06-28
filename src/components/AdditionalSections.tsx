@@ -4,6 +4,7 @@ import { useListings } from "@/hooks/useListings";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLocation } from "@/contexts/LocationContext";
+import { currencyForCountry, usePriceFormatter } from "@/lib/prices";
 
 export function NewlyAdded() {
   const { country } = useLocation();
@@ -47,14 +48,20 @@ interface BrandCount {
 }
 
 export function BestSellingBrands() {
+  const { country } = useLocation();
   const [brands, setBrands] = useState<BrandCount[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
+    let query = supabase
       .from("listings")
       .select("make")
-      .eq("status", "approved")
+      .eq("status", "approved");
+
+    const currency = currencyForCountry(country);
+    if (currency) query = query.eq("currency", currency);
+
+    query
       .then(({ data }) => {
         if (!data) { setLoading(false); return; }
         const counts: Record<string, number> = {};
@@ -66,7 +73,7 @@ export function BestSellingBrands() {
         setBrands(sorted);
         setLoading(false);
       });
-  }, []);
+  }, [country]);
 
   if (loading) return null;
   if (brands.length === 0) return null;
@@ -92,6 +99,7 @@ export function BestSellingBrands() {
 export function SpecialDeals() {
   const { country } = useLocation();
   const { listings, loading } = useListings({ limit: 4, country });
+  const priceFormatter = usePriceFormatter();
 
   if (loading || listings.length === 0) return null;
 
@@ -115,7 +123,7 @@ export function SpecialDeals() {
             <div className="p-4 flex flex-col justify-center flex-1">
               <h3 className="font-bold text-lg mb-2">{l.title}</h3>
               <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-xl font-bold text-primary">{l.currency} {l.price.toLocaleString()}</span>
+                <span className="text-xl font-bold text-primary">{priceFormatter.format(l.price, l.currency)}</span>
               </div>
               <p className="text-sm text-muted-foreground">{l.year} · {l.mileage.toLocaleString()} km · {l.transmission} · {l.location}</p>
               <span className="text-sm text-primary font-semibold mt-3 hover:underline">View Details →</span>

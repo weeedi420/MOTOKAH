@@ -31,7 +31,7 @@ function detectCountry(): Country {
 }
 
 const LocationContext = createContext<LocationContextType>({
-  country: "All",
+  country: "Tanzania",
   city: "",
   setCountry: () => {},
   setCity: () => {},
@@ -47,11 +47,13 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   const setCountry = (c: Country) => {
     setCountryState(c);
     localStorage.setItem(COUNTRY_KEY, c);
+    window.dispatchEvent(new Event("motokah-location-updated"));
   };
 
   const setCity = (c: string) => {
     setCityState(c);
     localStorage.setItem(CITY_KEY, c);
+    window.dispatchEvent(new Event("motokah-location-updated"));
   };
 
   // Listen for storage changes from Welcome page
@@ -63,7 +65,11 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       if (savedCity) setCityState(savedCity);
     };
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    window.addEventListener("motokah-location-updated", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("motokah-location-updated", handleStorage);
+    };
   }, []);
 
   return (

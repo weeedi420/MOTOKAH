@@ -91,6 +91,13 @@ function _dealerCurrency(username: string): string {
   return DEALER_CURRENCY[username] || "TZS";
 }
 
+function _hasUsableDealerPhone(phone?: string | null): boolean {
+  const digits = _normalizeUnicode(phone || "").replace(/\D/g, "");
+  if (digits.length < 9) return false;
+  if (/^(?:254)?700000000$/.test(digits)) return false;
+  return true;
+}
+
 function _supabaseImage(username: string, filename: string): string {
   return `${SUPABASE_STORAGE_BASE}/${username}/${filename}`;
 }
@@ -474,6 +481,7 @@ function _convertAllShowroomsToListings(): Listing[] {
     const username = path.split("/").pop()!.replace(".json", "");
     if (username === "mgayamotors") continue; // already handled separately
     const dealer = mod.default;
+    if (!_hasUsableDealerPhone(dealer.phone)) continue;
     const city = DEALER_CITY[username] ?? "Dar es Salaam, TZ";
     const currency = _dealerCurrency(username);
     const country = _dealerCountry(username);
@@ -519,6 +527,10 @@ function _convertAllShowroomsToListings(): Listing[] {
     }
   }
   return results;
+}
+
+function _isLaunchQualityListing(listing: Listing): boolean {
+  return listing.sellerId !== "ibaraki" && listing.sellerId !== "mock-dealer-ibaraki";
 }
 
 export const mockListings: Listing[] = [
@@ -819,7 +831,7 @@ export const mockListings: Listing[] = [
     country: "KE", sellerId: "ibaraki",
     description: "Toyota RAV4 2022 2.5 Hybrid AWD. Toyota Safety Sense, digital mirrors, wireless charging. Nearly new.",
   },
-];
+].filter(_isLaunchQualityListing);
 
 export const priceRanges = [
   { label: "Under 30M",   min: 0,           max: 30_000_000 },
@@ -875,7 +887,8 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
       const rawName = dealer.full_name || "";
       const displayName = _cleanName(rawName) || username.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
       const bio = dealer.bio || "";
-      const phone = (dealer.phone || "").replace(/\s+/g, " ").trim();
+      const phone = _normalizeUnicode(dealer.phone || "").replace(/\s+/g, " ").trim();
+      if (!_hasUsableDealerPhone(phone)) return null;
       const city = _cityFromBio(bio, username);
       const postCount = (dealer.posts || []).length;
       return {
@@ -892,7 +905,8 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
         postal_code: "",
         instagram: username,
       };
-    });
+    })
+    .filter((dealer): dealer is MockDealer => dealer !== null);
 }
 
 export const mockDealers: MockDealer[] = [
@@ -1334,6 +1348,11 @@ export const mockDealers: MockDealer[] = [
 const _hardcodedIds = new Set(mockDealers.map(d => d.user_id));
 // Append auto-generated dealers for all other showroom accounts
 mockDealers.push(..._generateMissingDealers(_hardcodedIds));
+for (let i = mockDealers.length - 1; i >= 0; i -= 1) {
+  if (mockDealers[i].user_id === "mock-dealer-ibaraki" || !_hasUsableDealerPhone(mockDealers[i].phone)) {
+    mockDealers.splice(i, 1);
+  }
+}
 
 /**
  * Returns car listings for a specific Instagram dealer by username.
@@ -1344,6 +1363,7 @@ export function getShowroomListings(username: string): Listing[] {
   if (!key) return [];
   const dealer = (_showroomMods[key] as any).default;
   if (!dealer?.posts?.length) return [];
+  if (!_hasUsableDealerPhone(dealer.phone)) return [];
 
   // Filter to car posts only + deduplicate + sort newest-first (fresh CDN URLs float to top)
   const seenCaptions = new Set<string>();

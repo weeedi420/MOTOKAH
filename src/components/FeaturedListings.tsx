@@ -2,7 +2,6 @@ import { IconFlame, IconChevronLeft, IconChevronRight } from "@tabler/icons-reac
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useLocation } from "@/contexts/LocationContext";
-import { mockListings } from "@/data/mockData";
 import { useRef, useState, useEffect } from "react";
 
 export default function FeaturedListings() {
@@ -33,7 +32,7 @@ export default function FeaturedListings() {
     el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
   };
 
-  const displayListings = listings.length > 0 ? listings : (!loading ? mockListings : []);
+  const displayListings = listings;
 
   return (
     <section className="container mx-auto py-10">

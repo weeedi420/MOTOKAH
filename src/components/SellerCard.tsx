@@ -3,6 +3,7 @@ import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { usePriceFormatter } from "@/lib/prices";
 
 interface SellerCardProps {
   listing: Listing;
@@ -12,6 +13,7 @@ export default function SellerCard({ listing }: SellerCardProps) {
   const isDealer = listing.sellerType === "dealer";
   const { user } = useAuth();
   const navigate = useNavigate();
+  const priceFormatter = usePriceFormatter();
 
   const phone = listing.sellerPhone || "";
 
@@ -109,11 +111,11 @@ export default function SellerCard({ listing }: SellerCardProps) {
       <div className="pt-3 border-t border-border">
         <p className="text-sm text-muted-foreground">Asking Price</p>
         <p className="text-2xl font-bold text-primary">
-          {listing.price > 0 ? `${listing.currency} ${listing.price.toLocaleString()}` : "Contact for price"}
+          {priceFormatter.format(listing.price, listing.currency)}
         </p>
         {listing.originalPrice && (
           <p className="text-sm text-muted-foreground line-through">
-            {listing.currency} {listing.originalPrice.toLocaleString()}
+            {priceFormatter.format(listing.originalPrice, listing.currency)}
           </p>
         )}
       </div>

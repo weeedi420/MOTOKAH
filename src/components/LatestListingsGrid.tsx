@@ -2,12 +2,11 @@ import { IconClock } from "@tabler/icons-react";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useLocation } from "@/contexts/LocationContext";
-import { mockListings } from "@/data/mockData";
 
 export default function LatestListingsGrid() {
   const { country } = useLocation();
   const { listings, loading } = useListings({ limit: 12, country });
-  const displayListings = listings.length > 0 ? listings : (!loading ? mockListings : []);
+  const displayListings = listings;
 
   return (
     <section className="container mx-auto py-10">

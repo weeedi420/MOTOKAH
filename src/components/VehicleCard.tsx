@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
+import { usePriceFormatter } from "@/lib/prices";
 
 function thumbUrl(src: string, width = 600): string {
   if (!src.includes("eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/")) return src;
@@ -14,6 +15,7 @@ function thumbUrl(src: string, width = 600): string {
 export default function VehicleCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
   const { user } = useAuth();
   const { wishlistIds, toggle } = useWishlist();
+  const priceFormatter = usePriceFormatter();
   const navigate = useNavigate();
   const saved = wishlistIds.has(listing.id);
   const [isCompared, setIsCompared] = useState(() =>
@@ -136,12 +138,12 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
 
         <div className="flex items-baseline gap-2 mb-2">
           {listing.price > 0 ? (
-            <span className="text-lg font-bold text-primary">{listing.currency} {listing.price.toLocaleString()}</span>
+            <span className="text-lg font-bold text-primary">{priceFormatter.format(listing.price, listing.currency)}</span>
           ) : (
             <span className="text-lg font-bold text-primary">Contact for price</span>
           )}
           {listing.originalPrice && listing.originalPrice > 0 && (
-            <span className="text-xs text-muted-foreground line-through">{listing.currency} {listing.originalPrice.toLocaleString()}</span>
+            <span className="text-xs text-muted-foreground line-through">{priceFormatter.format(listing.originalPrice, listing.currency)}</span>
           )}
         </div>
 

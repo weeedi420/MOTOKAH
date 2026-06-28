@@ -227,6 +227,7 @@ export default function Welcome() {
     // Also save to LocationContext format
     localStorage.setItem("motokah_country", selectedCountry);
     localStorage.setItem("motokah_city", selectedCity);
+    window.dispatchEvent(new Event("motokah-location-updated"));
     navigate("/");
   };
 

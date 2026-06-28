@@ -111,10 +111,13 @@ export default function SearchResults() {
   };
 
   const clearFilters = () => {
-    setFilters(defaultFilters);
+    const resetCountry = locationCountry !== "All" ? locationCountry : "";
+    setFilters({ ...defaultFilters, country: resetCountry });
     setKeyword("");
     setPage(1);
-    setSearchParams(new URLSearchParams());
+    const params = new URLSearchParams();
+    if (resetCountry) params.set("country", resetCountry);
+    setSearchParams(params);
   };
 
   // Convert Filters to SearchFilters for the hook
