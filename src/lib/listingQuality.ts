@@ -32,6 +32,8 @@ export function hasPremiumTitle(listing: Listing): boolean {
   if (/\b(ask|asking|contact for price|call for price|dm for price|price on request|inbox|whatsapp|call now|official|follow|subscribe|sold out|sold|reserved)\b/i.test(lower)) return false;
   if (/\b(price|bei|whatsapp|contact|call|dm|inbox)\b/i.test(lower)) return false;
   if (/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\b/i.test(title)) return false;
+  if (/\b(on sale|for sale|negotiable|buyanddrive|buy\s*and\s*drive|combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa|unregistered|alloy rims?|rims?|tyres?|tires?|spare parts?)\b/i.test(lower)) return false;
+  if (/\bmodel\b$/i.test(title)) return false;
   if (/^\d[\d\s,.]*(?:cc|km|kms|m|million|milion)?$/i.test(title)) return false;
   if (/^(price|bei|engine|mileage|transmission|fuel|color|colour|location)\b/i.test(title)) return false;
   if (listing.make && !/unknown|select|n\/a/i.test(listing.make) && lower.includes(listing.make.toLowerCase().split(" ")[0])) return true;
@@ -41,8 +43,8 @@ export function hasPremiumTitle(listing: Listing): boolean {
 
 export function hasPremiumVehicleIdentity(listing: Listing): boolean {
   if (!listing.make || /unknown|select|n\/a/i.test(listing.make)) return false;
-  if (!listing.model || /unknown|select|n\/a/i.test(listing.model)) return false;
-  if (!listing.year || listing.year < 1990 || listing.year > new Date().getFullYear() + 1) return false;
+  if (!listing.model || /unknown|select|n\/a|^na$|^ine$|^model$|alloy|rims?|tyres?|tires?|spare|magari|agiza|kuagiza|carsforsale|carmarket|dreamcars|reliable/i.test(listing.model)) return false;
+  if (!listing.year || listing.year < 2000 || listing.year > new Date().getFullYear() + 1) return false;
   return true;
 }
 

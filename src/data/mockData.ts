@@ -280,11 +280,50 @@ function _extractMakeModelFromLine(line: string): { make: string | null; model: 
         .replace(/\b(?:asking\s+)?(?:price|bei)\b.*$/i, "")
         .replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "")
         .replace(/\b(?:contact|call|whatsapp|dm|inbox)\b.*$/i, "")
+        .replace(/\b(?:model\s+)?(?:on sale|for sale|available|negotiable|buy\s*and\s*drive|buyanddrive)\b.*$/i, "")
+        .replace(/\b(?:combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa)\b.*$/i, "")
+        .replace(/\b(?:alloy rims?|rims?|tyres?|tires?|spare parts?)\b.*$/i, "")
+        .replace(/\bmodel\b$/i, "")
         .replace(/\s{2,}/g, " ").trim().slice(0, 40);
       return { make: makeCapitalized, model: modelRaw || null };
     }
   }
   return { make: null, model: null };
+}
+
+function _cleanListingTitle(title: string): string {
+  return title
+    .replace(/[\uD800-\uDFFF]/g, "")
+    .replace(/\b(?:asking\s+)?(?:price|bei)\b.*$/i, "")
+    .replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "")
+    .replace(/\b(?:contact|call|whatsapp|dm|inbox)\b.*$/i, "")
+    .replace(/\b(?:model\s+)?(?:on sale|for sale|available|negotiable|buy\s*and\s*drive|buyanddrive)\b.*$/i, "")
+    .replace(/\b(?:combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa)\b.*$/i, "")
+    .replace(/\.\s*(?:petrol|diesel|hybrid|unregistered|registered)\b.*$/i, "")
+    .replace(/\b(?:alloy rims?|rims?|tyres?|tires?|spare parts?)\b.*$/i, "")
+    .replace(/\s+-\s*model\b/i, "")
+    .replace(/\bmodel\b$/i, "")
+    .replace(/[_]+/g, " ")
+    .replace(/\s*\.\s*$/g, "")
+    .replace(/[(/\\|,-]+$/g, "")
+    .replace(/\(\s*\)/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function _buildInstagramDescription(info: ReturnType<typeof _parseMgayaCaption>, sellerName: string, city: string): string {
+  const location = city.split(",")[0].trim();
+  const specs = [
+    info.year ? `${info.year}` : null,
+    "Foreign Used",
+    info.transmission,
+    info.fuel,
+    info.cc ? `${info.cc}cc` : null,
+    info.mileage ? `${info.mileage.toLocaleString()} km` : null,
+    info.bodyType,
+    info.color ? `${info.color} exterior` : null,
+  ].filter(Boolean).join(" · ");
+  return `${info.title} listed by ${sellerName}. ${specs}. Clean dealer-sourced listing with verified contact details and photos. Available in ${location}.`;
 }
 
 function _parseMgayaCaption(caption: string) {
@@ -386,6 +425,7 @@ function _parseMgayaCaption(caption: string) {
   title = title.split("|")[0].trim(); // strip "| description" suffix (AL-HUSNAIN format)
   title = title.replace(/\b(?:asking\s+)?price\s*[:/]?.*$/i, "").trim();
   title = title.replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "").trim();
+  title = _cleanListingTitle(title);
   title = title.replace(/\b\w/g, (c) => c.toUpperCase());
 
   // Detect bodyType from make+model+caption keywords
@@ -480,7 +520,7 @@ function _convertMgayaToListings(): Listing[] {
       cc: info.cc,
       color: info.color,
       dutyPaid: false,
-      description: post.caption.slice(0, 300).replace(/☎️.*/s, "").trim(),
+      description: _buildInstagramDescription(info, "Mgaya Motors TZ", "Dar es Salaam, TZ"),
     };
   });
 }
@@ -531,7 +571,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         color: info.color,
         fuelType: info.fuel,
         dutyPaid: false,
-        description: post.caption.slice(0, 300).trim(),
+        description: _buildInstagramDescription(info, dealer.full_name || username, city),
         sourceUrl: post.url,
         country,
       });
@@ -547,13 +587,15 @@ function _isLaunchQualityListing(listing: Listing): boolean {
   if (listing.id.startsWith("jiji-")) return false;
   if (!listing.price || listing.price <= 0) return false;
   if (!listing.make || /unknown|select|n\/a/i.test(listing.make)) return false;
-  if (!listing.model || /unknown|select|n\/a/i.test(listing.model)) return false;
-  if (!listing.year || listing.year < 1990 || listing.year > new Date().getFullYear() + 1) return false;
+  if (!listing.model || /unknown|select|n\/a|^na$|^ine$|^model$|alloy|rims?|tyres?|tires?|spare|magari|agiza|kuagiza|carsforsale|carmarket|dreamcars|reliable/i.test(listing.model)) return false;
+  if (!listing.year || listing.year < 2000 || listing.year > new Date().getFullYear() + 1) return false;
   if (title.length < 10 || title.length > 90) return false;
   if (/^(vehicle|car|cars|used cars?|magari|stock|new stock|available|sold|ask|asking|price|bei|contact|call|whatsapp|official|import|imports)$/i.test(title)) return false;
   if (/\b(ask|asking|contact for price|call for price|dm for price|price on request|inbox|whatsapp|call now|official|follow|subscribe|sold out|sold|reserved)\b/i.test(title)) return false;
   if (/\b(price|bei|whatsapp|contact|call|dm|inbox)\b/i.test(title)) return false;
   if (/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\b/i.test(title)) return false;
+  if (/\b(on sale|for sale|negotiable|buyanddrive|buy\s*and\s*drive|combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa|unregistered|alloy rims?|rims?|tyres?|tires?|spare parts?)\b/i.test(title)) return false;
+  if (/\bmodel\b$/i.test(title)) return false;
   if (/^(price|bei|engine|mileage|transmission|fuel|color|colour|location)\b/i.test(title)) return false;
   if (listing.id.startsWith("ig-") && images.length < 2) return false;
   if (images.length < 1) return false;
@@ -1437,7 +1479,7 @@ export function getShowroomListings(username: string): Listing[] {
       fuelType: info.fuel,
       cc: info.cc,
       color: info.color,
-      description: (post.caption || "").slice(0, 300),
+      description: _buildInstagramDescription(info, dealer.full_name || username, DEALER_CITY[username] || "Dar es Salaam, TZ"),
       sourceUrl: post.url || "",
     };
   }).filter(_isLaunchQualityListing);

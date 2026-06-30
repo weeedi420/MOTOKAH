@@ -57,7 +57,17 @@ function parseIdentity(caption) {
       .replace(/\b(?:asking\s+)?(?:price|bei)\b.*$/i, "")
       .replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "")
       .replace(/\b(?:contact|call|whatsapp|dm|inbox)\b.*$/i, "")
+      .replace(/\b(?:model\s+)?(?:on sale|for sale|available|negotiable|buy\s*and\s*drive|buyanddrive)\b.*$/i, "")
+      .replace(/\b(?:combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa)\b.*$/i, "")
+      .replace(/\.\s*(?:petrol|diesel|hybrid|unregistered|registered)\b.*$/i, "")
+      .replace(/\b(?:alloy rims?|rims?|tyres?|tires?|spare parts?)\b.*$/i, "")
       .replace(/[|,;].*$/, "")
+      .replace(/\s+-\s*model\b/i, "")
+      .replace(/\bmodel\b$/i, "")
+      .replace(/[_]+/g, " ")
+      .replace(/\s*\.\s*$/g, "")
+      .replace(/[(/\\|,-]+$/g, "")
+      .replace(/\(\s*\)/g, "")
       .trim();
     return {
       make: rawBrand.replace(/\b\w/g, (c) => c.toUpperCase()),
@@ -77,9 +87,12 @@ function rejectionReasons({ dealer, post, identity, price }) {
   if (post.is_video) reasons.push("video post");
   if (!price) reasons.push("missing parsed price");
   if (!identity.make || !identity.model || !identity.year) reasons.push("weak vehicle identity");
-  if (identity.year && (identity.year < 1990 || identity.year > new Date().getFullYear() + 1)) reasons.push("invalid year");
+  if (/^(na|ine|model)$/i.test(identity.model) || /\b(alloy|rims?|tyres?|tires?|spare|magari|agiza|kuagiza|carsforsale|carmarket|dreamcars|reliable)\b/i.test(identity.model)) reasons.push("junk vehicle model");
+  if (identity.year && (identity.year < 2000 || identity.year > new Date().getFullYear() + 1)) reasons.push("invalid year");
   if (title.length < 10 || title.length > 90) reasons.push("bad title length");
   if (/\b(ask|asking|price|bei|whatsapp|contact|call|dm|inbox|official|follow|subscribe|sold|reserved)\b/i.test(title)) reasons.push("junk title words");
+  if (/\b(on sale|for sale|negotiable|buyanddrive|buy\s*and\s*drive|combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa|unregistered|alloy rims?|rims?|tyres?|tires?|spare parts?)\b/i.test(title)) reasons.push("caption title words");
+  if (/\bmodel\b$/i.test(title)) reasons.push("caption title words");
   if (!Array.isArray(post.images) || post.images.filter(Boolean).length < 2) reasons.push("not enough images");
   if (cleanText(post.caption).length < 40) reasons.push("thin description");
   return reasons;
