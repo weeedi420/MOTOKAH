@@ -44,7 +44,7 @@ export function hasPremiumTitle(listing: Listing): boolean {
 export function hasPremiumVehicleIdentity(listing: Listing): boolean {
   if (!listing.make || /unknown|select|n\/a/i.test(listing.make)) return false;
   if (!listing.model || /unknown|select|n\/a|^na$|^ine$|^model$|alloy|rims?|tyres?|tires?|spare|magari|agiza|kuagiza|carsforsale|carmarket|dreamcars|reliable/i.test(listing.model)) return false;
-  if (!listing.year || listing.year < 2000 || listing.year > new Date().getFullYear() + 1) return false;
+  if (!listing.year || (listing.bodyType !== "Boat" && listing.year < 2000) || listing.year > new Date().getFullYear() + 1) return false;
   return true;
 }
 
@@ -62,6 +62,10 @@ export function isLaunchQualityListing(listing: Listing): boolean {
   if (isGenericScraperSeller(listing.sellerName)) return false;
   if (listing.sellerType === "dealer" && !hasUsablePhone(listing.sellerPhone)) return false;
   if (!listing.price || listing.price <= 0) return false;
+  if (listing.currency === "KES" && (listing.price < 100_000 || listing.price > 60_000_000)) return false;
+  if (listing.currency === "TZS" && (listing.price < 1_000_000 || listing.price > 1_500_000_000)) return false;
+  if (listing.currency === "UGX" && (listing.price < 5_000_000 || listing.price > 2_500_000_000)) return false;
+  if (listing.currency === "USD" && (listing.price < 1_000 || listing.price > 1_000_000)) return false;
   if (!hasPremiumVehicleIdentity(listing)) return false;
   if (!hasPremiumTitle(listing)) return false;
   if (!hasPremiumImages(listing)) return false;

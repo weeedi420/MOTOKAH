@@ -15,8 +15,8 @@ export function useListing(id: string | undefined) {
   useEffect(() => {
     if (!id) { setLoading(false); return; }
 
-    // Handle all non-Supabase listings (mock-, ig-, ib-, jiji-)
-    if (id.startsWith("mock-") || id.startsWith("ig-") || id.startsWith("ib-") || id.startsWith("jiji-")) {
+    // Handle all non-Supabase listings (mock-, ig-, ib-, jiji-, boat-)
+    if (id.startsWith("mock-") || id.startsWith("ig-") || id.startsWith("ib-") || id.startsWith("jiji-") || id.startsWith("boat-")) {
       let mock: Listing | undefined = mockListings.find((m) => m.id === id);
 
       // ig- listings created by getShowroomListings aren't in mockListings

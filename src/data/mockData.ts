@@ -263,6 +263,14 @@ function _parseMgayaPrice(raw: string | null): number {
   return 0;
 }
 
+function _normalizePriceForCurrency(price: number, currency: string): number {
+  if (!price || price <= 0) return 0;
+  if (currency === "KES" && price > 60_000_000) return Math.round(price / 1000);
+  if (currency === "UGX" && price > 2_500_000_000) return Math.round(price / 1000);
+  if (currency === "TZS" && price > 1_500_000_000) return Math.round(price / 1000);
+  return price;
+}
+
 // Known East African car brands for first-line extraction
 const _CAR_BRANDS = ["toyota","nissan","mitsubishi","subaru","honda","mazda","bmw","mercedes","benz","mercedes-benz","audi","volkswagen","vw","land rover","range rover","hyundai","kia","isuzu","suzuki","ford","jeep","lexus","peugeot","volvo","porsche","maserati","ferrari","lamborghini","bentley","rolls royce","cadillac","dodge","chrysler","buick","opel","renault","fiat","alfa romeo","jaguar","infiniti","acura","lincoln","buick","hummer","pontiac","saturn","mercury","oldsmobile","daewoo","ssangyong","mahindra","tata","bajaj","tvs","yamaha","honda","kawasaki","ktm","piaggio","vespa","triumph","harley","ducati","royal enfield"];
 
@@ -545,10 +553,11 @@ function _convertAllShowroomsToListings(): Listing[] {
     for (const post of carPosts) {
       const info = _parseMgayaCaption(post.caption);
       const images = _postImages(username, post);
+      const price = _normalizePriceForCurrency(info.price, currency);
       results.push({
         id: `ig-${username}-${post.shortcode}`,
         title: info.title,
-        price: info.price,
+        price,
         currency,
         condition: "Foreign Used" as const,
         year: info.year || (post.date ? new Date(post.date).getFullYear() : 0),
@@ -586,9 +595,13 @@ function _isLaunchQualityListing(listing: Listing): boolean {
   if (listing.sellerId === "ibaraki" || listing.sellerId === "mock-dealer-ibaraki") return false;
   if (listing.id.startsWith("jiji-")) return false;
   if (!listing.price || listing.price <= 0) return false;
+  if (listing.currency === "KES" && (listing.price < 100_000 || listing.price > 60_000_000)) return false;
+  if (listing.currency === "TZS" && (listing.price < 1_000_000 || listing.price > 1_500_000_000)) return false;
+  if (listing.currency === "UGX" && (listing.price < 5_000_000 || listing.price > 2_500_000_000)) return false;
+  if (listing.currency === "USD" && (listing.price < 1_000 || listing.price > 1_000_000)) return false;
   if (!listing.make || /unknown|select|n\/a/i.test(listing.make)) return false;
   if (!listing.model || /unknown|select|n\/a|^na$|^ine$|^model$|alloy|rims?|tyres?|tires?|spare|magari|agiza|kuagiza|carsforsale|carmarket|dreamcars|reliable/i.test(listing.model)) return false;
-  if (!listing.year || listing.year < 2000 || listing.year > new Date().getFullYear() + 1) return false;
+  if (!listing.year || (listing.bodyType !== "Boat" && listing.year < 2000) || listing.year > new Date().getFullYear() + 1) return false;
   if (title.length < 10 || title.length > 90) return false;
   if (/^(vehicle|car|cars|used cars?|magari|stock|new stock|available|sold|ask|asking|price|bei|contact|call|whatsapp|official|import|imports)$/i.test(title)) return false;
   if (/\b(ask|asking|contact for price|call for price|dm for price|price on request|inbox|whatsapp|call now|official|follow|subscribe|sold out|sold|reserved)\b/i.test(title)) return false;
@@ -603,9 +616,149 @@ function _isLaunchQualityListing(listing: Listing): boolean {
   return true;
 }
 
+function _boatImages(slug: string, count: number): string[] {
+  return Array.from({ length: count }, (_, index) => `/boats/nicolette/${slug}-${String(index + 1).padStart(2, "0")}.webp`);
+}
+
+function _nicoletteBoatListings(): Listing[] {
+  const seller = {
+    sellerName: "Nicolette",
+    sellerRating: 4.7,
+    sellerType: "dealer" as const,
+    sellerListingCount: 7,
+    sellerPhone: "+255765407462",
+    sellerId: "mock-dealer-nicolette-boats",
+    location: "Dar es Salaam, TZ",
+    country: "TZ",
+    bodyType: "Boat",
+    fuelType: "Petrol",
+    condition: "Used" as const,
+    transmission: "Automatic",
+  };
+  const rows: Array<Omit<Listing, keyof typeof seller | "image" | "images" | "views"> & { slug: string; imageCount: number; views: number }> = [
+    {
+      id: "boat-nicolette-island-spirit-38-40",
+      title: "2000 Island Spirit 38/40 Catamaran",
+      make: "Island Spirit",
+      model: "38/40 Catamaran",
+      year: 2000,
+      price: 175000,
+      currency: "USD",
+      mileage: 0,
+      cc: 0,
+      slug: "island-spirit-38-40",
+      imageCount: 22,
+      views: 146,
+      description: "Island Spirit 38/40 bluewater cruising catamaran located in Dar es Salaam. One-owner vessel with a major November 2024 refit, new engines, new plumbing and seacocks, complete electrical rewiring, new trampolines, four double cabins and a spacious liveaboard layout. Ready for tropical and Indian Ocean cruising.",
+    },
+    {
+      id: "boat-nicolette-jonmeri-40",
+      title: "Jonmeri 40 Classic Bluewater Cruiser",
+      make: "Jonmeri",
+      model: "40 Bluewater Cruiser",
+      year: 1985,
+      price: 60000,
+      currency: "USD",
+      mileage: 0,
+      cc: 0,
+      slug: "jonmeri-40",
+      imageCount: 8,
+      views: 118,
+      description: "Jonmeri 40 classic Finnish bluewater cruiser priced to sell. Built for serious sailing, with a solid hull design, deep fin keel and balanced sail plan. Located in Dar es Salaam with access to Zanzibar, Mafia, Pemba, Comoros, Mayotte, Seychelles and Madagascar cruising routes.",
+    },
+    {
+      id: "boat-nicolette-social-cruiser-12m",
+      title: "2021 Custom 12m Guest And Island Trip Boat",
+      make: "Custom",
+      model: "12m Guest Boat",
+      year: 2021,
+      price: 48000,
+      currency: "USD",
+      mileage: 0,
+      cc: 0,
+      slug: "social-cruiser-12m",
+      imageCount: 3,
+      views: 102,
+      description: "Classy 12 meter guest boat for up to 24 passengers. Suitable for sundowner trips, snorkeling trips, island transfers and scuba-diving groups. Equipped with a 400 liter fuel tank and twin Yamaha 250 hp engines. Well maintained and ready for seasonal commercial use.",
+    },
+    {
+      id: "boat-nicolette-sea-ray-26ft",
+      title: "2021 Refurbished Sea Ray 26ft Centre Console",
+      make: "Sea Ray",
+      model: "26ft Centre Console",
+      year: 2021,
+      price: 29900,
+      currency: "USD",
+      mileage: 0,
+      cc: 0,
+      slug: "sea-ray-26ft-centre-console",
+      imageCount: 6,
+      views: 96,
+      description: "8 meter / 26 ft Sea Ray centre-console boat refurbished in 2021. Family, cruising, fishing and watersports setup with seating for 8 people, storage, twin V-drive Yamaha 150 hp two-stroke engines, GPS fish finder, safety equipment and comfortable deck layout.",
+    },
+    {
+      id: "boat-nicolette-catamaran-hull-19ft",
+      title: "2024 Custom 19ft Catamaran-Hull Powerboat",
+      make: "Custom",
+      model: "19ft Catamaran-Hull Powerboat",
+      year: 2024,
+      price: 19000,
+      currency: "USD",
+      mileage: 0,
+      cc: 0,
+      slug: "catamaran-hull-19ft-powerboat",
+      imageCount: 3,
+      views: 88,
+      description: "Full fibre 19 ft catamaran-hull centre-console powerboat. Recently fitted with two brand-new Mercury Seapro 60 hp four-stroke engines. Stable double-hull design suitable for fishing, leisure cruising, island hopping and towing watersports gear.",
+    },
+    {
+      id: "boat-nicolette-kaptein-18ft",
+      title: "2026 Kaptein 18ft Leisure And Fishing Boat",
+      make: "Kaptein",
+      model: "18ft Leisure Boat",
+      year: 2026,
+      price: 17000,
+      currency: "USD",
+      mileage: 0,
+      cc: 0,
+      slug: "kaptein-18ft",
+      imageCount: 8,
+      views: 84,
+      description: "Kaptein 18 ft leisure and fishing boat with room for a small group. Comes with trailer, swimming ladder and documented maintenance history. Suitable for fishing, short cruises and leisure days on the water.",
+    },
+    {
+      id: "boat-nicolette-shirin-18-5ft",
+      title: "2013 Shirin 18.5ft Powerboat",
+      make: "Shirin",
+      model: "18.5ft Powerboat",
+      year: 2013,
+      price: 15000,
+      currency: "USD",
+      mileage: 0,
+      cc: 3000,
+      slug: "shirin-18-5ft-powerboat",
+      imageCount: 5,
+      views: 91,
+      description: "Shirin 18.5 ft powerboat from 2013 with a 135 hp 3.0 liter Mercury MerCruiser engine. Engine recently overhauled. Built for cruising, island hopping, wakeboarding and waterskiing, with a reduced asking price.",
+    },
+  ];
+
+  return rows.map((row) => {
+    const images = _boatImages(row.slug, row.imageCount);
+    const { slug, imageCount, ...listing } = row;
+    return {
+      ...listing,
+      ...seller,
+      image: images[0],
+      images,
+    };
+  });
+}
+
 export const mockListings: Listing[] = [
   ..._convertMgayaToListings(),
   ..._convertAllShowroomsToListings(),
+  ..._nicoletteBoatListings(),
 
   // ─── Additional private seller listings — various cities across East Africa ──
   {
@@ -980,6 +1133,19 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
 }
 
 export const mockDealers: MockDealer[] = [
+  {
+    user_id: "mock-dealer-nicolette-boats",
+    display_name: "Nicolette",
+    city: "Dar es Salaam",
+    phone: "+255 765 407 462",
+    avatar_url: null,
+    verified_at: "2026-06-30T00:00:00Z",
+    listing_count: 7,
+    rating: 4.7,
+    description: "Nicolette — boats and marine listings in Dar es Salaam, including cruising yachts, centre-console powerboats and leisure boats.",
+    address: "Dar es Salaam, Tanzania",
+    postal_code: "",
+  },
   {
     user_id: "mock-dealer-mgayamotors",
     display_name: "Mgaya Motors TZ",

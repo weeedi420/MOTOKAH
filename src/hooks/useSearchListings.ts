@@ -210,6 +210,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       const validateListing = (l: Listing, isMock = false) => {
         if (!l.price || l.price <= 0) return false;
         if (!isMock) return true;
+        if (l.bodyType === "Boat") return true;
         if (l.mileage === 0 && l.condition !== "New") return false;
         if (!l.transmission) return false;
         return true;

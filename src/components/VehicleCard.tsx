@@ -7,9 +7,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { usePriceFormatter } from "@/lib/prices";
 
-function thumbUrl(src: string, width = 600): string {
+function thumbUrl(src: string, width = 560): string {
   if (!src.includes("eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/")) return src;
-  return src.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + `?width=${width}&quality=75&resize=cover`;
+  return src.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + `?width=${width}&height=${Math.round(width * 0.75)}&quality=62&resize=cover`;
 }
 
 export default function VehicleCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
@@ -88,7 +88,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
         )}
         {listing.image && !imgError ? (
           <img
-            src={useOriginalSrc ? listing.image : thumbUrl(listing.image, priority ? 800 : 600)}
+            src={useOriginalSrc ? listing.image : thumbUrl(listing.image, priority ? 720 : 560)}
             alt={listing.title}
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={priority ? "eager" : "lazy"}
