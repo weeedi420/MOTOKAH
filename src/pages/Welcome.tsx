@@ -66,7 +66,7 @@ const translations: Record<LangCode, {
     step2Title: "Choose Language",
     step2Desc: "Pick your preferred language for the app interface",
     step3Title: "Browse & Search",
-    step3Desc: "Explore thousands of vehicles, filter by make, model, price & more",
+    step3Desc: "Explore vehicle listings, filter by make, model, price & more",
     step4Title: "Connect & Buy",
     step4Desc: "Message sellers directly, save favorites, and compare listings",
     gotIt: "Got it!",

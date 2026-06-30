@@ -277,6 +277,9 @@ function _extractMakeModelFromLine(line: string): { make: string | null; model: 
       const modelRaw = rest.replace(/^\s*[-:]\s*/, "")
         .split(/[,\n|]/)[0]           // stop at comma, newline, or pipe (AL-HUSNAIN format)
         .replace(/\b(19|20)\d{2}\b/g, "") // strip duplicate years from model
+        .replace(/\b(?:asking\s+)?(?:price|bei)\b.*$/i, "")
+        .replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "")
+        .replace(/\b(?:contact|call|whatsapp|dm|inbox)\b.*$/i, "")
         .replace(/\s{2,}/g, " ").trim().slice(0, 40);
       return { make: makeCapitalized, model: modelRaw || null };
     }
@@ -538,7 +541,24 @@ function _convertAllShowroomsToListings(): Listing[] {
 }
 
 function _isLaunchQualityListing(listing: Listing): boolean {
-  return listing.sellerId !== "ibaraki" && listing.sellerId !== "mock-dealer-ibaraki";
+  const title = (listing.title || "").replace(/\s+/g, " ").trim();
+  const images = listing.images?.filter(Boolean) || (listing.image ? [listing.image] : []);
+  if (listing.sellerId === "ibaraki" || listing.sellerId === "mock-dealer-ibaraki") return false;
+  if (listing.id.startsWith("jiji-")) return false;
+  if (!listing.price || listing.price <= 0) return false;
+  if (!listing.make || /unknown|select|n\/a/i.test(listing.make)) return false;
+  if (!listing.model || /unknown|select|n\/a/i.test(listing.model)) return false;
+  if (!listing.year || listing.year < 1990 || listing.year > new Date().getFullYear() + 1) return false;
+  if (title.length < 10 || title.length > 90) return false;
+  if (/^(vehicle|car|cars|used cars?|magari|stock|new stock|available|sold|ask|asking|price|bei|contact|call|whatsapp|official|import|imports)$/i.test(title)) return false;
+  if (/\b(ask|asking|contact for price|call for price|dm for price|price on request|inbox|whatsapp|call now|official|follow|subscribe|sold out|sold|reserved)\b/i.test(title)) return false;
+  if (/\b(price|bei|whatsapp|contact|call|dm|inbox)\b/i.test(title)) return false;
+  if (/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\b/i.test(title)) return false;
+  if (/^(price|bei|engine|mileage|transmission|fuel|color|colour|location)\b/i.test(title)) return false;
+  if (listing.id.startsWith("ig-") && images.length < 2) return false;
+  if (images.length < 1) return false;
+  if ((listing.description || "").length < 40 && listing.id.startsWith("ig-")) return false;
+  return true;
 }
 
 export const mockListings: Listing[] = [
@@ -1420,5 +1440,5 @@ export function getShowroomListings(username: string): Listing[] {
       description: (post.caption || "").slice(0, 300),
       sourceUrl: post.url || "",
     };
-  });
+  }).filter(_isLaunchQualityListing);
 }

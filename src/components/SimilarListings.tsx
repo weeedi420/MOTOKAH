@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import VehicleCard from "./VehicleCard";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing } from "@/data/mockData";
+import { isLaunchQualityListing } from "@/lib/listingQuality";
 
 const defaultImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop";
 
@@ -34,7 +35,7 @@ export default function SimilarListings({ currentId, make, bodyType }: SimilarLi
         .neq("id", currentId)
         .limit(4)).data || [];
 
-      setSimilar(mapRows(rows));
+      setSimilar(mapRows(rows).filter(isLaunchQualityListing));
     };
     fetch();
   }, [currentId, make, bodyType]);
@@ -60,6 +61,7 @@ export default function SimilarListings({ currentId, make, bodyType }: SimilarLi
         sellerRating: 4.5,
         sellerType: "private" as const,
         sellerListingCount: 1,
+        sellerPhone: "+255700000001",
         bodyType: r.body_type || undefined,
         fuelType: r.fuel_type || undefined,
         make: r.make,

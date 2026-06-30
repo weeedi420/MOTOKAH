@@ -153,9 +153,9 @@ const blogPostPages = blogPostSlugs.map(slug => ({
   pri: 0.7,
 }));
 
-// Country-level search pages
-const countryPages = ["Kenya","Tanzania","Uganda","Rwanda","Ethiopia"].map(c => ({
-  path: `/search?country=${encodeURIComponent(c)}`,
+// Country-level landing pages
+const countryPages = ["Kenya","Tanzania","Uganda","Rwanda","Ethiopia","Nigeria","Burundi"].map(c => ({
+  path: `/country/${c.toLowerCase().replace(/\s+/g, "-")}`,
   freq: "daily",
   pri: 0.85,
 }));
@@ -183,7 +183,7 @@ const lines = [
   "  <!-- City landing pages -->",
   ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
   "",
-  "  <!-- Country search pages -->",
+  "  <!-- Country landing pages -->",
   ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
   "  <!-- Model landing pages -->",

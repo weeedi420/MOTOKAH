@@ -45,7 +45,7 @@ export default function LocationSection() {
           {["Tanzania", "Kenya", "Uganda", "Rwanda", "Ethiopia", "Nigeria", "Burundi"].map((c) => (
             <Link
               key={c}
-              to={`/search?country=${encodeURIComponent(c)}`}
+              to={`/country/${c.toLowerCase().replace(/\s+/g, "-")}`}
               className="px-4 py-2 bg-card border border-border rounded-full text-sm hover:border-primary hover:text-primary transition-colors"
             >
               {c}

@@ -7,7 +7,7 @@ import SpecsTable from "@/components/SpecsTable";
 import SellerCard from "@/components/SellerCard";
 import SimilarListings from "@/components/SimilarListings";
 import { useListing } from "@/hooks/useListing";
-import { IconHeart, IconShare, IconFlag, IconChevronRight, IconBrandWhatsapp, IconBrandFacebook, IconBrandTwitter, IconCopy, IconX } from "@tabler/icons-react";
+import { IconHeart, IconShare, IconFlag, IconChevronRight, IconBrandWhatsapp, IconBrandFacebook, IconBrandTwitter, IconCopy, IconX, IconCalendar, IconGauge, IconManualGearbox, IconMapPin, IconPhone } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useSEO } from "@/hooks/useSEO";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { usePriceFormatter } from "@/lib/prices";
 
 const reportReasons = ["Fake listing", "Wrong price", "Duplicate", "Inappropriate content", "Scam / Fraud", "Other"];
 
@@ -30,6 +31,7 @@ export default function ListingDetail() {
   const [reportReason, setReportReason] = useState("");
   const [reportOpen, setReportOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const priceFormatter = usePriceFormatter();
 
   const city = listing?.location?.split(",")[0] ?? "";
   const seoTitle = listing
@@ -103,6 +105,7 @@ export default function ListingDetail() {
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareText = listing ? `Check out ${listing.title} on Motokah` : "Check out this listing on Motokah";
+  const sellerPhone = listing?.sellerPhone || "";
 
   const handleShare = (platform: string) => {
     const encoded = encodeURIComponent(shareUrl);
@@ -116,6 +119,16 @@ export default function ListingDetail() {
         toast.success("Link copied to clipboard!");
         break;
     }
+  };
+
+  const handleWhatsApp = () => {
+    if (!listing) return;
+    const msg = encodeURIComponent(`Hi, I'm interested in your ${listing.title} listed on Motokah.`);
+    window.open(sellerPhone ? `https://wa.me/${sellerPhone.replace(/\D/g, "")}?text=${msg}` : `https://wa.me/?text=${msg}`);
+  };
+
+  const handleCall = () => {
+    if (sellerPhone) window.open(`tel:${sellerPhone}`);
   };
 
   if (loading) {
@@ -161,19 +174,30 @@ export default function ListingDetail() {
         </nav>
       </div>
 
-      <main className="container mx-auto px-4 pb-12">
+      <main className="container mx-auto px-4 pb-28 lg:pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             <ImageGallery images={images} title={listing.title} />
 
             {/* Title + Actions */}
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-              <div>
-                <h1 className="text-2xl font-bold">{listing.title}</h1>
-                <p className="text-sm text-muted-foreground mt-1">{listing.location} • {listing.condition} • {listing.views.toLocaleString()} views</p>
+            <div className="rounded-xl border border-border bg-card p-4 md:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="min-w-0">
+                <h1 className="text-xl md:text-2xl font-bold leading-tight">{listing.title}</h1>
+                <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
+                  <IconMapPin size={15} stroke={2} />
+                  <span className="truncate">{listing.location}</span>
+                  <span>•</span>
+                  <span>{listing.condition}</span>
+                  <span>•</span>
+                  <span>{listing.views.toLocaleString()} views</span>
+                </p>
+                <p className="text-2xl md:text-3xl font-extrabold text-primary mt-3">
+                  {priceFormatter.format(listing.price, listing.currency)}
+                </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 <button
                   onClick={handleSave}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
@@ -238,40 +262,39 @@ export default function ListingDetail() {
                   </DialogContent>
                 </Dialog>
               </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
+                {[
+                  { icon: IconCalendar, label: "Year", value: listing.year || "N/A" },
+                  { icon: IconGauge, label: "Mileage", value: listing.mileage > 0 ? `${listing.mileage.toLocaleString()} km` : "N/A" },
+                  { icon: IconManualGearbox, label: "Gearbox", value: listing.transmission || "N/A" },
+                  { icon: IconMapPin, label: "Location", value: listing.location?.split(",")[0] || "N/A" },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-lg bg-muted/40 p-3">
+                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                      <item.icon size={14} stroke={2.2} className="text-primary" />
+                      {item.label}
+                    </div>
+                    <div className="text-sm font-semibold mt-1 truncate">{item.value}</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Description & Specs - PakWheels Style Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Description - Left */}
-              {(listing.description || true) && (
-                <div className="rounded-xl border border-border bg-card p-5">
-                  <h3 className="text-lg font-bold mb-3">Description</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                    {listing.description ||
-                      `${listing.year} ${listing.title} — ${listing.condition} · ${listing.transmission} · ${listing.fuelType || "Petrol"} · ${listing.mileage.toLocaleString()} km · ${listing.location}. Contact the seller for more details and to arrange a viewing.`}
-                  </p>
-                </div>
-              )}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h3 className="text-lg font-bold mb-3">Description</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                  {listing.description ||
+                    `${listing.year} ${listing.title} — ${listing.condition} · ${listing.transmission} · ${listing.fuelType || "Petrol"} · ${listing.mileage.toLocaleString()} km · ${listing.location}. Contact the seller for more details and to arrange a viewing.`}
+                </p>
+              </div>
 
               {/* Specs - Right */}
               <SpecsTable listing={listing} />
-            </div>
-
-            {/* Share Buttons */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-muted-foreground">Share:</span>
-              <button onClick={() => handleShare("whatsapp")} className="w-9 h-9 rounded-full bg-green-600 text-white flex items-center justify-center hover:bg-green-700 transition-colors">
-                <IconBrandWhatsapp size={18} stroke={1.5} />
-              </button>
-              <button onClick={() => handleShare("facebook")} className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors">
-                <IconBrandFacebook size={18} stroke={1.5} />
-              </button>
-              <button onClick={() => handleShare("twitter")} className="w-9 h-9 rounded-full bg-sky-500 text-white flex items-center justify-center hover:bg-sky-600 transition-colors">
-                <IconBrandTwitter size={18} stroke={1.5} />
-              </button>
-              <button onClick={() => handleShare("copy")} className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-muted/50 transition-colors">
-                <IconCopy size={16} stroke={2} />
-              </button>
             </div>
 
           </div>
@@ -287,6 +310,22 @@ export default function ListingDetail() {
           <SimilarListings currentId={listing.id} make={listing.make} bodyType={listing.bodyType} />
         </div>
       </main>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 shadow-2xl backdrop-blur lg:hidden safe-bottom">
+        <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] text-muted-foreground">Asking price</p>
+            <p className="truncate text-lg font-extrabold text-primary">{priceFormatter.format(listing.price, listing.currency)}</p>
+          </div>
+          <button onClick={handleCall} disabled={!sellerPhone} className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-primary-foreground disabled:opacity-50">
+            <IconPhone size={20} stroke={2.5} />
+          </button>
+          <button onClick={handleWhatsApp} className="flex h-11 items-center justify-center gap-2 rounded-lg bg-green-600 px-4 text-sm font-bold text-white">
+            <IconBrandWhatsapp size={20} stroke={2.2} />
+            WhatsApp
+          </button>
+        </div>
+      </div>
 
       <Footer />
     </div>

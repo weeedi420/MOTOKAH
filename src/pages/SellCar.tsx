@@ -192,7 +192,7 @@ export default function SellCar() {
               <div className="flex-1">
                 <h2 className="font-bold text-foreground text-lg mb-3">Sell it Myself!</h2>
                 <ul className="space-y-2 text-sm text-muted-foreground mb-5">
-                  {["Post an Ad in 2 minutes", "Reach thousands of buyers", "Connect Directly with Buyers"].map((t) => (
+                  {["Post an Ad in 2 minutes", "Reach serious buyers", "Connect Directly with Buyers"].map((t) => (
                     <li key={t} className="flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center shrink-0">
                         <IconCheck size={12} className="text-success" />

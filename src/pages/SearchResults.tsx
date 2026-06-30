@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { sanitizeCalloutPricingText } from "@/lib/seoText";
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,20 +39,22 @@ export default function SearchResults() {
   const seoVehicleType = searchParams.get("vehicleType") || "";
   const location = seoCity || seoCountry;
   const vehicleLabel = seoVehicleType === "bike" ? "Bikes" : seoVehicleType === "commercial" ? "Commercial Vehicles" : "Cars";
-  const seoTitle = seoMake && location
+  const rawSeoTitle = seoMake && location
     ? `${seoMake} ${vehicleLabel} for Sale in ${location} | Motokah`
     : seoMake
     ? `${seoMake} ${vehicleLabel} for Sale in East Africa | Motokah`
     : location
     ? `${vehicleLabel} for Sale in ${location} | Motokah`
     : `Search ${vehicleLabel} for Sale in East Africa | Motokah`;
-  const seoDesc = seoMake && location
-    ? `Buy ${seoMake} ${vehicleLabel.toLowerCase()} in ${location}. Browse verified listings from trusted dealers and private sellers on Motokah.`
+  const rawSeoDesc = seoMake && location
+    ? `Buy ${seoMake} ${vehicleLabel.toLowerCase()} in ${location}. Browse dealer and private listings on Motokah.`
     : seoMake
     ? `Find ${seoMake} ${vehicleLabel.toLowerCase()} for sale across East Africa. Compare prices, check mileage and contact sellers on Motokah.`
     : location
     ? `Browse ${vehicleLabel.toLowerCase()} for sale in ${location}. Find dealer and private listings with photos, specs and seller contact details.`
     : `Search ${vehicleLabel.toLowerCase()} for sale across Kenya, Tanzania, Uganda, Rwanda and East Africa on Motokah.`;
+  const seoTitle = sanitizeCalloutPricingText(rawSeoTitle);
+  const seoDesc = sanitizeCalloutPricingText(rawSeoDesc);
   const canonicalParams = new URLSearchParams();
   if (seoMake) canonicalParams.set("make", seoMake);
   if (seoCity) canonicalParams.set("city", seoCity);

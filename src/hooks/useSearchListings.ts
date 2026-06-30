@@ -295,7 +295,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         if (!validateListing(l, false)) return false;
         if (isJijiImage(l.image) || l.images?.some(isJijiImage)) return false;
         if (isGenericScraperSeller(l.sellerName)) return false;
-        return hasUsablePhone(l.sellerPhone);
+        if (!hasUsablePhone(l.sellerPhone)) return false;
+        return isLaunchQualityListing(l);
       });
       const shouldInjectMocks = !filters.bodyType?.length || validMapped.length < 5;
       const realIds = new Set(validMapped.map(r => r.id));

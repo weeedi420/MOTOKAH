@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { sanitizeCalloutPricingText } from "@/lib/seoText";
 
 interface SEOOptions {
   title?: string;
@@ -21,10 +22,10 @@ function setMeta(name: string, content: string, isProperty = false) {
 
 export function useSEO({ title, description, image, url, type = "website" }: SEOOptions) {
   useEffect(() => {
-    const fullTitle = title ? `${title} | Motokah` : "Motokah — Find Your Perfect Ride";
+    const fullTitle = sanitizeCalloutPricingText(title ? `${title} | Motokah` : "Motokah — Find Your Perfect Ride");
     const desc =
-      description ||
-      "Buy and sell cars, bikes & vehicles across Africa. Trusted marketplace with verified sellers.";
+      sanitizeCalloutPricingText(description ||
+      "Buy and sell cars, bikes & vehicles across Africa. Trusted marketplace with verified sellers.");
     const canonicalUrl = url || (typeof window !== "undefined" ? window.location.href : "https://www.motokah.com");
 
     document.title = fullTitle;

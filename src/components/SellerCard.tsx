@@ -54,7 +54,7 @@ export default function SellerCard({ listing }: SellerCardProps) {
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-4 lg:sticky lg:top-24">
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
           {listing.sellerName.charAt(0)}
@@ -96,9 +96,9 @@ export default function SellerCard({ listing }: SellerCardProps) {
               <IconBrandWhatsapp size={20} stroke={2} />
               WhatsApp
             </button>
-            <button onClick={handleCall} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-colors">
+            <button onClick={handleCall} disabled={!phone} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               <IconPhone size={18} stroke={2.5} />
-              Call Seller
+              {phone ? "Call Seller" : "Phone pending"}
             </button>
             <button onClick={handleMessage} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-border hover:bg-muted/50 font-semibold text-sm transition-colors">
               <IconMessage size={18} stroke={2.5} />

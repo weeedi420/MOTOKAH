@@ -64,6 +64,7 @@ import DutyCalculator from "./pages/DutyCalculator.tsx";
 import DealerLeads from "./pages/DealerLeads.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import CityLandingPage from "./pages/CityLandingPage.tsx";
+import CountryLandingPage from "./pages/CountryLandingPage.tsx";
 import Welcome from "./pages/Welcome.tsx";
 import InstagramShowroom from "./pages/InstagramShowroom.tsx";
 import PromoVideo from "./pages/PromoVideo.tsx";
@@ -138,6 +139,7 @@ function AnimatedRoutes() {
               <Route path="/duty-calculator" element={<DutyCalculator />} />
               <Route path="/dealer-leads" element={<DealerLeads />} />
               <Route path="/city/:slug" element={<CityLandingPage />} />
+              <Route path="/country/:slug" element={<CountryLandingPage />} />
               <Route path="/showroom/:username" element={<InstagramShowroom />} />
               <Route path="/promo" element={<PromoVideo />} />
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />

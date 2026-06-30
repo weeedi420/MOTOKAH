@@ -123,11 +123,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           make: r.make,
           model: r.model,
         };
-      }).filter((listing) => {
-        if (isJijiImage(listing.image)) return false;
-        if (isGenericScraperSeller(listing.sellerName)) return false;
-        return hasUsablePhone(listing.sellerPhone);
-      });
+      }).filter(isLaunchQualityListing);
 
       const dbIds = new Set(mapped.map((m) => m.id));
       const jiji = await getJijiListings(country);

@@ -261,7 +261,7 @@ export default function DealerLeads() {
             <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
               <IconBrandInstagram size={18} className="text-pink-500" />
               Instagram Showrooms
-              <span className="text-xs font-normal text-muted-foreground">— live listings from verified dealers</span>
+              <span className="text-xs font-normal text-muted-foreground">— live dealer listings</span>
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {IG_SHOWROOMS.map((s) => {

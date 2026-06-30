@@ -27,22 +27,25 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
   return (
     <div className="space-y-3">
       {/* Main Image */}
-      <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted group">
+      <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted group select-none">
         <img
           src={images[activeIndex]}
           alt={`${title} - Image ${activeIndex + 1}`}
-          className={`w-full h-full object-cover transition-transform duration-300 ${zoomed ? "scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
+          className={`w-full h-full object-cover transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
           onClick={() => setZoomed(!zoomed)}
+          draggable={false}
         />
         <button
           onClick={() => navigate("prev")}
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background/90"
+          aria-label="Previous image"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-background/95"
         >
           <IconChevronLeft size={20} stroke={2.5} />
         </button>
         <button
           onClick={() => navigate("next")}
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background/90"
+          aria-label="Next image"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-background/95"
         >
           <IconChevronRight size={20} stroke={2.5} />
         </button>

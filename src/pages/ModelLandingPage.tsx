@@ -28,9 +28,9 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Alphard",
     title: "Toyota Alphard for Sale in Kenya, Tanzania & East Africa | Motokah",
     description:
-      "Buy a used Toyota Alphard in Kenya, Tanzania, Uganda and East Africa. Browse verified Alphard listings from trusted dealers. Find prices, specs and contact sellers directly on Motokah.",
+      "Buy a used Toyota Alphard in Kenya, Tanzania, Uganda and East Africa. Browse Alphard listings from dealers and sellers. Find prices, specs and contact sellers directly on Motokah.",
     heroText:
-      "The Toyota Alphard is East Africa's most sought-after luxury MPV — find your perfect unit from verified dealers across Kenya, Tanzania, Uganda and beyond.",
+      "The Toyota Alphard is East Africa's most sought-after luxury MPV — find your perfect unit across Kenya, Tanzania, Uganda and beyond.",
     guide: {
       heading: "Toyota Alphard Price in Kenya & East Africa — Buying Guide",
       body:
@@ -53,7 +53,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
       },
       {
         q: "Where can I find Toyota Alphard dealers in Nairobi?",
-        a: "Alphard dealers in Nairobi are concentrated along Ngong Road, Mombasa Road, and Kirinyaga Road. Browse verified Alphard listings on Motokah to contact dealers directly.",
+        a: "Alphard dealers in Nairobi are concentrated along Ngong Road, Mombasa Road, and Kirinyaga Road. Browse Alphard listings on Motokah to contact sellers directly.",
       },
     ],
   },
@@ -62,7 +62,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Demio",
     title: "Mazda Demio for Sale in Kenya & East Africa | Price & Listings | Motokah",
     description:
-      "Find a Mazda Demio for sale in Kenya, Tanzania and Uganda. Compare Demio prices from trusted dealers — the most affordable and fuel-efficient hatchback in East Africa.",
+      "Find a Mazda Demio for sale in Kenya, Tanzania and Uganda. Compare Demio prices from sellers — the most affordable and fuel-efficient hatchback in East Africa.",
     heroText:
       "The Mazda Demio is Kenya and Tanzania's favourite compact hatchback — affordable to buy, cheap to run, and easy to maintain.",
     guide: {
@@ -92,7 +92,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Vezel",
     title: "Honda Vezel for Sale in Kenya & East Africa | Price & Listings | Motokah",
     description:
-      "Buy a Honda Vezel in Kenya, Tanzania and Uganda. Browse Vezel prices and listings from verified dealers. The stylish Honda Vezel hybrid crossover — trusted by thousands of East African buyers.",
+      "Buy a Honda Vezel in Kenya, Tanzania and Uganda. Browse Vezel prices and listings from dealers and sellers. The stylish Honda Vezel hybrid crossover is popular with East African buyers.",
     heroText:
       "The Honda Vezel is one of the fastest-growing crossovers in Kenya and Tanzania — combining SUV styling with hatchback efficiency and hybrid power.",
     guide: {
@@ -122,7 +122,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Harrier",
     title: "Toyota Harrier for Sale in Kenya, Tanzania & East Africa | Motokah",
     description:
-      "Find a Toyota Harrier for sale in Kenya, Tanzania and Uganda. Browse Harrier prices and listings from verified dealers. Luxury SUV comfort at Japanese-used-car value.",
+      "Find a Toyota Harrier for sale in Kenya, Tanzania and Uganda. Browse Harrier prices and listings from dealers and sellers. Luxury SUV comfort at Japanese-used-car value.",
     heroText:
       "The Toyota Harrier is East Africa's premium crossover of choice — combining Land Cruiser reliability with executive-class comfort at an accessible price.",
     guide: {
@@ -152,7 +152,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Probox",
     title: "Toyota Probox for Sale in Kenya & East Africa | Price & Listings | Motokah",
     description:
-      "Buy a Toyota Probox in Kenya, Tanzania and Uganda. Compare Probox prices from trusted dealers — Kenya's most popular salesman car, courier vehicle and family workhorse.",
+      "Buy a Toyota Probox in Kenya, Tanzania and Uganda. Compare Probox prices from sellers — Kenya's popular salesman car, courier vehicle and family workhorse.",
     heroText:
       "The Toyota Probox is Kenya's most popular budget car — impossible to break, cheap to run, and found in every corner of East Africa.",
     guide: {
@@ -182,7 +182,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Forester",
     title: "Subaru Forester for Sale in Kenya & East Africa | Price & Listings | Motokah",
     description:
-      "Buy a Subaru Forester in Kenya, Tanzania and Uganda. Browse Forester prices from verified dealers — the AWD workhorse built for East African roads.",
+      "Buy a Subaru Forester in Kenya, Tanzania and Uganda. Browse Forester prices from dealers and sellers — the AWD workhorse built for East African roads.",
     heroText:
       "The Subaru Forester is Kenya's favourite all-wheel-drive family car — powerful, spacious, and built for East Africa's highlands and rough terrain.",
     guide: {
@@ -212,7 +212,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Fielder",
     title: "Toyota Fielder for Sale in Kenya & East Africa | Price & Listings | Motokah",
     description:
-      "Buy a Toyota Fielder in Kenya, Tanzania and Uganda. Browse Fielder prices from trusted dealers — the most popular estate car in East Africa.",
+      "Buy a Toyota Fielder in Kenya, Tanzania and Uganda. Browse Fielder prices from sellers — the popular estate car in East Africa.",
     heroText:
       "The Toyota Fielder is East Africa's best-selling estate car — spacious, reliable, and available at every budget from KES 700K to over KES 2 million.",
     guide: {
@@ -268,7 +268,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Hilux",
     title: "Toyota Hilux for Sale in Kenya, Tanzania & East Africa | Motokah",
     description:
-      "Buy a Toyota Hilux in Kenya, Tanzania, Uganda and East Africa. Browse Hilux prices from trusted dealers — the most reliable pickup truck in Africa.",
+      "Buy a Toyota Hilux in Kenya, Tanzania, Uganda and East Africa. Browse Hilux prices from sellers — one of Africa's most reliable pickup trucks.",
     heroText:
       "The Toyota Hilux is Africa's most popular and trusted pickup truck — built for every road and every job across East Africa.",
     guide: {
@@ -294,7 +294,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayModel: "Vitz",
     title: "Toyota Vitz for Sale in Kenya & East Africa | Price & Listings | Motokah",
     description:
-      "Find a Toyota Vitz for sale in Kenya, Tanzania and Uganda. Compare Vitz prices from trusted dealers — the most popular budget hatchback in East Africa.",
+      "Find a Toyota Vitz for sale in Kenya, Tanzania and Uganda. Compare Vitz prices from sellers — a popular budget hatchback in East Africa.",
     heroText:
       "The Toyota Vitz is East Africa's most popular budget hatchback — ultra-reliable, fuel-efficient, and available from as little as KES 400,000.",
     guide: {
@@ -386,10 +386,10 @@ export default function ModelLandingPage() {
   const pageTitle = info?.title ?? `${makeTitle} ${modelTitle} for Sale in East Africa | Motokah`;
   const pageDesc =
     info?.description ??
-    `Browse used ${makeTitle} ${modelTitle} cars for sale in Kenya, Tanzania, Uganda and East Africa. Compare prices from trusted dealers on Motokah.`;
+    `Browse used ${makeTitle} ${modelTitle} cars for sale in Kenya, Tanzania, Uganda and East Africa. Compare prices and contact sellers on Motokah.`;
   const heroText =
     info?.heroText ??
-    `Find your perfect ${makeTitle} ${modelTitle} from verified dealers across East Africa. Compare prices and contact sellers directly.`;
+    `Find your perfect ${makeTitle} ${modelTitle} across East Africa. Compare prices and contact sellers directly.`;
 
   const { listings, loading } = useSearchListings(
     { make: makeTitle, model: modelTitle },

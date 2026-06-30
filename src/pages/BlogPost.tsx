@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconCalendar, IconArrowLeft } from "@tabler/icons-react";
 import { format } from "date-fns";
+import { sanitizeCalloutPricingText } from "@/lib/seoText";
 
 type BlogPostData = {
   id: string;
@@ -24,7 +25,7 @@ export default function BlogPost() {
   usePageTitle(post ? `${post.title} | Motokah Blog` : "Blog Post");
 
   const seoDesc = post
-    ? post.content.replace(/\n+/g, " ").trim().slice(0, 160)
+    ? sanitizeCalloutPricingText(post.content.replace(/\n+/g, " ").trim().slice(0, 160))
     : undefined;
   const canonicalUrl = post
     ? `https://www.motokah.com/blog/${post.slug}`
@@ -48,10 +49,10 @@ export default function BlogPost() {
     <div className="min-h-screen bg-background">
       {post && (
         <Helmet>
-          <title>{post.title} | Motokah Blog</title>
+          <title>{sanitizeCalloutPricingText(`${post.title} | Motokah Blog`)}</title>
           <meta name="description" content={seoDesc} />
           <link rel="canonical" href={canonicalUrl} />
-          <meta property="og:title" content={post.title} />
+          <meta property="og:title" content={sanitizeCalloutPricingText(post.title)} />
           <meta property="og:description" content={seoDesc} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={canonicalUrl} />
@@ -59,7 +60,7 @@ export default function BlogPost() {
           <script type="application/ld+json">{JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: post.title,
+            headline: sanitizeCalloutPricingText(post.title),
             description: seoDesc,
             datePublished: post.created_at,
             dateModified: post.created_at,
