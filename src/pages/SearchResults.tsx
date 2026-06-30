@@ -61,6 +61,10 @@ export default function SearchResults() {
   if (seoCountry) canonicalParams.set("country", seoCountry);
   if (seoVehicleType) canonicalParams.set("vehicleType", seoVehicleType);
   const seoCanonical = `https://www.motokah.com/search${canonicalParams.toString() ? "?" + canonicalParams.toString() : ""}`;
+  const urlBodyTypes = searchParams.getAll("bodyType").length > 0
+    ? searchParams.getAll("bodyType")
+    : (searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : []);
+  const isBoatCategoryUrl = urlBodyTypes.includes("Boat");
 
   const [filters, setFilters] = useState<Filters>(() => ({
     ...defaultFilters,
@@ -69,8 +73,8 @@ export default function SearchResults() {
     city: searchParams.get("city") || "",
     country: searchParams.get("country")
       || (searchParams.get("city") ? cityToCountry[searchParams.get("city")!] || "" : "")
-      || (locationCountry !== "All" ? locationCountry : ""),
-    bodyType: searchParams.getAll("bodyType").length > 0 ? searchParams.getAll("bodyType") : (searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : []),
+      || (isBoatCategoryUrl ? "" : (locationCountry !== "All" ? locationCountry : "")),
+    bodyType: urlBodyTypes,
     transmission: searchParams.get("transmission") || "",
     minPrice: searchParams.get("minPrice") || "",
     maxPrice: searchParams.get("maxPrice") || "",
@@ -80,13 +84,13 @@ export default function SearchResults() {
   // Sync filters when the user changes country in the header
   // Don't override if city URL param already resolved a specific country
   useEffect(() => {
-    if (!searchParams.get("country") && !searchParams.get("city")) {
+    if (!searchParams.get("country") && !searchParams.get("city") && !isBoatCategoryUrl) {
       setFilters(prev => ({
         ...prev,
         country: locationCountry !== "All" ? locationCountry : "",
       }));
     }
-  }, [locationCountry]);
+  }, [locationCountry, isBoatCategoryUrl]);
 
   // Sync URL params when filters change
   const updateFilters = (newFilters: Filters) => {

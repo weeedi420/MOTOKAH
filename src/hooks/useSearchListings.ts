@@ -299,7 +299,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         if (!hasUsablePhone(l.sellerPhone)) return false;
         return isLaunchQualityListing(l);
       });
-      const shouldInjectMocks = !filters.bodyType?.length || validMapped.length < 5;
+      const shouldInjectMocks = filters.bodyType?.includes("Boat") || !filters.bodyType?.length || validMapped.length < 5;
       const realIds = new Set(validMapped.map(r => r.id));
       const uniqueMocks = shouldInjectMocks ? mocks.filter(m => !realIds.has(m.id) && isLaunchQualityListing(m)) : [];
       const mockIds = new Set(uniqueMocks.map(m => m.id));

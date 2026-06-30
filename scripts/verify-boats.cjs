@@ -16,12 +16,23 @@ async function main() {
     "/dealer/mock-dealer-nicolette-boats",
   ]) {
     await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle", timeout: 60000 });
-    await page.waitForTimeout(750);
+    if (route.startsWith("/search")) {
+      await page.waitForFunction(() => {
+        const text = document.body.innerText;
+        const cards = document.querySelectorAll('a[href^="/listing/"]').length;
+        return cards > 0 || /No vehicles found|No cars found|Something went wrong/i.test(text);
+      }, { timeout: 8000 }).catch(() => {});
+    } else {
+      await page.waitForTimeout(750);
+    }
     const text = await page.locator("body").innerText();
+    const listingLinks = await page.locator('a[href^="/listing/"]').count();
+    const searchRouteOk = !route.startsWith("/search") || (listingLinks > 0 && !/No vehicles found|No cars found/i.test(text));
     checks.push({
       route,
-      ok: !/Something went wrong|Cannot read properties|TypeError|Contact for price/i.test(text),
+      ok: !/Something went wrong|Cannot read properties|TypeError|Contact for price/i.test(text) && searchRouteOk,
       hasBoatCopy: /Nicolette|Island Spirit|Boat|Catamaran/i.test(text),
+      listingLinks,
     });
   }
 
