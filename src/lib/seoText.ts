@@ -10,7 +10,7 @@ export function sanitizeCalloutPricingText(text: string): string {
     (value, pattern) => value.replace(pattern, ""),
     text,
   )
-    .replace(/\s+([,.|])/g, "$1")
+    .replace(/\s+([,.])/g, "$1")
     .replace(/\s{2,}/g, " ")
     .replace(/\|\s*\|/g, "|")
     .replace(/^\s*[,.|]\s*|\s*[,.|]\s*$/g, "")

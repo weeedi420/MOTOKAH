@@ -191,10 +191,11 @@ export default function Welcome() {
   const isChangingLocation = searchParams.get("change") === "location";
   const { location, loading: detecting, setManualLocation, countryCitiesMap } = useLocationDetection();
   
-  const [step, setStep] = useState<"detecting" | "country" | "city" | "language" | "done">("detecting");
+  const [step, setStep] = useState<"detecting" | "country" | "city" | "language" | "done">("country");
   const [selectedCountry, setSelectedCountry] = useState<Country>("Tanzania");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedLang, setSelectedLang] = useState<LangCode>("en");
+  const [manualSelectionStarted, setManualSelectionStarted] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
   const t = translations[selectedLang];
@@ -217,12 +218,11 @@ export default function Welcome() {
   }, [navigate, isChangingLocation]);
 
   useEffect(() => {
-    if (!isChangingLocation && location && detecting === false && step === "detecting") {
+    if (!isChangingLocation && location && detecting === false && !manualSelectionStarted) {
       setSelectedCountry(location.country);
       setSelectedCity(location.city);
-      setStep("language");
     }
-  }, [location, detecting, step, isChangingLocation]);
+  }, [location, detecting, isChangingLocation, manualSelectionStarted]);
 
   useEffect(() => {
     if (cities.length > 0 && !selectedCity) {
@@ -394,6 +394,7 @@ export default function Welcome() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => {
+                          setManualSelectionStarted(true);
                           setSelectedCountry(c.code);
                           setSelectedCity("");
                           setStep("city");

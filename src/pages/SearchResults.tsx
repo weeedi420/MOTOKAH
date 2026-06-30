@@ -31,11 +31,14 @@ export default function SearchResults() {
   const [saving, setSaving] = useState(false);
 
   const [keyword, setKeyword] = useState(searchParams.get("q") || "");
+  const urlCity = searchParams.get("city") || "";
+  const urlCityCountry = urlCity ? cityToCountry[urlCity] || "" : "";
+  const urlCountry = urlCityCountry || searchParams.get("country") || "";
 
   // Dynamic SEO title/desc/canonical from URL params
   const seoMake = searchParams.get("make") || "";
-  const seoCity = searchParams.get("city") || "";
-  const seoCountry = searchParams.get("country") || "";
+  const seoCity = urlCity;
+  const seoCountry = urlCountry;
   const seoVehicleType = searchParams.get("vehicleType") || "";
   const location = seoCity || seoCountry;
   const vehicleLabel = seoVehicleType === "bike" ? "Bikes" : seoVehicleType === "commercial" ? "Commercial Vehicles" : "Cars";
@@ -70,9 +73,8 @@ export default function SearchResults() {
     ...defaultFilters,
     make: searchParams.get("make") || "",
     condition: searchParams.get("condition") || "",
-    city: searchParams.get("city") || "",
-    country: searchParams.get("country")
-      || (searchParams.get("city") ? cityToCountry[searchParams.get("city")!] || "" : "")
+    city: urlCity,
+    country: urlCountry
       || (isBoatCategoryUrl ? "" : (locationCountry !== "All" ? locationCountry : "")),
     bodyType: urlBodyTypes,
     transmission: searchParams.get("transmission") || "",
@@ -92,27 +94,41 @@ export default function SearchResults() {
     }
   }, [locationCountry, isBoatCategoryUrl]);
 
+  useEffect(() => {
+    if (!urlCity || !urlCityCountry || searchParams.get("country") === urlCityCountry) return;
+    const params = new URLSearchParams(searchParams);
+    params.set("country", urlCityCountry);
+    setSearchParams(params, { replace: true });
+  }, [urlCity, urlCityCountry, searchParams, setSearchParams]);
+
   // Sync URL params when filters change
   const updateFilters = (newFilters: Filters) => {
-    setFilters(newFilters);
+    const normalizedFilters = { ...newFilters };
+    if (normalizedFilters.city) {
+      normalizedFilters.country = cityToCountry[normalizedFilters.city] || normalizedFilters.country;
+    }
+    if (normalizedFilters.country && normalizedFilters.city && cityToCountry[normalizedFilters.city] !== normalizedFilters.country) {
+      normalizedFilters.city = "";
+    }
+    setFilters(normalizedFilters);
     setPage(1);
     
     // Update URL to reflect current filters
     const params = new URLSearchParams();
     if (keyword.trim()) params.set("q", keyword.trim());
-    if (newFilters.make) params.set("make", newFilters.make);
-    if (newFilters.condition) params.set("condition", newFilters.condition);
-    if (newFilters.city) params.set("city", newFilters.city);
-    if (newFilters.country) params.set("country", newFilters.country);
-    if (newFilters.transmission) params.set("transmission", newFilters.transmission);
-    if (newFilters.vehicleType) params.set("vehicleType", newFilters.vehicleType);
-    if (newFilters.minPrice) params.set("minPrice", newFilters.minPrice);
-    if (newFilters.maxPrice) params.set("maxPrice", newFilters.maxPrice);
-    if (newFilters.yearFrom) params.set("yearFrom", newFilters.yearFrom);
-    if (newFilters.yearTo) params.set("yearTo", newFilters.yearTo);
-    if (newFilters.maxMileage) params.set("maxMileage", newFilters.maxMileage);
-    newFilters.bodyType.forEach(bt => params.append("bodyType", bt));
-    newFilters.fuelType.forEach(ft => params.append("fuelType", ft));
+    if (normalizedFilters.make) params.set("make", normalizedFilters.make);
+    if (normalizedFilters.condition) params.set("condition", normalizedFilters.condition);
+    if (normalizedFilters.city) params.set("city", normalizedFilters.city);
+    if (normalizedFilters.country) params.set("country", normalizedFilters.country);
+    if (normalizedFilters.transmission) params.set("transmission", normalizedFilters.transmission);
+    if (normalizedFilters.vehicleType) params.set("vehicleType", normalizedFilters.vehicleType);
+    if (normalizedFilters.minPrice) params.set("minPrice", normalizedFilters.minPrice);
+    if (normalizedFilters.maxPrice) params.set("maxPrice", normalizedFilters.maxPrice);
+    if (normalizedFilters.yearFrom) params.set("yearFrom", normalizedFilters.yearFrom);
+    if (normalizedFilters.yearTo) params.set("yearTo", normalizedFilters.yearTo);
+    if (normalizedFilters.maxMileage) params.set("maxMileage", normalizedFilters.maxMileage);
+    normalizedFilters.bodyType.forEach(bt => params.append("bodyType", bt));
+    normalizedFilters.fuelType.forEach(ft => params.append("fuelType", ft));
     
     setSearchParams(params);
   };
@@ -153,8 +169,8 @@ export default function SearchResults() {
     if (filters.make) chips.push({ key: "make", label: filters.make });
     if (filters.condition) chips.push({ key: "condition", label: filters.condition });
     if (filters.transmission) chips.push({ key: "transmission", label: filters.transmission });
-    if (filters.city) chips.push({ key: "city", label: filters.city });
-    if (filters.country) chips.push({ key: "country", label: filters.country });
+    if (filters.city) chips.push({ key: "city", label: `${filters.city}${filters.country ? `, ${filters.country}` : ""}` });
+    else if (filters.country) chips.push({ key: "country", label: filters.country });
     if (filters.vehicleType) chips.push({ key: "vehicleType", label: filters.vehicleType.charAt(0).toUpperCase() + filters.vehicleType.slice(1) });
     filters.bodyType.forEach(bt => chips.push({ key: `bodyType-${bt}`, label: bt }));
     filters.fuelType.forEach(ft => chips.push({ key: `fuelType-${ft}`, label: ft }));
@@ -181,6 +197,14 @@ export default function SearchResults() {
   };
 
   const hasActiveFilters = activeChips.length > 0;
+  const locationLabel = filters.city || filters.country || (locationCountry !== "All" ? locationCountry : "East Africa");
+  const pageHeading = filters.condition === "New"
+    ? `New Cars for Sale in ${locationLabel}`
+    : filters.vehicleType === "bike"
+    ? `Bikes for Sale in ${locationLabel}`
+    : filters.vehicleType === "commercial"
+    ? `Commercial Vehicles for Sale in ${locationLabel}`
+    : `Used Cars for Sale in ${locationLabel}`;
 
   const handleSaveSearch = async () => {
     if (!user) { toast.error("Sign in to save searches"); return; }
@@ -218,9 +242,12 @@ export default function SearchResults() {
       <main className="container mx-auto px-4 py-6">
         {/* Top bar */}
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold">
-            {loading ? "Searching..." : `${filtered.length} vehicles found`}
-          </h1>
+          <div>
+            <h1 className="text-xl font-bold">{pageHeading}</h1>
+            <p className="text-sm text-muted-foreground">
+              {loading ? "Searching..." : `${filtered.length} launch-quality vehicles found`}
+            </p>
+          </div>
           <div className="flex items-center gap-3">
             {isMobile && (
               <button onClick={() => setDrawerOpen(true)}

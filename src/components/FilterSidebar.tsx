@@ -1,5 +1,5 @@
 import { IconX } from "@tabler/icons-react";
-import { bodyTypes, conditions, transmissions, fuelTypes, carMakes, africanCities } from "@/data/mockData";
+import { bodyTypes, conditions, transmissions, fuelTypes, carMakes, africanCities, cityToCountry } from "@/data/mockData";
 
 export interface Filters {
   make: string;
@@ -31,9 +31,32 @@ interface FilterSidebarProps {
 }
 
 const years = Array.from({ length: 27 }, (_, i) => String(2000 + i));
+const countries = ["Tanzania", "Kenya", "Uganda", "Rwanda", "Burundi", "Ethiopia", "Nigeria"];
+const currencyByCountry: Record<string, string> = {
+  Tanzania: "TZS",
+  Kenya: "KES",
+  Uganda: "UGX",
+  Rwanda: "RWF",
+  Burundi: "BIF",
+  Ethiopia: "ETB",
+  Nigeria: "NGN",
+};
 
 export default function FilterSidebar({ filters, onChange, onClear }: FilterSidebarProps) {
-  const update = (key: keyof Filters, value: string | string[] | boolean) => onChange({ ...filters, [key]: value });
+  const availableCities = filters.country
+    ? africanCities.filter((city) => cityToCountry[city] === filters.country)
+    : africanCities;
+
+  const update = (key: keyof Filters, value: string | string[] | boolean) => {
+    const next = { ...filters, [key]: value };
+    if (key === "city" && typeof value === "string") {
+      next.country = value ? cityToCountry[value] || "" : next.country;
+    }
+    if (key === "country" && typeof value === "string") {
+      if (next.city && cityToCountry[next.city] !== value) next.city = "";
+    }
+    onChange(next);
+  };
 
   const toggleArray = (key: "bodyType" | "fuelType", value: string) => {
     const arr = filters[key];
@@ -81,7 +104,7 @@ export default function FilterSidebar({ filters, onChange, onClear }: FilterSide
 
       {/* Price Range */}
       <div>
-        <label className="text-sm font-medium mb-1 block">Price Range (TZS)</label>
+        <label className="text-sm font-medium mb-1 block">Price Range ({currencyByCountry[filters.country] || "local currency"})</label>
         <div className="flex gap-2">
           <input type="number" placeholder="Min" value={filters.minPrice} onChange={e => update("minPrice", e.target.value)}
             className="w-full h-9 rounded-md border border-input bg-background px-2 text-sm" />
@@ -156,11 +179,17 @@ export default function FilterSidebar({ filters, onChange, onClear }: FilterSide
 
       {/* Location */}
       <div>
-        <label className="text-sm font-medium mb-1 block">Location</label>
+        <label className="text-sm font-medium mb-1 block">Country</label>
+        <select value={filters.country} onChange={e => update("country", e.target.value)}
+          className="mb-2 w-full h-9 rounded-md border border-input bg-background px-2 text-sm">
+          <option value="">All Countries</option>
+          {countries.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <label className="text-sm font-medium mb-1 block">City</label>
         <select value={filters.city} onChange={e => update("city", e.target.value)}
           className="w-full h-9 rounded-md border border-input bg-background px-2 text-sm">
           <option value="">All Cities</option>
-          {africanCities.map(c => <option key={c} value={c}>{c}</option>)}
+          {availableCities.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 

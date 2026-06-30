@@ -15,19 +15,19 @@ export function useListing(id: string | undefined) {
   useEffect(() => {
     if (!id) { setLoading(false); return; }
 
-    // Handle all non-Supabase listings (mock-, ig-, ib-, jiji-, boat-)
-    if (id.startsWith("mock-") || id.startsWith("ig-") || id.startsWith("ib-") || id.startsWith("jiji-") || id.startsWith("boat-")) {
-      let mock: Listing | undefined = mockListings.find((m) => m.id === id);
+    const staticId = id.startsWith("mock-") ? id.replace(/^mock-/, "stock-") : id;
+    if (staticId.startsWith("stock-") || staticId.startsWith("ig-") || staticId.startsWith("ib-") || staticId.startsWith("jiji-") || staticId.startsWith("boat-")) {
+      let mock: Listing | undefined = mockListings.find((m) => m.id === staticId);
 
       // ig- listings created by getShowroomListings aren't in mockListings
       // Parse username from id format: ig-{username}-{shortcode}
-      if (!mock && id.startsWith("ig-")) {
-        const withoutPrefix = id.slice(3);
+      if (!mock && staticId.startsWith("ig-")) {
+        const withoutPrefix = staticId.slice(3);
         const lastDash = withoutPrefix.lastIndexOf("-");
         if (lastDash > 0) {
           const username = withoutPrefix.slice(0, lastDash);
           const showroomListings = getShowroomListings(username);
-          mock = showroomListings.find(l => l.id === id);
+          mock = showroomListings.find(l => l.id === staticId);
         }
       }
 

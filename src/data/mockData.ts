@@ -159,9 +159,10 @@ export const commercialTypes = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tip
 
 export const africanCities = [
   "Dar es Salaam", "Dodoma", "Arusha", "Mwanza", "Zanzibar", "Mbeya", "Moshi", "Tanga",
-  "Nairobi", "Mombasa", "Kisumu", "Nakuru",
-  "Kampala", "Kigali", "Addis Ababa",
-  "Lagos", "Abuja",
+  "Nairobi", "Mombasa", "Kisumu", "Nakuru", "Eldoret", "Thika", "Kiambu", "Machakos",
+  "Kampala", "Entebbe", "Jinja", "Mukono", "Mbarara",
+  "Kigali", "Addis Ababa", "Adama", "Bujumbura",
+  "Lagos", "Abuja", "Ibadan", "Kano", "Port Harcourt",
 ];
 
 export const cityToCountry: Record<string, string> = {
@@ -169,10 +170,12 @@ export const cityToCountry: Record<string, string> = {
   "Mwanza": "Tanzania", "Zanzibar": "Tanzania", "Mbeya": "Tanzania",
   "Moshi": "Tanzania", "Tanga": "Tanzania",
   "Nairobi": "Kenya", "Mombasa": "Kenya", "Kisumu": "Kenya", "Nakuru": "Kenya",
-  "Kampala": "Uganda",
+  "Eldoret": "Kenya", "Thika": "Kenya", "Kiambu": "Kenya", "Machakos": "Kenya",
+  "Kampala": "Uganda", "Entebbe": "Uganda", "Jinja": "Uganda", "Mukono": "Uganda", "Mbarara": "Uganda",
   "Kigali": "Rwanda",
-  "Addis Ababa": "Ethiopia",
-  "Lagos": "Nigeria", "Abuja": "Nigeria",
+  "Bujumbura": "Burundi",
+  "Addis Ababa": "Ethiopia", "Adama": "Ethiopia",
+  "Lagos": "Nigeria", "Abuja": "Nigeria", "Ibadan": "Nigeria", "Kano": "Nigeria", "Port Harcourt": "Nigeria",
 };
 
 export const currencies = [
@@ -518,7 +521,7 @@ function _convertMgayaToListings(): Listing[] {
       sellerRating: 4.8,
       sellerType: "dealer" as const,
       sellerListingCount: posts.length,
-      sellerId: "mock-dealer-mgayamotors",
+      sellerId: "dealer-mgayamotors",
       sellerPhone: "+255712986630",
       badge: i < 3 ? "hot" as const : undefined,
       fuelType: info.fuel,
@@ -571,7 +574,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         sellerRating: 4.5,
         sellerType: "dealer" as const,
         sellerListingCount: carPosts.length,
-        sellerId: `mock-dealer-${username}`,
+        sellerId: `dealer-${username}`,
         sellerPhone: dealer.phone || "",
         make: info.make ?? "Unknown",
         model: info.model ?? "Unknown",
@@ -592,7 +595,7 @@ function _convertAllShowroomsToListings(): Listing[] {
 function _isLaunchQualityListing(listing: Listing): boolean {
   const title = (listing.title || "").replace(/\s+/g, " ").trim();
   const images = listing.images?.filter(Boolean) || (listing.image ? [listing.image] : []);
-  if (listing.sellerId === "ibaraki" || listing.sellerId === "mock-dealer-ibaraki") return false;
+  if (listing.sellerId === "ibaraki" || listing.sellerId === "dealer-ibaraki") return false;
   if (listing.id.startsWith("jiji-")) return false;
   if (!listing.price || listing.price <= 0) return false;
   if (listing.currency === "KES" && (listing.price < 100_000 || listing.price > 60_000_000)) return false;
@@ -627,7 +630,7 @@ function _nicoletteBoatListings(): Listing[] {
     sellerType: "dealer" as const,
     sellerListingCount: 7,
     sellerPhone: "+255765407462",
-    sellerId: "mock-dealer-nicolette-boats",
+    sellerId: "dealer-nicolette-boats",
     location: "Dar es Salaam, TZ",
     country: "TZ",
     bodyType: "Boat",
@@ -762,7 +765,7 @@ export const mockListings: Listing[] = [
 
   // ─── Additional private seller listings — various cities across East Africa ──
   {
-    id: "mock-11", title: "2018 Toyota Vitz F 1.0 Hatchback", price: 18_500_000, currency: "TZS",
+    id: "stock-11", title: "2018 Toyota Vitz F 1.0 Hatchback", price: 18_500_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 42000, transmission: "Automatic",
     location: "Arusha, TZ", country: "TZ", image: "/cars/patrol-2022-1.jpg", images: ["/cars/patrol-2022-1.jpg"],
     views: 312, sellerName: "Arusha Auto Center", sellerRating: 4.3, sellerType: "dealer",
@@ -771,7 +774,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Vitz 2018 F grade 1.0L petrol automatic. Excellent fuel economy — perfect city car for Arusha. Low mileage 42,000km. Clean interior, well maintained.",
   },
   {
-    id: "mock-12", title: "2019 Mazda Demio 1.3 Hatchback", price: 22_000_000, currency: "TZS",
+    id: "stock-12", title: "2019 Mazda Demio 1.3 Hatchback", price: 22_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 38000, transmission: "Automatic",
     location: "Mwanza, TZ", country: "TZ", image: "/cars/hilux-gray-2019-1.jpg", images: ["/cars/hilux-gray-2019-1.jpg"],
     views: 198, sellerName: "Hassan Mwanza", sellerRating: 4.0, sellerType: "private",
@@ -780,7 +783,7 @@ export const mockListings: Listing[] = [
     description: "Mazda Demio 2019 1.3L automatic. Very economical, perfect for city and family use. First owner. No accidents. Available for viewing in Mwanza.",
   },
   {
-    id: "mock-13", title: "2020 Toyota Rush 1.5 SUV", price: 48_000_000, currency: "TZS",
+    id: "stock-13", title: "2020 Toyota Rush 1.5 SUV", price: 48_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 28000, transmission: "Automatic",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/fortuner-white-2019-1.jpg", images: ["/cars/fortuner-white-2019-1.jpg"],
     views: 521, sellerName: "Dar Auto Hub", sellerRating: 4.5, sellerType: "dealer",
@@ -789,7 +792,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Rush 2020 1.5L automatic SUV. 7-seater, perfect for families. Clean and well maintained. Fuel efficient. New tyres.",
   },
   {
-    id: "mock-14", title: "2017 Toyota Wish 1.8 Minivan", price: 38_000_000, currency: "TZS",
+    id: "stock-14", title: "2017 Toyota Wish 1.8 Minivan", price: 38_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2017, mileage: 65000, transmission: "Automatic",
     location: "Zanzibar, TZ", country: "TZ", image: "/cars/subaru-forester-2022-1.jpg", images: ["/cars/subaru-forester-2022-1.jpg"],
     views: 276, sellerName: "Zanzibar Cars", sellerRating: 4.1, sellerType: "dealer",
@@ -798,7 +801,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Wish 2017 1.8L automatic. 7-seater family minivan. Clean interior. Good condition. Zanzibar registered.",
   },
   {
-    id: "mock-15", title: "2016 Toyota Vanguard 2.0 4WD SUV", price: 55_000_000, currency: "TZS",
+    id: "stock-15", title: "2016 Toyota Vanguard 2.0 4WD SUV", price: 55_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2016, mileage: 78000, transmission: "Automatic",
     location: "Mbeya, TZ", country: "TZ", image: "/cars/landrover-disco-2020-1.jpg", images: ["/cars/landrover-disco-2020-1.jpg"],
     views: 189, sellerName: "Mbeya Motors", sellerRating: 3.9, sellerType: "dealer",
@@ -807,7 +810,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Vanguard 2016 2.0L 4WD. 7-seater SUV, ideal for mountain terrain around Mbeya. Well maintained, all services done.",
   },
   {
-    id: "mock-16", title: "2021 Toyota Prius 1.8 Hybrid", price: 35_000_000, currency: "TZS",
+    id: "stock-16", title: "2021 Toyota Prius 1.8 Hybrid", price: 35_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2021, mileage: 22000, transmission: "CVT",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-white-2019-1.jpg", images: ["/cars/hilux-white-2019-1.jpg"],
     views: 445, sellerName: "EcoMotors TZ", sellerRating: 4.6, sellerType: "dealer",
@@ -816,7 +819,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Prius 2021 1.8L Hybrid. Ultra-low fuel consumption — 26km/L. Perfect for Dar es Salaam traffic. Lane assist, adaptive cruise. Low 22,000km.",
   },
   {
-    id: "mock-17", title: "2020 Toyota Aqua 1.5 Hybrid", price: 25_000_000, currency: "TZS",
+    id: "stock-17", title: "2020 Toyota Aqua 1.5 Hybrid", price: 25_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 35000, transmission: "CVT",
     location: "Arusha, TZ", country: "TZ", image: "/cars/navara-2017-1.jpg", images: ["/cars/navara-2017-1.jpg"],
     views: 367, sellerName: "Kilimanjaro Auto", sellerRating: 4.2, sellerType: "dealer",
@@ -825,7 +828,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Aqua 2020 1.5L Hybrid hatchback. Excellent fuel economy. Perfect for Arusha city and safari trips. Clean condition.",
   },
   {
-    id: "mock-18", title: "2015 BMW 320i 2.0 Turbo Sedan", price: 45_000_000, currency: "TZS",
+    id: "stock-18", title: "2015 BMW 320i 2.0 Turbo Sedan", price: 45_000_000, currency: "TZS",
     condition: "Used", year: 2015, mileage: 95000, transmission: "Automatic",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/wrangler-2016-1.jpg", images: ["/cars/wrangler-2016-1.jpg"],
     views: 534, sellerName: "Prestige Motors TZ", sellerRating: 4.4, sellerType: "dealer",
@@ -834,7 +837,7 @@ export const mockListings: Listing[] = [
     description: "BMW 320i 2015 F30 2.0T. Luxury sedan in excellent condition. Leather interior, sunroof, navigation. Full service history. Locally used.",
   },
   {
-    id: "mock-19", title: "2016 Mercedes-Benz C200 1.8 Turbo", price: 3_800_000, currency: "KES",
+    id: "stock-19", title: "2016 Mercedes-Benz C200 1.8 Turbo", price: 3_800_000, currency: "KES",
     condition: "Used", year: 2016, mileage: 87000, transmission: "Automatic",
     location: "Nairobi, KE", image: "/cars/hilux-arb-2019-1.jpg", images: ["/cars/hilux-arb-2019-1.jpg"],
     views: 412, sellerName: "Nairobi Premium Cars", sellerRating: 4.5, sellerType: "dealer",
@@ -844,7 +847,7 @@ export const mockListings: Listing[] = [
     description: "Mercedes-Benz C200 2016 W205. Premium executive sedan. AMG styling package. Panoramic sunroof. Nairobi registered. Clean title.",
   },
   {
-    id: "mock-20", title: "2018 Mazda CX-5 2.0 SUV", price: 52_000_000, currency: "TZS",
+    id: "stock-20", title: "2018 Mazda CX-5 2.0 SUV", price: 52_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 52000, transmission: "Automatic",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/subaru-forester-2022b-1.jpg", images: ["/cars/subaru-forester-2022b-1.jpg"],
     views: 298, sellerName: "Mazda Centre TZ", sellerRating: 4.3, sellerType: "dealer",
@@ -853,7 +856,7 @@ export const mockListings: Listing[] = [
     description: "Mazda CX-5 2018 Skyactiv-G 2.0. Premium crossover SUV. BOSE sound system, leather, blind spot monitoring. Japanese import.",
   },
   {
-    id: "mock-21", title: "2019 Mitsubishi Outlander 2.4 SUV", price: 155_000_000, currency: "UGX",
+    id: "stock-21", title: "2019 Mitsubishi Outlander 2.4 SUV", price: 155_000_000, currency: "UGX",
     condition: "Foreign Used", year: 2019, mileage: 44000, transmission: "CVT",
     location: "Kampala, UG", image: "/cars/patrol-2022-2.jpg", images: ["/cars/patrol-2022-2.jpg"],
     views: 187, sellerName: "Kampala Cars Ltd", sellerRating: 4.0, sellerType: "dealer",
@@ -863,7 +866,7 @@ export const mockListings: Listing[] = [
     description: "Mitsubishi Outlander 2019 2.4L CVT. 7-seater SUV. All wheel drive. Well maintained, clean history. Available in Kampala.",
   },
   {
-    id: "mock-26", title: "2022 Toyota Rumion 1.5 Hatchback", price: 28_000_000, currency: "TZS",
+    id: "stock-26", title: "2022 Toyota Rumion 1.5 Hatchback", price: 28_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2022, mileage: 15000, transmission: "Automatic",
     location: "Moshi, TZ", country: "TZ", image: "/cars/navara-2017-2.jpg", images: ["/cars/navara-2017-2.jpg"],
     views: 245, sellerName: "Moshi Auto Sales", sellerRating: 4.1, sellerType: "dealer",
@@ -873,7 +876,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Rumion 2022 1.5L automatic. Brand new import with only 15,000km. Modern safety features, Apple CarPlay. Perfect condition.",
   },
   {
-    id: "mock-27", title: "2021 Toyota Kluger 3.5 V6 AWD SUV", price: 5_700_000, currency: "KES",
+    id: "stock-27", title: "2021 Toyota Kluger 3.5 V6 AWD SUV", price: 5_700_000, currency: "KES",
     condition: "Foreign Used", year: 2021, mileage: 24000, transmission: "Automatic",
     location: "Nairobi, KE", image: "/cars/subaru-forester-2022-3.jpg", images: ["/cars/subaru-forester-2022-3.jpg"],
     views: 334, sellerName: "Westlands Auto KE", sellerRating: 4.4, sellerType: "dealer",
@@ -883,7 +886,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Kluger 2021 3.5L V6 AWD. 8-seater premium SUV. Dual sunroof, captain seats, wireless charging. Excellent condition.",
   },
   {
-    id: "mock-28", title: "2018 Mitsubishi Pajero 3.2 Diesel 4WD", price: 88_000_000, currency: "TZS",
+    id: "stock-28", title: "2018 Mitsubishi Pajero 3.2 Diesel 4WD", price: 88_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 62000, transmission: "Automatic",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-arb-2019-2.jpg", images: ["/cars/hilux-arb-2019-2.jpg"],
     views: 467, sellerName: "Safari Auto TZ", sellerRating: 4.3, sellerType: "dealer",
@@ -892,7 +895,7 @@ export const mockListings: Listing[] = [
     description: "Mitsubishi Pajero 2018 V93 3.2D 4WD. Full-size luxury 4x4. Super select 4WD, locking diff, terrain management. Perfect for safaris and rough terrain.",
   },
   {
-    id: "mock-29", title: "2020 Toyota Hilux Surf 3.0 4WD Diesel", price: 72_000_000, currency: "TZS",
+    id: "stock-29", title: "2020 Toyota Hilux Surf 3.0 4WD Diesel", price: 72_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 45000, transmission: "Automatic",
     location: "Arusha, TZ", country: "TZ", image: "/cars/patrol-2022-3.jpg", images: ["/cars/patrol-2022-3.jpg"],
     views: 389, sellerName: "Arusha 4x4 Centre", sellerRating: 4.2, sellerType: "dealer",
@@ -901,7 +904,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Hilux Surf 2020 (4Runner) 3.0D 4WD. Premium mid-size SUV. KDSS, locking rear diff, crawl control. Ideal for Arusha–Nairobi runs.",
   },
   {
-    id: "mock-30", title: "2019 Nissan Civilian 4.2 Minibus 28-seater", price: 45_000_000, currency: "TZS",
+    id: "stock-30", title: "2019 Nissan Civilian 4.2 Minibus 28-seater", price: 45_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 95000, transmission: "Manual",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-gray-2019-3.jpg", images: ["/cars/hilux-gray-2019-3.jpg"],
     views: 156, sellerName: "Daladala Motors TZ", sellerRating: 3.8, sellerType: "dealer",
@@ -910,7 +913,7 @@ export const mockListings: Listing[] = [
     description: "Nissan Civilian 2019 4.2L diesel 28-seater. Japanese import. Right-hand drive, A/C, well maintained. Ideal for school or hotel shuttle. Duty not paid.",
   },
   {
-    id: "mock-31", title: "2020 Mitsubishi Canter 4WD Truck", price: 65_000_000, currency: "TZS",
+    id: "stock-31", title: "2020 Mitsubishi Canter 4WD Truck", price: 65_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 78000, transmission: "Manual",
     location: "Mwanza, TZ", country: "TZ", image: "/cars/hilux-white-2019-2.jpg", images: ["/cars/hilux-white-2019-2.jpg"],
     views: 134, sellerName: "Mwanza Trucks", sellerRating: 4.0, sellerType: "dealer",
@@ -919,7 +922,7 @@ export const mockListings: Listing[] = [
     description: "Mitsubishi Canter 4WD 2020 3.9L diesel. Flat bed truck, 3-tonne payload. Excellent for mining and rough terrain. Duty not paid — good price.",
   },
   {
-    id: "mock-32", title: "2022 Mazda Verisa 1.5 Hatchback", price: 22_000_000, currency: "TZS",
+    id: "stock-32", title: "2022 Mazda Verisa 1.5 Hatchback", price: 22_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2022, mileage: 18000, transmission: "Automatic",
     location: "Dodoma, TZ", country: "TZ", image: "/cars/subaru-forester-2022b-2.jpg", images: ["/cars/subaru-forester-2022b-2.jpg"],
     views: 212, sellerName: "Capital Cars Dodoma", sellerRating: 4.0, sellerType: "dealer",
@@ -929,7 +932,7 @@ export const mockListings: Listing[] = [
     description: "Mazda Verisa 2022 1.5L hatchback. Stylish and economical. Only 18,000km. Perfect for city driving in Dodoma. All papers in order.",
   },
   {
-    id: "mock-33", title: "2019 Subaru Forester 2.0 AWD XT Turbo", price: 82_000_000, currency: "TZS",
+    id: "stock-33", title: "2019 Subaru Forester 2.0 AWD XT Turbo", price: 82_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 47000, transmission: "CVT",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/subaru-forester-2022-4.jpg", images: ["/cars/subaru-forester-2022-4.jpg"],
     views: 478, sellerName: "Subaru Specialists TZ", sellerRating: 4.5, sellerType: "dealer",
@@ -938,7 +941,7 @@ export const mockListings: Listing[] = [
     description: "Subaru Forester 2019 2.0XT Turbo AWD. EyeSight driver assist, X-mode off-road, apple carplay. Turbocharged for mountain performance.",
   },
   {
-    id: "mock-34", title: "2021 Subaru Forester 2.5 AWD E-Boxer", price: 6_800_000, currency: "KES",
+    id: "stock-34", title: "2021 Subaru Forester 2.5 AWD E-Boxer", price: 6_800_000, currency: "KES",
     condition: "Foreign Used", year: 2021, mileage: 29000, transmission: "CVT",
     location: "Nairobi, KE", image: "/cars/subaru-forester-2022b-3.jpg", images: ["/cars/subaru-forester-2022b-3.jpg"],
     views: 356, sellerName: "Subaru Kenya", sellerRating: 4.6, sellerType: "dealer",
@@ -948,7 +951,7 @@ export const mockListings: Listing[] = [
     description: "Subaru Forester 2021 2.5L e-Boxer hybrid AWD. EyeSight 4.0, SI-drive, X-mode. Hybrid efficiency with Subaru all-terrain capability.",
   },
   {
-    id: "mock-35", title: "2020 Toyota Corolla 1.8 Sedan", price: 32_000_000, currency: "TZS",
+    id: "stock-35", title: "2020 Toyota Corolla 1.8 Sedan", price: 32_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 38000, transmission: "CVT",
     location: "Tanga, TZ", country: "TZ", image: "/cars/hilux-gray-2019-4.jpg", images: ["/cars/hilux-gray-2019-4.jpg"],
     views: 287, sellerName: "Tanga Auto Sales", sellerRating: 4.0, sellerType: "dealer",
@@ -957,7 +960,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Corolla 2020 1.8L CVT sedan. Pre-collision system, lane departure alert, radar cruise control. Fuel efficient family saloon.",
   },
   {
-    id: "mock-36", title: "2018 Toyota Ipsum 2.4 MPV 7-seater", price: 25_000_000, currency: "TZS",
+    id: "stock-36", title: "2018 Toyota Ipsum 2.4 MPV 7-seater", price: 25_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2018, mileage: 72000, transmission: "Automatic",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/navara-2017-3.jpg", images: ["/cars/navara-2017-3.jpg"],
     views: 198, sellerName: "Family Cars TZ", sellerRating: 3.9, sellerType: "private",
@@ -966,7 +969,7 @@ export const mockListings: Listing[] = [
     description: "Toyota Ipsum 2018 2.4L automatic 7-seater MPV. Spacious family car. Good condition. Duty paid. Viewable in Dar es Salaam.",
   },
   {
-    id: "mock-37", title: "2019 Toyota IST 1.5 Hatchback", price: 20_000_000, currency: "TZS",
+    id: "stock-37", title: "2019 Toyota IST 1.5 Hatchback", price: 20_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2019, mileage: 41000, transmission: "Automatic",
     location: "Moshi, TZ", country: "TZ", image: "/cars/fortuner-white-2019-3.jpg", images: ["/cars/fortuner-white-2019-3.jpg"],
     views: 156, sellerName: "Kilimanjaro Autos", sellerRating: 4.0, sellerType: "dealer",
@@ -975,7 +978,7 @@ export const mockListings: Listing[] = [
     description: "Toyota IST 2019 1.5L automatic hatchback. Compact and fuel efficient. Clean interior. Duty paid. Near Kilimanjaro.",
   },
   {
-    id: "mock-38", title: "2022 Mazda CX-3 2.0 Crossover", price: 38_000_000, currency: "TZS",
+    id: "stock-38", title: "2022 Mazda CX-3 2.0 Crossover", price: 38_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2022, mileage: 16000, transmission: "Automatic",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/wrangler-2016-3.jpg", images: ["/cars/wrangler-2016-3.jpg"],
     views: 321, sellerName: "Mazda Centre TZ", sellerRating: 4.3, sellerType: "dealer",
@@ -985,7 +988,7 @@ export const mockListings: Listing[] = [
     description: "Mazda CX-3 2022 2.0L Skyactiv crossover. Sport compact SUV. Head-up display, G-Vectoring Control Plus. Low mileage import.",
   },
   {
-    id: "mock-39", title: "2020 Honda CR-V 1.5T AWD SUV", price: 55_000_000, currency: "TZS",
+    id: "stock-39", title: "2020 Honda CR-V 1.5T AWD SUV", price: 55_000_000, currency: "TZS",
     condition: "Foreign Used", year: 2020, mileage: 33000, transmission: "CVT",
     location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/patrol-2022-4.jpg", images: ["/cars/patrol-2022-4.jpg"],
     views: 412, sellerName: "Honda Centre TZ", sellerRating: 4.4, sellerType: "dealer",
@@ -1102,7 +1105,7 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
   return Object.entries(_showroomMods)
     .filter(([path]) => {
       const username = path.split("/").pop()!.replace(".json", "");
-      return !existingIds.has(`mock-dealer-${username}`) && !BLOCKED_SHOWROOM_USERS.has(username);
+      return !existingIds.has(`dealer-${username}`) && !BLOCKED_SHOWROOM_USERS.has(username);
     })
     .map(([path, mod]) => {
       const username = path.split("/").pop()!.replace(".json", "");
@@ -1115,7 +1118,7 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
       const city = _cityFromBio(bio, username);
       const postCount = (dealer.posts || []).length;
       return {
-        user_id: `mock-dealer-${username}`,
+        user_id: `dealer-${username}`,
         display_name: displayName,
         city,
         phone,
@@ -1134,7 +1137,7 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
 
 export const mockDealers: MockDealer[] = [
   {
-    user_id: "mock-dealer-nicolette-boats",
+    user_id: "dealer-nicolette-boats",
     display_name: "Nicolette",
     city: "Dar es Salaam",
     phone: "+255 765 407 462",
@@ -1147,7 +1150,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-mgayamotors",
+    user_id: "dealer-mgayamotors",
     display_name: "Mgaya Motors TZ",
     city: "Dar es Salaam",
     phone: "+255 712 986 630",
@@ -1160,7 +1163,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "14111",
   },
   {
-    user_id: "mock-dealer-livy_motors_tz",
+    user_id: "dealer-livy_motors_tz",
     display_name: "Livy Motors TZ",
     city: "Dar es Salaam",
     phone: "+255765772216",
@@ -1174,7 +1177,7 @@ export const mockDealers: MockDealer[] = [
     instagram: "livy_motors_tz",
   },
   {
-    user_id: "mock-dealer-expert_motors_tz",
+    user_id: "dealer-expert_motors_tz",
     display_name: "Expert Motors TZ",
     city: "Dar es Salaam",
     phone: "0657777001",
@@ -1188,7 +1191,7 @@ export const mockDealers: MockDealer[] = [
     instagram: "expert_motors_tz",
   },
   {
-    user_id: "mock-dealer-ibaraki",
+    user_id: "dealer-ibaraki",
     display_name: "Ibaraki Motors",
     city: "Nairobi",
     phone: "+254 700 000 000",
@@ -1201,7 +1204,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-khushimotorsdaressalaam",
+    user_id: "dealer-khushimotorsdaressalaam",
     display_name: "Khushi Motors Dar es Salaam",
     city: "Dar es Salaam",
     phone: "+255 765 315 555",
@@ -1214,7 +1217,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-njari_motors",
+    user_id: "dealer-njari_motors",
     display_name: "NJARI AUTOMOBILE LIMITED",
     city: "Dar es Salaam",
     phone: "+255 713 332 019",
@@ -1227,7 +1230,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-ruge_magari",
+    user_id: "dealer-ruge_magari",
     display_name: "Ruge Magari",
     city: "Dar es Salaam",
     phone: "+255 677 775 690",
@@ -1240,7 +1243,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-fau_motors",
+    user_id: "dealer-fau_motors",
     display_name: "FAU MOTORS",
     city: "Dodoma",
     phone: "+255 652 604 375",
@@ -1253,7 +1256,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-tgworldimports",
+    user_id: "dealer-tgworldimports",
     display_name: "Tg World International Limited",
     city: "Dar es Salaam",
     phone: "+255 754 441 146",
@@ -1266,7 +1269,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-al_husnainmotors",
+    user_id: "dealer-al_husnainmotors",
     display_name: "AL-HUSNAIN MOTORS LTD",
     city: "Dar es Salaam",
     phone: "+255 702 400 400",
@@ -1279,7 +1282,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-ezy_auto_motors",
+    user_id: "dealer-ezy_auto_motors",
     display_name: "Ezy Auto Motors Co Ltd",
     city: "Dar es Salaam",
     phone: "+255 735 990 336",
@@ -1292,7 +1295,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-hanami.japan",
+    user_id: "dealer-hanami.japan",
     display_name: "Hanami Japan",
     city: "Dar es Salaam",
     phone: "",
@@ -1305,7 +1308,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-magari_empire1",
+    user_id: "dealer-magari_empire1",
     display_name: "Magari Empire",
     city: "Dar es Salaam",
     phone: "+255 719 223 839",
@@ -1318,7 +1321,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-breemotors",
+    user_id: "dealer-breemotors",
     display_name: "Magari ya Uhakika",
     city: "Dar es Salaam",
     phone: "+255 716 077 838",
@@ -1331,7 +1334,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-cholloh_magari_tz",
+    user_id: "dealer-cholloh_magari_tz",
     display_name: "Cholloh Magari TZ",
     city: "Dar es Salaam",
     phone: "+255 716 071 575",
@@ -1344,7 +1347,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-ndinga_bei_poa",
+    user_id: "dealer-ndinga_bei_poa",
     display_name: "Ndinga Bei Poa",
     city: "Dar es Salaam",
     phone: "+255 789 046 698",
@@ -1357,7 +1360,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-lomaautos_",
+    user_id: "dealer-lomaautos_",
     display_name: "Loma Auto TZ",
     city: "Dar es Salaam",
     phone: "+255 782 115 311",
@@ -1370,7 +1373,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-dula_magari",
+    user_id: "dealer-dula_magari",
     display_name: "Dula Magari",
     city: "Dar es Salaam",
     phone: "+255 715 425 158",
@@ -1383,7 +1386,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-evanamotors",
+    user_id: "dealer-evanamotors",
     display_name: "Evana Motors",
     city: "Dar es Salaam",
     phone: "+255 738 205 707",
@@ -1396,7 +1399,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-rwanko_motors",
+    user_id: "dealer-rwanko_motors",
     display_name: "Rwanko Motors",
     city: "Dar es Salaam",
     phone: "+255 616 158 269",
@@ -1409,7 +1412,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-barari_motorstz",
+    user_id: "dealer-barari_motorstz",
     display_name: "Barari Motors TZ",
     city: "Dar es Salaam",
     phone: "+255 698 118 249",
@@ -1422,7 +1425,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-extreme_biketz_",
+    user_id: "dealer-extreme_biketz_",
     display_name: "Extreme Bikes TZ",
     city: "Dar es Salaam",
     phone: "+255754860060",
@@ -1435,7 +1438,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-hupa_motors_ltd",
+    user_id: "dealer-hupa_motors_ltd",
     display_name: "Magari Mwanza",
     city: "Mwanza",
     phone: "+255718699061",
@@ -1448,7 +1451,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-pikipiki_quality_tanzania",
+    user_id: "dealer-pikipiki_quality_tanzania",
     display_name: "Tuntu Motors",
     city: "Dar es Salaam",
     phone: "+255658377013",
@@ -1461,7 +1464,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-tera_automobiles",
+    user_id: "dealer-tera_automobiles",
     display_name: "TERA AUTOMOBILES LIMITED",
     city: "Dar es Salaam",
     phone: "+255754771436",
@@ -1474,7 +1477,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-tesha_pikipiki_usedtz",
+    user_id: "dealer-tesha_pikipiki_usedtz",
     display_name: "Tesha Pikipiki Used TZ",
     city: "Dar es Salaam",
     phone: "+255673358192",
@@ -1487,7 +1490,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-gody_motorstz",
+    user_id: "dealer-gody_motorstz",
     display_name: "Gody Magari Tz",
     city: "Dar es Salaam",
     phone: "+255769381827",
@@ -1500,7 +1503,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-mapigo_saba_magari",
+    user_id: "dealer-mapigo_saba_magari",
     display_name: "Mapigo Saba Magari",
     city: "Dar es Salaam",
     phone: "+255744500111",
@@ -1513,7 +1516,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-mr_pikipiki",
+    user_id: "dealer-mr_pikipiki",
     display_name: "MR PIKIPIKI Trading",
     city: "Dar es Salaam",
     phone: "+255676238482",
@@ -1526,7 +1529,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-_svgmotors",
+    user_id: "dealer-_svgmotors",
     display_name: "SVG Motors",
     city: "Dar es Salaam",
     phone: "",
@@ -1539,7 +1542,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-jambo_magari",
+    user_id: "dealer-jambo_magari",
     display_name: "Jambo Magari",
     city: "Dar es Salaam",
     phone: "+255745335036",
@@ -1552,7 +1555,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-justin_motors_ltd",
+    user_id: "dealer-justin_motors_ltd",
     display_name: "Justin Motors Ltd",
     city: "Dar es Salaam",
     phone: "+255762483424",
@@ -1565,7 +1568,7 @@ export const mockDealers: MockDealer[] = [
     postal_code: "",
   },
   {
-    user_id: "mock-dealer-kk_magic_cars_",
+    user_id: "dealer-kk_magic_cars_",
     display_name: "KK Magic Cars",
     city: "Dar es Salaam",
     phone: "+255675117195",
@@ -1585,8 +1588,8 @@ const _hardcodedIds = new Set(mockDealers.map(d => d.user_id));
 // Append auto-generated dealers for all other showroom accounts
 mockDealers.push(..._generateMissingDealers(_hardcodedIds));
 for (let i = mockDealers.length - 1; i >= 0; i -= 1) {
-  const username = mockDealers[i].instagram || mockDealers[i].user_id.replace(/^mock-dealer-/, "");
-  if (BLOCKED_SHOWROOM_USERS.has(username) || mockDealers[i].user_id === "mock-dealer-ibaraki" || !_hasUsableDealerPhone(mockDealers[i].phone)) {
+  const username = mockDealers[i].instagram || mockDealers[i].user_id.replace(/^dealer-/, "");
+  if (BLOCKED_SHOWROOM_USERS.has(username) || mockDealers[i].user_id === "dealer-ibaraki" || !_hasUsableDealerPhone(mockDealers[i].phone)) {
     mockDealers.splice(i, 1);
   }
 }

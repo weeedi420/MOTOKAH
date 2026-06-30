@@ -29,7 +29,7 @@ export default function Header() {
   const { city, country } = useLocation();
   const navigate = useNavigate();
   const [showHelp, setShowHelp] = useState(false);
-  const locationLabel = city || country;
+  const locationLabel = city || (country !== "All" ? country : "");
   const changeLocationPath = "/welcome?change=location";
 
   return (
@@ -55,16 +55,14 @@ export default function Header() {
         {/* Right Actions */}
         <div className="flex items-center gap-2">
           {/* Location Indicator */}
-          {locationLabel && (
-            <button 
-              onClick={() => navigate(changeLocationPath)}
-              className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
-            >
-              <IconMapPin size={14} />
-              <span className="max-w-[100px] truncate">{locationLabel}</span>
-              <IconChevronDown size={12} />
-            </button>
-          )}
+          <button 
+            onClick={() => navigate(changeLocationPath)}
+            className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
+          >
+            <IconMapPin size={14} />
+            <span className="max-w-[100px] truncate">{locationLabel || "Set location"}</span>
+            <IconChevronDown size={12} />
+          </button>
 
           {/* Language Switcher — desktop only; mobile uses sheet menu */}
           <div className="hidden sm:block">

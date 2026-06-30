@@ -82,6 +82,7 @@ const queryClient = new QueryClient();
 function AnimatedRoutes() {
   const location = useLocation();
   usePageTracking();
+  const needsWelcome = location.pathname === "/" && localStorage.getItem("motokah_welcome_completed") !== "true";
 
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -96,7 +97,7 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
               <Route path="/welcome" element={<Welcome />} />
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={needsWelcome ? <Navigate to="/welcome" replace /> : <Index />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/cars" element={<Navigate to="/search" replace />} />

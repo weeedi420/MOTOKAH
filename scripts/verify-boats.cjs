@@ -13,7 +13,7 @@ async function main() {
   for (const route of [
     "/search?bodyType=Boat",
     "/listing/boat-nicolette-island-spirit-38-40",
-    "/dealer/mock-dealer-nicolette-boats",
+    "/dealer/dealer-nicolette-boats",
   ]) {
     await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle", timeout: 60000 });
     if (route.startsWith("/search")) {

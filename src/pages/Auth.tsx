@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandApple, IconBrandFacebook, IconSparkles, IconBuildingStore } from "@tabler/icons-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { getAppUrl } from "@/lib/app-url";
 
 type Tab = "login" | "register" | "forgot" | "otp";
 
@@ -70,7 +71,7 @@ export default function Auth() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}/auth` },
+        options: { redirectTo: getAppUrl("/auth") },
       });
       if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
     } catch (err: unknown) {
@@ -84,7 +85,7 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({ email: otpEmail, options: { emailRedirectTo: window.location.origin } });
+      const { error } = await supabase.auth.signInWithOtp({ email: otpEmail, options: { emailRedirectTo: getAppUrl("/auth") } });
       if (error) throw error;
       toast({ title: "Magic link sent!", description: "Check your email for the login link." });
     } catch (err: unknown) {

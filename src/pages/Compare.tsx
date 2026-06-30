@@ -29,9 +29,9 @@ export default function Compare() {
     if (resolvedIds.length === 0) { setLoading(false); return; }
 
     const fetchCars = async () => {
-      // Handle mock listings directly — no Supabase needed
-      const mockIds = resolvedIds.filter(id => id.startsWith("mock-"));
-      const realIds = resolvedIds.filter(id => !id.startsWith("mock-"));
+      const staticIds = resolvedIds.map(id => id.startsWith("mock-") ? id.replace(/^mock-/, "stock-") : id);
+      const mockIds = staticIds.filter(id => id.startsWith("stock-"));
+      const realIds = staticIds.filter(id => !id.startsWith("stock-"));
 
       const fromMock: Listing[] = mockListings.filter(m => mockIds.includes(m.id));
 
@@ -61,7 +61,7 @@ export default function Compare() {
 
       // Preserve original order
       const all = [...fromMock, ...fromDB];
-      const ordered = resolvedIds.map(id => all.find(c => c.id === id)).filter(Boolean) as Listing[];
+      const ordered = staticIds.map(id => all.find(c => c.id === id)).filter(Boolean) as Listing[];
       setCars(ordered);
       setLoading(false);
     };

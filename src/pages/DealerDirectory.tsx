@@ -31,7 +31,7 @@ export default function DealerDirectory() {
     (async () => {
       // Always start with Instagram/showroom dealers
       const igDealers: DealerProfile[] = mockDealers.map(d => {
-        const username = d.user_id.replace("mock-dealer-", "");
+        const username = d.user_id.replace(/^mock-dealer-/, "").replace(/^dealer-/, "");
         const realCount = getShowroomListings(username).length;
         return {
           user_id: username,

@@ -22,9 +22,9 @@ import { mockDealers } from "@/data/mockData";
 
 // Instagram showrooms — accounts with scraped data + showroom pages
 const IG_SHOWROOMS = mockDealers.filter((d) =>
-  d.user_id.startsWith("mock-dealer-") && d.user_id !== "mock-dealer-ibaraki"
+  d.user_id.startsWith("dealer-") && d.user_id !== "dealer-ibaraki"
 ).map((d) => ({
-  username: d.user_id.replace("mock-dealer-", ""),
+  username: d.user_id.replace(/^dealer-/, ""),
   name: d.display_name,
   phone: d.phone,
   description: d.description,

@@ -73,11 +73,10 @@ export default function DealerProfile() {
   useEffect(() => {
     if (!id) return;
 
-    // Mock dealer fallback
-    // Handle both clean username URLs (/dealer/mgayamotors) and
-    // legacy mock-dealer- prefix (/dealer/mock-dealer-mgayamotors)
-    const username = id.startsWith("mock-dealer-") ? id.replace("mock-dealer-", "") : id;
-    const mockId = `mock-dealer-${username}`;
+    const username = id
+      .replace(/^mock-dealer-/, "")
+      .replace(/^dealer-/, "");
+    const mockId = `dealer-${username}`;
     const mock = mockDealers.find(d => d.user_id === mockId || d.user_id === username || d.user_id === id);
 
     if (mock) {

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { carMakes, bodyTypes, conditions, transmissions, africanCities, bikeMakes, bikeTypes, ccRanges, commercialTypes, cityToCountry } from "@/data/mockData";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useLocation } from "@/contexts/LocationContext";
 
 const selectCls = "h-10 rounded-md border border-input bg-surface-3 px-3 text-sm text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors w-full";
 const years = Array.from({ length: 27 }, (_, i) => String(2000 + i));
@@ -11,6 +12,7 @@ type Tab = "cars" | "commercial" | "bikes";
 
 export default function HeroSearch() {
   const navigate = useNavigate();
+  const { country, city } = useLocation();
   const [tab, setTab] = useState<Tab>("cars");
   const [advanced, setAdvanced] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -21,6 +23,15 @@ export default function HeroSearch() {
   const handleSearch = () => {
     const p = new URLSearchParams();
     if (keyword.trim()) p.set("q", keyword.trim());
+    const applyDefaultLocation = () => {
+      if (city) {
+        p.set("city", city);
+        const cc = cityToCountry[city];
+        if (cc) p.set("country", cc);
+      } else if (country !== "All") {
+        p.set("country", country);
+      }
+    };
     if (tab === "cars") {
       if (carF.make) p.set("make", carF.make);
       if (carF.bodyType) p.set("bodyType", carF.bodyType);
@@ -30,6 +41,7 @@ export default function HeroSearch() {
       if (carF.minPrice) p.set("minPrice", carF.minPrice);
       if (carF.maxPrice) p.set("maxPrice", carF.maxPrice);
       if (carF.maxMileage) p.set("maxMileage", carF.maxMileage);
+      if (!carF.city) applyDefaultLocation();
     } else if (tab === "bikes") {
       p.set("vehicleType", "bike");
       if (bikeF.make) p.set("make", bikeF.make);
@@ -37,17 +49,20 @@ export default function HeroSearch() {
       if (bikeF.cc) p.set("cc", bikeF.cc);
       if (bikeF.condition) p.set("condition", bikeF.condition);
       if (bikeF.city) { p.set("city", bikeF.city); const cc = cityToCountry[bikeF.city]; if (cc) p.set("country", cc); }
+      if (!bikeF.city) applyDefaultLocation();
     } else {
       p.set("vehicleType", "commercial");
       if (comF.vehicleType) p.set("bodyType", comF.vehicleType);
       if (comF.make) p.set("make", comF.make);
       if (comF.condition) p.set("condition", comF.condition);
       if (comF.city) { p.set("city", comF.city); const cc = cityToCountry[comF.city]; if (cc) p.set("country", cc); }
+      if (!comF.city) applyDefaultLocation();
     }
     navigate(`/search?${p.toString()}`);
   };
 
   const tabLabel = tab === "cars" ? "used cars" : tab === "bikes" ? "bikes" : "commercial vehicles";
+  const heroLocation = city || (country !== "All" ? country : "East Africa");
 
   return (
     <section className="relative py-12 md:py-20 overflow-hidden">
@@ -58,7 +73,7 @@ export default function HeroSearch() {
       <div className="container mx-auto relative z-10">
         <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-extrabold mb-2 leading-tight">
-            Find Used Cars in <span className="text-primary">Tanzania</span>
+            Find Used Cars in <span className="text-primary">{heroLocation}</span>
           </h1>
         </div>
 
