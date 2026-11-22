@@ -1,7 +1,7 @@
 import { Envelope, MapPin } from "@phosphor-icons/react";
 import Header from "@/components/Header";
+import PageMeta from "@/components/PageMeta";
 import Footer from "@/components/Footer";
-import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconCar, IconUsers, IconShieldCheck, IconMapPin, IconTargetArrow, IconEye, IconHeart } from "@/components/icons";
 
 const stats = [
@@ -19,10 +19,10 @@ const values = [
 
 
 export default function About() {
-  usePageTitle("About Us");
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      <PageMeta title="About Motokah" description="Motokah is a car marketplace for Tanzania, Kenya and East Africa. Buyers search by city, make and price, then contact sellers and dealers directly." path="/about" />
       <Header />
 
       {/* Hero */}

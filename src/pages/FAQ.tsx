@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
+import PageMeta from "@/components/PageMeta";
 import Footer from "@/components/Footer";
-import { usePageTitle } from "@/hooks/usePageTitle";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const faqs = [
@@ -49,10 +49,10 @@ const faqs = [
 ];
 
 export default function FAQ() {
-  usePageTitle("FAQ & Help Center");
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      <PageMeta title="FAQ and Help Center" description="Answers about buying and selling cars on Motokah: posting an ad, contacting sellers, dealer accounts, import duty and staying safe." path="/faq" />
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         <h1 className="text-3xl font-bold text-foreground mb-2 text-center">FAQ & Help Center</h1>

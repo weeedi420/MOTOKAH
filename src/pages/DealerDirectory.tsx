@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
+import PageMeta from "@/components/PageMeta";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link, useSearchParams } from "react-router-dom";
-import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconSearch, IconMapPin, IconStarFilled, IconBuildingStore, IconShieldCheck } from "@/components/icons";
 import { mockDealers, getShowroomListings, cityToCountry } from "@/data/mockData";
 import { useLocation as useUserLocation } from "@/contexts/LocationContext";
@@ -22,7 +22,6 @@ type DealerProfile = {
 };
 
 export default function DealerDirectory() {
-  usePageTitle("Dealer Directory — Motokah");
   const [dealers, setDealers] = useState<DealerProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -90,6 +89,7 @@ export default function DealerDirectory() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <PageMeta title="Car Dealers in Tanzania, Kenya and East Africa" description="Find car dealers and showrooms in Dar es Salaam, Nairobi, Kampala and across East Africa. See their stock on Motokah and call or WhatsApp them directly." path="/dealers" />
       <Header />
       <main className="flex-1">
         {/* Hero */}

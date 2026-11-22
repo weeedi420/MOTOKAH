@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
+import PageMeta from "@/components/PageMeta";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
-import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconCalendar, IconArrowRight } from "@/components/icons";
 import { format } from "date-fns";
 
@@ -18,7 +18,6 @@ type BlogPost = {
 };
 
 export default function Blog() {
-  usePageTitle("Blog & News");
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,6 +35,7 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      <PageMeta title="Car Buying Guides and News for East Africa" description="Guides for buying, importing and owning a car in Tanzania, Kenya and East Africa: import duty, model comparisons, prices and what to check before you pay." path="/blog" />
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-3xl font-bold text-foreground mb-2 text-center">Blog & News</h1>
