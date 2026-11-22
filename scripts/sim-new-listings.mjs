@@ -9,6 +9,7 @@
  *   node scripts/sim-new-listings.mjs --count 5   # send exactly 5
  *   node scripts/sim-new-listings.mjs --type listing   # listings only
  *   node scripts/sim-new-listings.mjs --type signup    # signups only
+ *   node scripts/sim-new-listings.mjs --type analytics # weekly growth report only
  */
 
 import { config } from "dotenv";
@@ -199,10 +200,93 @@ function generateSignupEvent() {
   return buildSignupEmail(person, city, type);
 }
 
+// ── Analytics report builder ─────────────────────────────────────────────────
+
+function buildAnalyticsEmail() {
+  const visitors    = ri(620, 1850);
+  const prevVisit   = Math.round(visitors / (1 + (ri(8, 28) / 100)));
+  const visitChg    = Math.round(((visitors - prevVisit) / prevVisit) * 100);
+  const leads       = ri(4, 22);
+  const wishlistAdd = ri(18, 74);
+  const pageViews   = visitors * ri(2, 4) + ri(0, 300);
+  const topCity     = pick(["Dar es Salaam", "Nairobi", "Arusha", "Mombasa", "Kampala"]);
+  const topModel    = pick(["Toyota IST", "Toyota Fielder", "Toyota Vitz", "Mazda Demio", "Subaru Forester", "Toyota Harrier", "Nissan Note"]);
+  const rankFrom    = ri(8, 22);
+  const rankTo      = Math.max(1, rankFrom - ri(2, 7));
+  const keyword     = `${topModel} ${pick(["Tanzania", "Kenya", "for sale", "price"])}`;
+  const newListings = ri(3, 18);
+  const mobileChg   = ri(4, 19);
+  const bounce      = ri(44, 68);
+
+  // Pick a random week ending today-ish
+  const now   = new Date();
+  const weekEnd = now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  const weekStart = new Date(now - 7 * 86400000).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+  const subject = `Motokah Weekly Report — ${weekStart}–${weekEnd}`;
+
+  const html = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:620px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
+  <div style="background:linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%);padding:22px 24px;color:#fff">
+    <h1 style="margin:0;font-size:19px;font-weight:700">📊 Weekly Site Performance Report</h1>
+    <p style="margin:4px 0 0;font-size:13px;opacity:.85">Motokah Marketplace · ${weekStart} – ${weekEnd}</p>
+  </div>
+  <div style="padding:24px">
+    <!-- KPI row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:14px;text-align:center">
+        <p style="margin:0;font-size:22px;font-weight:800;color:#0284c7">${visitors.toLocaleString()}</p>
+        <p style="margin:4px 0 0;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Visitors</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#16a34a;font-weight:600">↑ ${visitChg}% vs prev week</p>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;text-align:center">
+        <p style="margin:0;font-size:22px;font-weight:800;color:#16a34a">${leads}</p>
+        <p style="margin:4px 0 0;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Buyer Leads</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#0284c7;font-weight:600">${leads > 10 ? "Strong week" : "Growing"}</p>
+      </div>
+      <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:8px;padding:14px;text-align:center">
+        <p style="margin:0;font-size:22px;font-weight:800;color:#9333ea">${pageViews.toLocaleString()}</p>
+        <p style="margin:4px 0 0;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Page Views</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#9333ea;font-weight:600">Avg ${(pageViews / visitors).toFixed(1)} / visit</p>
+      </div>
+    </div>
+
+    <!-- SEO highlight -->
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:14px;margin-bottom:16px">
+      <p style="margin:0;font-size:13px;font-weight:700;color:#92400e">🔍 Google Ranking Update</p>
+      <p style="margin:6px 0 0;font-size:14px;color:#1c1917"><strong>"${esc(keyword)}"</strong> moved from <strong>#${rankFrom}</strong> → <strong>#${rankTo}</strong> on Google</p>
+      <p style="margin:4px 0 0;font-size:12px;color:#78716c">Organic impressions up this week. Keep adding quality listings to hold the gain.</p>
+    </div>
+
+    <!-- Activity bullets -->
+    <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;margin-bottom:16px">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#0f172a">This Week on Motokah</p>
+      <ul style="margin:0;padding-left:18px;font-size:13px;color:#374151;line-height:1.8">
+        <li><strong>${newListings}</strong> new car listings added</li>
+        <li><strong>${wishlistAdd}</strong> listings saved to wishlists by buyers</li>
+        <li>Top traffic city: <strong>${topCity}</strong></li>
+        <li>Mobile traffic share up <strong>${mobileChg}%</strong></li>
+        <li>Bounce rate: <strong>${bounce}%</strong> (industry avg ~65%)</li>
+      </ul>
+    </div>
+
+    <div style="text-align:center;margin:20px 0">
+      <a href="https://www.motokah.com/admin" style="background:#0284c7;color:#fff;padding:11px 22px;border-radius:8px;font-weight:bold;text-decoration:none;display:inline-block">View Admin Dashboard →</a>
+    </div>
+    <p style="font-size:11px;color:#94a3b8;text-align:center;margin:0">Motokah Platform Analytics · Auto-generated weekly summary</p>
+  </div>
+</div>`;
+
+  return { subject, html };
+}
+
 function generateEvent(forcedType) {
-  // 70% listing, 30% signup — mirrors realistic marketplace activity
-  const type = forcedType || (Math.random() < 0.70 ? "listing" : "signup");
-  return type === "listing" ? generateListingEvent() : generateSignupEvent();
+  // 60% listing, 25% signup, 15% analytics — natural activity mix
+  const r = Math.random();
+  const type = forcedType || (r < 0.60 ? "listing" : r < 0.85 ? "signup" : "analytics");
+  if (type === "listing")   return generateListingEvent();
+  if (type === "analytics") return buildAnalyticsEmail();
+  return generateSignupEvent();
 }
 
 // ── HTTP send ─────────────────────────────────────────────────────────────────
@@ -237,7 +321,7 @@ for (let i = 0; i < count; i++) {
   const { subject, html } = generateEvent(typeArg);
   try {
     await sendEmail(subject, html);
-    const type = subject.startsWith("New Listing") ? "listing" : "signup";
+    const type = subject.startsWith("New Listing") ? "listing" : subject.startsWith("New User") ? "signup" : "analytics";
     console.log(`✓ [${i + 1}/${count}] [${type}] ${subject.replace(/^(New Listing Pending Approval|New User Registered on Motokah): /, "")}`);
     sent++;
   } catch (err) {
