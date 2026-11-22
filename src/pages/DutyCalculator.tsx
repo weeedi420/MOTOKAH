@@ -22,12 +22,22 @@ function fmt(n: number, currency: "USD" | "LOCAL", usdRate: number, localCode: s
     : `${localCode} ${(n * usdRate).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 }
 
-// Common Tanzanian imports, used only for worked examples on the page. The CIF values are
-// illustrative inputs, not market prices; every output is computed by the same calcDuties().
-const EXAMPLES = [
-  { car: "Toyota IST", year: 2016, cc: 1300, cif: 5500 },
-  { car: "Toyota Harrier", year: 2014, cc: 2000, cif: 11000 },
-  { car: "Toyota Land Cruiser Prado", year: 2012, cc: 2700, cif: 18000 },
+// Country-specific worked examples. CIF values are illustrative, not market prices.
+const EXAMPLES_BY_COUNTRY: Record<string, { car: string; year: number; cc: number; cif: number }[]> = {
+  tanzania: [
+    { car: "Toyota IST", year: 2016, cc: 1300, cif: 5500 },
+    { car: "Toyota Harrier", year: 2014, cc: 2000, cif: 11000 },
+    { car: "Toyota Land Cruiser Prado", year: 2012, cc: 2700, cif: 18000 },
+  ],
+  kenya: [
+    { car: "Toyota Fielder", year: 2018, cc: 1500, cif: 6500 },
+    { car: "Subaru Outback", year: 2017, cc: 2500, cif: 10000 },
+    { car: "Toyota Probox", year: 2016, cc: 1300, cif: 4800 },
+  ],
+};
+const EXAMPLES_DEFAULT = [
+  { car: "1,500cc sedan", year: THIS_YEAR - 6, cc: 1500, cif: 7000 },
+  { car: "2,000cc SUV", year: THIS_YEAR - 6, cc: 2000, cif: 12000 },
 ];
 
 export default function DutyCalculator() {
@@ -90,9 +100,10 @@ export default function DutyCalculator() {
     navigate(slug === "tanzania" ? "/duty-calculator" : `/${slug}/duty-calculator`);
   };
 
+  const examplesSource = EXAMPLES_BY_COUNTRY[countrySlug] ?? EXAMPLES_DEFAULT;
   const examples = useMemo(
-    () => EXAMPLES.map((e) => ({ ...e, result: calcDuties(country, e.cif, e.cc, THIS_YEAR - e.year) })),
-    [country],
+    () => examplesSource.map((e) => ({ ...e, result: calcDuties(country, e.cif, e.cc, THIS_YEAR - e.year) })),
+    [country, examplesSource],
   );
 
   const faqs = isTz
@@ -104,6 +115,15 @@ export default function DutyCalculator() {
         { q: "I don't have a VIN. Can I still use the calculator?", a: "Yes. Most cars imported from Japan have a chassis number, not a 17-character VIN. Just choose the year of manufacture and type the engine size in cc from the auction sheet or export certificate." },
         { q: "Is this the exact amount TRA will charge?", a: "No, it is an estimate. TRA sets the final figure at clearance and may value the car differently from your invoice. Confirm with TRA or a licensed clearing agent before you pay for a car." },
       ]
+    : countrySlug === "kenya"
+    ? [
+        { q: "How is car import duty calculated in Kenya?", a: "KRA charges 25% import duty on the CIF value (landed at Mombasa), then excise duty on the CIF value: 20% for engines up to 1,500cc and 25% above 1,500cc. VAT of 16% applies to CIF plus all duties. Additionally, a 2% Railway Development Levy and a 3.5% Import Declaration Fee are charged on CIF. The total on a typical used car is usually between 70% and 90% of CIF." },
+        { q: "Can I import a car older than 8 years into Kenya?", a: "No. Kenya restricts imports of used passenger vehicles older than 8 years from the year of manufacture. KRA will not clear vehicles that exceed this age limit. This means in 2026 you can import vehicles manufactured in 2018 or later for personal use." },
+        { q: "What is CIF value for Kenya?", a: "CIF is the cost of the car plus insurance and freight to Mombasa port. It is shown on your seller's invoice and the Bill of Lading. KRA uses its own Current Retail Selling Price (CRSP) database and may substitute a higher value if your invoice is below CRSP." },
+        { q: "What is KRA's CRSP?", a: "Current Retail Selling Price. KRA publishes its own valuation for common car models, used as a minimum CIF. If your invoice is below CRSP, KRA applies CRSP instead. This often affects Japanese imports, where auction prices can be below CRSP. Check KRA's CRSP list before buying." },
+        { q: "What is the Import Declaration Fee (IDF)?", a: "IDF is 3.5% of CIF, paid to KRA on declaration. It is separate from customs duty. Some cleared examples show a slightly higher effective rate — confirm the exact figure with your clearing agent." },
+        { q: "Is this the exact amount KRA will charge?", a: "No. KRA may apply CRSP instead of your invoice price, change the classification of the vehicle, or add penalties if documents are incomplete. This calculator uses your CIF input directly. Confirm with a KRA-licensed customs agent before committing to a purchase." },
+      ]
     : [
         { q: `How is car import duty calculated in ${country.name}?`, a: `This calculator applies ${country.authorityName}'s published rates to the CIF value you enter. ${country.effectiveNote}` },
         { q: "Is this the exact amount I will pay?", a: `No, it is an estimate. ${country.authorityName} sets the final figure at clearance. Confirm with ${country.authorityName} or a licensed clearing agent.` },
@@ -111,9 +131,13 @@ export default function DutyCalculator() {
 
   const title = isTz
     ? "TRA Car Import Duty Calculator Tanzania (2026 Rates)"
+    : countrySlug === "kenya"
+    ? "KRA Car Import Duty Calculator Kenya (2026 Rates)"
     : `${country.authorityName} Car Import Duty Calculator ${country.name}`;
   const description = isTz
     ? "Free TRA vehicle tax calculator for Tanzania with the July 2026 rates: import duty, engine and age excise, VAT, railway levy and registration fees. Works with Japanese chassis numbers."
+    : countrySlug === "kenya"
+    ? "Free KRA import duty calculator for Kenya with 2026 rates: 25% import duty, excise by engine size, 16% VAT, IDF and Railway Levy. Includes 8-year age restriction check."
     : `Estimate ${country.authorityName} car import duty in ${country.name}: import duty, excise, VAT and levies on your vehicle's CIF value.`;
   const jsonLd = [
     {
@@ -156,7 +180,7 @@ export default function DutyCalculator() {
                 {isTz ? "TRA Car Import Duty Calculator" : `${country.name} Import Duty Calculator`}
               </h1>
               <p className="text-sm text-muted-foreground">
-                {isTz ? "Tanzania vehicle tax with the July 2026 rates" : `Estimate ${country.authorityName} duties before shipping your vehicle`}
+                {isTz ? "Tanzania vehicle tax with the July 2026 rates" : countrySlug === "kenya" ? "KRA import duties with 2026 rates — including 8-year age restriction" : `Estimate ${country.authorityName} duties before shipping your vehicle`}
               </p>
             </div>
           </div>
@@ -207,6 +231,12 @@ export default function DutyCalculator() {
           <p className="text-xs text-muted-foreground mt-2">
             Engine size is on the auction sheet or export certificate. This car is {ageYears} {ageYears === 1 ? "year" : "years"} old for duty purposes.
           </p>
+          {countrySlug === "kenya" && ageYears > 8 && (
+            <p className="flex items-start gap-1.5 text-amber-600 dark:text-amber-400 text-xs mt-2 font-medium">
+              <IconAlertCircle size={14} className="mt-0.5 shrink-0" />
+              Kenya restricts import of used passenger vehicles older than 8 years. KRA may not clear this vehicle.
+            </p>
+          )}
           <details className="mt-3">
             <summary className="text-xs font-semibold text-primary cursor-pointer">Have a 17-character VIN? Fill these in automatically</summary>
             <div className="flex gap-2 mt-2">
