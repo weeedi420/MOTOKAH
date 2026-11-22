@@ -37,6 +37,7 @@ requireEnv(env, ['VITE_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY']);
 const supabase = createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 const IG_TOKEN = env.IG_GRAPH_TOKEN;
 const IG_UID   = env.IG_USER_ID;
+const IG_HOST = IG_TOKEN?.startsWith('IGAA') ? 'graph.instagram.com' : 'graph.facebook.com';
 const BUCKET   = 'ig-posts';
 
 const DRY_RUN  = process.argv.includes('--dry-run');
@@ -65,7 +66,7 @@ function igPost(endpoint, params) {
   const qs = new URLSearchParams(params).toString();
   return new Promise((resolve, reject) => {
     const req = https.request({
-      hostname: 'graph.facebook.com',
+      hostname: IG_HOST,
       path: `/v19.0/${endpoint}`,
       method: 'POST',
       headers: {
@@ -89,6 +90,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function main() {
   if (!DRY_RUN) requireEnv(env, ['IG_GRAPH_TOKEN', 'IG_USER_ID']);
+  if (!DRY_RUN) {
+    const checkUrl = new URL(`https://${IG_HOST}/v21.0/me`);
+    checkUrl.searchParams.set('fields', 'id,username');
+    checkUrl.searchParams.set('access_token', IG_TOKEN);
+    const check = await fetch(checkUrl);
+    const result = await check.json();
+    if (!check.ok || result.error) throw new Error(`Instagram token preflight failed: ${result.error?.message || check.status}`);
+  }
 
   // Only approved posts can publish. Pending posts must be reviewed first.
   const { data: pending, error } = await supabase
@@ -123,30 +132,41 @@ async function main() {
     const car = cars[idx % cars.length];
     console.log(`\n[${idx+1}/${safePending.length}] "${p.title}" (${p.pillar})`);
 
-    // 1. Generate image
-    const html = buildHtml(p, car);
-    await page.setContent(html, { waitUntil: 'load' });
-    await page.waitForFunction(
-      () => { const img = document.querySelector('.car-img'); return !img || img.complete; },
-      { timeout: 8000 }
-    ).catch(() => {});
-    await page.waitForTimeout(300);
+    // 1. Use the reviewed creative when one is attached to the post.
     const slug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
     const tmpFile = path.join(TMP, `${slug}.png`);
-    await page.locator('.frame').screenshot({ path: tmpFile });
-    console.log(`  Generated: ${tmpFile}`);
+    const attachedUrl = p.media_urls?.[0];
+    if (attachedUrl) {
+      const response = await fetch(attachedUrl);
+      if (!response.ok) throw new Error(`Attached creative unavailable: ${response.status}`);
+      fs.writeFileSync(tmpFile, Buffer.from(await response.arrayBuffer()));
+      console.log(`  Reviewed creative: ${attachedUrl}`);
+    } else {
+      const html = buildHtml(p, car);
+      await page.setContent(html, { waitUntil: 'load' });
+      await page.waitForFunction(
+        () => { const img = document.querySelector('.car-img'); return !img || img.complete; },
+        { timeout: 8000 }
+      ).catch(() => {});
+      await page.waitForTimeout(300);
+      await page.locator('.frame').screenshot({ path: tmpFile });
+      console.log(`  Generated: ${tmpFile}`);
+    }
 
     if (DRY_RUN) { console.log('  DRY RUN — skipping upload/post'); continue; }
 
-    // 2. Upload to Supabase Storage
-    const imgBuffer = fs.readFileSync(tmpFile);
-    const storageKey = `auto-posts/${Date.now()}-${slug}.png`;
-    const { error: upErr } = await supabase.storage
-      .from(BUCKET)
-      .upload(storageKey, imgBuffer, { contentType: 'image/png', upsert: true });
-    if (upErr) { console.error('  Upload error:', upErr.message); continue; }
-    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(storageKey);
-    const imageUrl = urlData.publicUrl;
+    // 2. Upload generated images; reviewed creatives already have a public URL.
+    let imageUrl = attachedUrl;
+    if (!imageUrl) {
+      const imgBuffer = fs.readFileSync(tmpFile);
+      const storageKey = `auto-posts/${Date.now()}-${slug}.png`;
+      const { error: upErr } = await supabase.storage
+        .from(BUCKET)
+        .upload(storageKey, imgBuffer, { contentType: 'image/png', upsert: true });
+      if (upErr) { console.error('  Upload error:', upErr.message); continue; }
+      const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(storageKey);
+      imageUrl = urlData.publicUrl;
+    }
     console.log(`  Uploaded: ${imageUrl}`);
 
     // 3. Create IG media container

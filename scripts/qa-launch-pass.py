@@ -52,6 +52,11 @@ with sync_playwright() as p:
     assert desktop.get_by_role("heading", name="No vehicles found").is_visible()
     assert desktop.get_by_role("button", name="Go Back").is_visible()
 
+    desktop.goto(f"{BASE}/auth", wait_until="domcontentloaded")
+    desktop.get_by_placeholder("Email").fill("dealer@motokah.com")
+    desktop.get_by_placeholder("Password").fill("moto2026")
+    desktop.locator('form button[type="submit"]').click()
+    desktop.wait_for_timeout(500)
     desktop.goto(f"{BASE}/sell", wait_until="domcontentloaded")
     desktop.wait_for_selector("text=Vehicle video", timeout=30000)
     assert desktop.get_by_text("Vehicle video", exact=True).is_visible()

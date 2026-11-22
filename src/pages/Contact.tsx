@@ -8,12 +8,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconMail, IconMapPin, IconClock } from "@/components/icons";
+import { useSearchParams } from "react-router-dom";
 
 export default function Contact() {
   usePageTitle("Contact Us");
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [form, setForm] = useState(() => ({
+    name: "", email: "", phone: "",
+    subject: searchParams.get("subject")?.slice(0, 200) || "",
+    message: searchParams.get("message")?.slice(0, 2000) || "",
+  }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +43,7 @@ export default function Contact() {
   const update = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }));
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-5xl">
         <h1 className="text-3xl font-bold text-foreground mb-2 text-center">Contact Us</h1>

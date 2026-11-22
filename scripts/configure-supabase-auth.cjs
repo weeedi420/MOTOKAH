@@ -38,6 +38,7 @@ const redirectUrls = [
   "https://motokah.com/reset-password",
   "http://localhost:8080/auth",
   "http://localhost:8080/reset-password",
+  "com.motokah.app://login-callback",
 ].join(",");
 
 const emailShell = (title, body, ctaText, ctaUrl = "{{ .ConfirmationURL }}") => `

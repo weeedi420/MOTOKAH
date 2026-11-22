@@ -5,6 +5,7 @@ import { chromium } from "playwright";
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, "reports", "store-screenshots");
+const PORT = 8092;
 fs.mkdirSync(OUT, { recursive: true });
 
 const CHROME_CANDIDATES = [
@@ -33,14 +34,14 @@ async function waitForServer(url, timeoutMs = 30000) {
   throw new Error(`Server did not start: ${url}`);
 }
 
-const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1"], {
+const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--port", String(PORT)], {
   cwd: ROOT,
   shell: true,
   stdio: "pipe",
 });
 
 try {
-  await waitForServer("http://127.0.0.1:8080");
+  await waitForServer(`http://127.0.0.1:${PORT}`);
 
   const browser = await chromium.launch({
     headless: true,
@@ -59,20 +60,25 @@ try {
     localStorage.setItem("motokah_welcome_completed", "true");
     localStorage.setItem("motokah_country", "Tanzania");
     localStorage.setItem("motokah_city", "Dar es Salaam");
+    localStorage.setItem("motokah_demo_session", JSON.stringify({
+      user: { id: "demo-user", email: "user@motokah.com", email_confirmed_at: "2026-01-01T00:00:00Z", confirmed_at: "2026-01-01T00:00:00Z", user_metadata: { display_name: "Demo User" } },
+      profile: { seller_type: "private", display_name: "Demo User", verified_at: "2026-01-01T00:00:00Z", phone: "+255 700 000 000", city: "Dar es Salaam", avatar_url: null },
+      isAdmin: false,
+    }));
   });
 
   const shots = [
     ["01-home", "/"],
     ["02-search-tanzania", "/search"],
-    ["03-dealers", "/dealers"],
-    ["04-ibaraki-dealer", "/dealer/dealer-ibaraki"],
+    ["03-listing", "/listing/ig-mgaya-DaAIp9oCLI5"],
+    ["04-dealers", "/dealers"],
     ["05-sell", "/sell"],
   ];
 
   for (const [name, route] of shots) {
-    await page.goto(`http://127.0.0.1:8080${route}`, { waitUntil: "domcontentloaded" });
+    await page.goto(`http://127.0.0.1:${PORT}${route}`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("body", { timeout: 10000 });
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(route === "/search" ? 6500 : 2200);
     await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: false });
     console.log(`${name}: ${route}`);
   }

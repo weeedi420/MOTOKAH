@@ -83,7 +83,19 @@
 
   </url>
   <url>
+    <loc>https://www.motokah.com/country/tanzania/nissan</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/country/tanzania/subaru</loc>
+
+  </url>
+  <url>
     <loc>https://www.motokah.com/country/tanzania/mazda</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/country/tanzania/mitsubishi</loc>
 
   </url>
   <url>
@@ -105,6 +117,10 @@
 
   </url>
   <url>
+    <loc>https://www.motokah.com/search?country=Tanzania&amp;vehicleType=bike</loc>
+
+  </url>
+  <url>
     <loc>https://www.motokah.com/search?country=Tanzania&amp;vehicleType=boat</loc>
 
   </url>
@@ -113,7 +129,31 @@
 
   </url>
   <url>
+    <loc>https://www.motokah.com/search?make=Nissan</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Subaru</loc>
+
+  </url>
+  <url>
     <loc>https://www.motokah.com/search?make=Mazda</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Mitsubishi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Harrier&amp;country=Tanzania</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Hilux&amp;country=Tanzania</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Subaru&amp;model=Forester&amp;country=Tanzania</loc>
 
   </url>
   <url>
@@ -121,7 +161,27 @@
 
   </url>
   <url>
+    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Dar%20es%20Salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Dar%20es%20Salaam</loc>
+
+  </url>
+  <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Dar%20es%20Salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Dar%20es%20Salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Mwanza</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Dodoma</loc>
 
   </url>
   <url>
@@ -133,7 +193,19 @@
 
   </url>
   <url>
+    <loc>https://www.motokah.com/search?vehicleType=bike</loc>
+
+  </url>
+  <url>
     <loc>https://www.motokah.com/search?vehicleType=boat</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?country=Kenya&amp;bodyType=SUV</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?country=Tanzania&amp;bodyType=Sedan</loc>
 
   </url>
   <url>
@@ -148,6 +220,14 @@
   <!-- City landing pages (>= 3 real listings, or an anchor city with stock) -->
   <url>
     <loc>https://www.motokah.com/city/dar-es-salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/city/mwanza</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/city/dodoma</loc>
 
   </url>
   <url>
@@ -169,7 +249,27 @@
 
   </url>
   <url>
+    <loc>https://www.motokah.com/cars/nissan/in/dar-es-salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/subaru/in/dar-es-salaam</loc>
+
+  </url>
+  <url>
     <loc>https://www.motokah.com/cars/mazda/in/dar-es-salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/mitsubishi/in/dar-es-salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/toyota/in/mwanza</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/toyota/in/dodoma</loc>
 
   </url>
   <url>
@@ -546,8 +646,1296 @@
   </url>
 
   <!-- Model landing pages (>= 3 real listings) -->
+  <url>
+    <loc>https://www.motokah.com/cars/toyota/alphard</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/toyota/harrier</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/toyota/hilux</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/subaru/forester</loc>
+
+  </url>
 
   <!-- Approved listings with images and seller contact -->
+  <url>
+    <loc>https://www.motokah.com/listing/15b2512d-36a4-4ad0-b3d5-b54caef71601</loc>
+    <lastmod>2026-11-22</lastmod>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ef19516a-a902-46a6-9f55-078725f183ad</loc>
+    <lastmod>2026-11-21</lastmod>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/e65fadc1-cabd-464c-bfa3-f9c1c07e6f12</loc>
+    <lastmod>2026-11-19</lastmod>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/95b55683-5866-4aff-a6d1-7b302ff4964c</loc>
+    <lastmod>2026-11-19</lastmod>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/32432399-3529-41d0-9237-a4a57d9905d8</loc>
+    <lastmod>2026-11-19</lastmod>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ae48ea11-33b1-40b7-8b16-fa42622353ee</loc>
+    <lastmod>2026-11-19</lastmod>
+
+  </url>
+
+  <!-- Jiji / Instagram showroom listing pages (quality-passed) -->
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DaAIp9oCLI5</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ-tGN4CLMP</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ-qf0FCJ_t</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ-oRVoCGWx</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ-miyziOtT</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ-imvzCEtE</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ-N_BfiB-u</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ8F5kOiEmc</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ7DQmNiMxC</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ5rGHWCBqB</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ5b_siCFSL</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mgaya-DZ5bjlFCJMP</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-al_husnainmotors-DXhjHf5CMBq</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-al_husnainmotors-DYZcemOCO7s</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-aminicar_-DB__kL8orsy</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-aminicar_-C_Px7Dwoegd</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-aminicar_-C_N-1V3IUun</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-aminicar_-C_LG7ZjIBo_</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-bongoauto_groups-DaAB6v-jJiy</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-bongoauto_groups-DZ4gn9Ajbza</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-bongoauto_groups-DZ4geI9DTp_</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-bongoauto_groups-DZ4gRIRjRPI</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-bongoauto_groups-DZ0Zcmmkc33</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-bongoauto_groups-DZ0WGMZDEVW</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DaAKQ8YDPki</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DaAKEgTjP1S</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DaACbU3jNSX</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZ6JO4kCFVI</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZ1o433jD_4</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZ1n-93DDNJ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZ1n2zYDL77</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZ1mws6DBDM</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZ1jijdjAw4</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZ1jbhqDEJ3</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-breemotors-DZxyBBzDNCo</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-car_dealers_tanzania-CfLsYMttGWR</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-car_dealers_tanzania-Ce5u9wvt-4-</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-car_dealers_tanzania-Ce4FHYpN4mk</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-car_dealers_tanzania-Ce4ExpiNUio</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-car_dealers_tanzania-Ce0udhYtNrS</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-chimbo_la_magari_dodoma-DZzyh6hiPiM</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-chimbo_la_magari_dodoma-DZzxFqcCBxs</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-chimbo_la_magari_dodoma-DZpJVqgiPSG</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-cholloh_magari_tz-DZ7_zGkAN7R</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZ_Jzd8n0do</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZ_JWd6Dubm</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZ_JM54EZj3</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZxcMnwD__p</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZxbfhIAP_A</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZxZ4tJDUGJ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZxKboZndPC</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZxDuyfjc-E</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZvATWdFl7P</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZhNtSODq2C</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-daressalaam__pikipikiusedtz-DZhMvj3lvSi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DY7RvJ6CIxp</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DWRO8dTiIDa</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DZ0IWUDiMak</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DZx-VohCE_T</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DZw1-c1iD0A</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DZuPrYtCHMU</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DZuCnetiA56</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-dula_magari-DZuCeJTCCsc</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-epicmotors_tz-DX5-dejl1cR</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-epicmotors_tz-DX2MgZhl_ZO</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-epicmotors_tz-DX2LeJlF6mi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-epicmotors_tz-DXy4SjelxSr</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-epicmotors_tz-DXuyyWTl5Oi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DRxdY8ODUCE</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DRu5QXmCCTO</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DRus_EIiLh9</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQPq6ktDeJ0</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQPdRUsCBIC</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQPWXZUASjZ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQPJYMtiKau</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQMqrkvFMWx</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQMj4wdDfGK</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQMc-z-gD1C</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQKM1IzgYyw</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DQJ_FbNiEyN</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DP1EJ7MiSMM</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DPzc0tSgXRD</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DPzSuKqjn4s</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DPzBr0EjMkV</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DPy0cfJCLYA</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ethiocarsmarket-DPOY8UcCLXx</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-evanamotors-DZ-EC_5DM2r</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-evanamotors-DZ7VdWhjKEC</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-evanamotors-DZ7I3__DnmG</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-evanamotors-DZ497BbDIMd</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-evanamotors-DZ4l2lpjjWW</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-evanamotors-DZzTzqRjnmS</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DaADB6SCDqd</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DaACqqHCImN</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DaACS4ZiJql</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DaABzWeCFkM</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DZ9dAFriNKb</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DZ9cMljCKdc</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DZ9bqyNCKMs</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fam_motors_mwanza-DZ8DenqCLdC</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fau_motors-DZ4e77YDAUP</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fau_motors-DZ2XyQhjOym</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-fau_motors-DY9X6UdjNG2</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ8PdvmiubL</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ8PUW-Chaa</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ8PKnxCsMb</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ7lUixii55</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ7GwR3CozK</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ4iS9ECuPF</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ4LZMPim0V</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-gody_motorstz-DZ2NURoCgti</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZ7-LE4DYL9</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZ7-COTjck4</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZzEmfnDdwr</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZzEgQ7DT3j</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZzEXjRDdcd</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZuM_Q_jYZg</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZuMo6SDbwO</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hanami.japan-DZuMcZ1DRE7</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-harabmotorstzltd-DZwXb4ZCVuI</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DZ7AEkwDMSz</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DZPQ-3sDHb3</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DYhQfihDFTA</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DYZO5mZDJe9</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DYO3pwbDMYq</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DXWH79FjFsr</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DXJ1YFxjG34</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DW54gmyjKbB</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DV0UP2wDAxS</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-helianmotors-DVk0p65DM0h</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAJROxDC7a</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAI3JJjKsp</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAIaHcjHUu</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAIEZWDHo9</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAFuvVDNsl</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAFDSyDBXt</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAC6oTDBPw</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaACaOijGqg</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaABqmnDCRj</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAA92ajDpg</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DaAAF31jHq8</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DZ__JVujGDD</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodeals-DZ_2kLcjCtW</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodealz-DZsSqWEDHuo</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodealz-DaAeNW6jP6S</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodealz-DaAQxsYDLiA</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodealz-DaAQcHDDORz</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodealz-DaAQAdNDJMI</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodealz-DaAMz-sjHQM</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hm.autodealz-DaAMGjNjLIB</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ_bd6KCCF3</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ_bGL7CIxf</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ_a0T9iNMS</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ_aos_CDd8</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ_aUiziO1k</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ-n1XQlyAY</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ-nLmul1nT</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-hupa_motors_ltd-DZ8InAyF0Pw</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_001</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_002</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_003</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_004</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_005</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_006</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_007</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_008</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ibaraki-ibaraki_wa_009</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-inspiring_investment_ltd-DZuuQyiDDv8</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-inspiring_investment_ltd-DZiQG89jOrL</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-inspiring_investment_ltd-DZiFmsljFRN</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-inspiring_investment_ltd-DZNkABTjOC7</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-inspiring_investment_ltd-DZEzckQDBVa</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-inspiring_investment_ltd-DY6acKkjIHd</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-international_cars_dealership-DUHDo5lDAUE</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-international_cars_dealership-DZ-SnfejA0O</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-international_cars_dealership-DZ95bH0jNPX</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DXKSD6rDaQB</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DWrJi5cjQTZ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DWW_XNMjdpa</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DV8eAfoDYYN</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DU1NIXKjXMt</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DUd1D81DX8I</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DT2z1GijMxP</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jaja_motors-DTc8PCujHrQ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DaAGRSIDn_a</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ__DdtDnF8</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ_7ubziGSQ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ_1fzkCNIG</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ-7hadDijy</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ-4s9MDuME</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ-o1dFjpLf</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ-oglsDswg</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-jambo_magari-DZ-f5H8CFBw</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-justin_motors_ltd-DZt48ZVjM_C</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-justin_motors_ltd-DZsRPLBjF0U</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-justin_motors_ltd-DZp9BbsjIa2</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kei_cars-DZ9nFbhjdIK</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kei_cars-DZ9hfMcDd5z</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kei_cars-DZuKvWCDSHA</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kei_cars-DZpm39lDMUA</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kei_cars-DZiAPe6DSjb</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZ-E0ktDGHT</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZ9nWz-jSyM</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZ64S7bjdsq</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZ5CwdqjTSI</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZ4JQf1Dey5</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZzqtCdjXsz</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZzOedyDYjJ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZzGYjnDS-K</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZuws08jXe6</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZuc-xrjW6c</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZr-tjSDOIT</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZrZ0aUjURG</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZpb-iLDFQJ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZha11NDYvx</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZb5c_mDYNA</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZUQ_p5DJfX</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZHs899DM1x</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DZClYv4jM5u</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DY80Wo0DCdp</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DY6PmjyjOkW</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DY3qzLxDGGP</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DY1TzniDEYW</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DYyvAjMjH6h</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DYwUkeMjIQZ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DYrVm40DAeg</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DYmIp5ljC-6</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DYjpFW0jEKb</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DYhIxHmDE_7</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-khushimotorsdaressalaam-DYd_aAOjDiI</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kk_magic_cars_-DZ2JLldCt8n</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kk_magic_cars_-DZ2IjvKiiXF</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kk_magic_cars_-DZ2F3NuCgd7</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kk_magic_cars_-DZwu3YiChHa</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kk_magic_cars_-DZpE3jNiiuh</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kk_magic_cars_-DZLn9Suiqlj</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-kk_magic_cars_-DZLnY6mivO4</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-lomaautos_-DXcupaNgvcu</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magari_empire1-DZveImEgELv</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magari_empire1-DZvdxIvgJNi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magari_empire1-DZujduTgGxb</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magari_empire1-DZo0idhAKAa</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magari_empire1-DZoz1cAgFE_</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magari_empire1-DZmG5jNDBzd</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magari_empire1-DZeqDAqgLAR</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-magarideals-DSIKpoACup0</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mapigo_saba_magari-DZ45Nx8DbWm</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mapigo_saba_magari-DZ2iKvpjZYw</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mapigo_saba_magari-DZxt59ejXuQ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mapigo_saba_magari-DZiRbIXjVnP</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mr_pikipiki-DZ-UW2vivPY</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mr_pikipiki-DZ-TVBAijxx</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mr_pikipiki-DZ9_96sCt9g</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-mr_pikipiki-DZ770osiqi8</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DaASdxpiFh4</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DaAMv1oiGRy</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DaAMaYWCPOK</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DaAL8BliHVH</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DaALHuoCDCA</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DZ_yUQjiBJV</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DZ8ROvUiJm3</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-msafiri_automobile_expert-DZ8Qm8DiFEj</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-nathan__motors-DZokHeACF66</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-nathan__motors-DZncr3pCCDC</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-nathan__motors-DZZaGxmiOnR</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-nathan__motors-DZZDPpGiDbi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ_BXVIDDT-</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ---9tDIIZ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ8jcPJDMHn</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ8ieKjDLMc</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ5oRjOjGsp</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ2LO3TDNxC</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ14dG8DBso</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ132t0DCAk</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ13vhcDB5F</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ndinga_bei_poa-DZ125LZjCUi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-pikipiki_bajaji_used-DZojkN1lxAi</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ruge_magari-DaAI20YiJuD</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ruge_magari-DZ-1LFDCAca</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ruge_magari-DZ-v5JcCMYI</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ruge_magari-DZ-pLJAiBvm</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-ruge_magari-DZ-R5EeiM5W</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-rwanko_motors-DZOEWfpDkbQ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-tera_automobiles-DZ0Nx5HiGaV</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-tera_automobiles-DZxjcxkiJeX</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-tera_automobiles-DZc8gH7iNlV</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-tera_automobiles-DZW-W9XCGlD</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-tesha_pikipiki_usedtz-DV8TbUeDcIx</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-tgworldimports-DZ7qWemCFr6</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-urassa_motors_company_limited-DZcXkTLjMxB</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-urassa_motors_company_limited-DZcXbViDI18</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-urassa_motors_company_limited-DZSF2Z1jNBh</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_in_kampala-DX_ikNODNdO</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_in_kampala-DX1tbsijBPv</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_in_kampala-DXtgczADOpj</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_magari_used-DYwkVbQDCyZ</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_magari_used-DYGtga8CNTo</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_magari_used-DYD3xU1iGw0</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_magari_used-DYAzq37DOj4</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_magari_used-DYAy-FVDM97</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_magari_used-DYAe1P9jP00</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-used_cars_magari_used-DYAeftxjD3q</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/ig-usedcarstanzania-DUxQDhiiB2s</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/boat-nicolette-island-spirit-38-40</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/boat-nicolette-jonmeri-40</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/boat-nicolette-social-cruiser-12m</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/boat-nicolette-sea-ray-26ft</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/boat-nicolette-catamaran-hull-19ft</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/boat-nicolette-kaptein-18ft</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/listing/boat-nicolette-shirin-18-5ft</loc>
+
+  </url>
 
   <!-- Blog posts (live from Supabase, published only) -->
   <url>

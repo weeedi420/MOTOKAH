@@ -13,7 +13,8 @@ let fails = 0;
 for (const path of PATHS) {
   const p = await ctx.newPage();
   await p.goto(`${BASE}${path}`, { waitUntil: "load" });
-  await p.waitForTimeout(2500);
+  await p.waitForFunction(() => document.querySelector("header") && document.title && !document.querySelector(".animate-spin"), null, { timeout: 30000 }).catch(() => {});
+  await p.waitForTimeout(3000);
   const m = await p.evaluate(() => ({
     title: document.title,
     descs: [...document.querySelectorAll("meta[name=description]")].map((e) => e.getAttribute("content")),

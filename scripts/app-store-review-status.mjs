@@ -59,3 +59,15 @@ const summary = versions.data.map((version) => {
 });
 
 console.log(JSON.stringify(summary, null, 2));
+
+const submissions = await get(`/apps/${APP_ID}/reviewSubmissions?limit=20`);
+console.log("Review submissions:");
+console.log(JSON.stringify(submissions.data.map((submission) => ({
+  id: submission.id,
+  ...submission.attributes,
+})), null, 2));
+if (submissions.data[0]) {
+  const items = await get(`/reviewSubmissions/${submissions.data[0].id}/items?limit=20`);
+  console.log("Latest submission items:");
+  console.log(JSON.stringify(items.data.map((item) => ({ id: item.id, state: item.attributes?.state, appStoreVersionId: item.relationships?.appStoreVersion?.data?.id || null })), null, 2));
+}

@@ -1,5 +1,5 @@
 import { AbsoluteFill, Sequence } from "remotion";
-import { SCREEN_INNER_WIDTH } from "../design";
+import { W, H, SCALE } from "./kit";
 import { Chapter1Discover, CHAPTER1_DURATION } from "./chapters/Chapter1Discover";
 import { Chapter2Search, CHAPTER2_DURATION } from "./chapters/Chapter2Search";
 import { Chapter3PostAd, CHAPTER3_DURATION } from "./chapters/Chapter3PostAd";
@@ -9,8 +9,8 @@ import { Chapter6ReceiveOffers, CHAPTER6_DURATION } from "./chapters/Chapter6Rec
 import { Chapter7ManageListings, CHAPTER7_DURATION } from "./chapters/Chapter7ManageListings";
 import { Chapter8LanguageCurrency, CHAPTER8_DURATION } from "./chapters/Chapter8LanguageCurrency";
 
-// Built from scratch for /how-it-works — does not reuse or modify /promo's
-// composition or route. All 8 requested chapters, in order.
+// Built for /how-it-works and the in-app guide; separate from /promo's
+// composition. All 8 chapters, in order.
 export interface ChapterMark {
   key: string;
   startFrame: number;
@@ -31,17 +31,10 @@ export const CHAPTERS: ChapterMark[] = KEYS.map((key, i) => ({
 
 export const TOTAL_DURATION = CHAPTERS.reduce((sum, c) => sum + c.durationInFrames, 0);
 export const FPS = 30;
-// Portrait, full-bleed — no device-frame chrome, each chapter's content
-// fills the whole canvas. 1080x2160 keeps the exact 1:2 ratio the chapter
-// content was already designed at (280x560), so scaling up to fill this
-// canvas is distortion-free: see FullBleedScreen + SCREEN_SCALE.
-export const COMPOSITION_WIDTH = 1080;
-export const COMPOSITION_HEIGHT = 2160;
-// Sanity check: must stay an exact 1:2 multiple of SCREEN_INNER_WIDTH/HEIGHT
-// (design.ts) or the per-chapter scale-up becomes distorted/cropped.
-if (COMPOSITION_WIDTH / SCREEN_INNER_WIDTH !== COMPOSITION_HEIGHT / 560) {
-  throw new Error("COMPOSITION dimensions drifted out of 1:2 ratio with SCREEN_INNER dimensions");
-}
+// Portrait 1:2. Chapters are drawn on a 360x720 phone canvas (kit.tsx) and
+// scaled 3x, so the reel stays sharp at 1080x2160.
+export const COMPOSITION_WIDTH = W * SCALE;
+export const COMPOSITION_HEIGHT = H * SCALE;
 
 const COMPONENTS = [
   Chapter1Discover, Chapter2Search, Chapter3PostAd, Chapter4AddPhotos,

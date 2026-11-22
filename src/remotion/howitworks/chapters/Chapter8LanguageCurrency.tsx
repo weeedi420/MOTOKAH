@@ -1,79 +1,100 @@
-import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
-import { FullBleedScreen } from "../../components/FullBleedScreen";
-import { Cursor } from "../../components/Cursor";
+import { useCurrentFrame } from "remotion";
+import { IconMapPin, IconCheck, IconChevronDown, IconMoon, IconHelpCircle } from "@/components/icons";
+import { Scene, Flag, C, prog, fade, APP_H } from "../kit";
+import { HomeScreen, HOME_MENU } from "../screens";
 
-// Real supported options — matches LanguageContext.tsx (en/sw) and the
-// currencies used across SellCar.tsx / usePriceFormatter (TZS, KES, etc.).
-const F = { langTap: 15, langOpen: 25, swTap: 50, labelsSwitch: 60, currTap: 95, currOpen: 105, kesTap: 130, priceUpdate: 140 };
+const F = { menuTap: 22, open: 28, swTap: 62, currTap: 92, list: 96, kesTap: 118, closeTap: 140, close: 144 };
+const LANGS = [
+  { code: "GB" as const, name: "English" },
+  { code: "TZ" as const, name: "Kiswahili" },
+  { code: "FR" as const, name: "Français" },
+  { code: "SA" as const, name: "العربية" },
+];
+const CURRENCIES = ["Auto", "TZS", "KES", "UGX", "RWF", "BIF", "ETB", "NGN", "USD"];
+const SW = { x: 281, y: 332 };
+const SELECT = { x: 288, y: 433 };
+const KES = { x: 285, y: 537 };
+const SHEET_X = 70;
 
+// Header.tsx mobile menu sheet: links, LanguageSwitcher (mobile grid), CurrencySwitcher.
 export function Chapter8LanguageCurrency() {
   const frame = useCurrentFrame();
-  const fadeIn = interpolate(frame, [0, 12], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo });
-  const isSwahili = frame >= F.labelsSwitch;
-  const langDropdownOpen = frame >= F.langOpen && frame < F.labelsSwitch;
-  const currDropdownOpen = frame >= F.currOpen && frame < F.priceUpdate;
-  const isKES = frame >= F.priceUpdate;
+  const swahili = frame >= F.swTap + 2;
+  const kes = frame >= F.kesTap + 2;
+  const sheetT = prog(frame, F.open, F.open + 14) - prog(frame, F.close, F.close + 14);
+  const listO = frame >= F.list && frame < F.kesTap + 6 ? fade(frame, F.list, 6) : 0;
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg }}>
-      <FullBleedScreen scale={SCREEN_SCALE}>
-        <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: fadeIn, position: "relative" }}>
-          <div style={{ background: COLOR.bg, padding: "16px 14px 10px", borderBottom: `1px solid ${COLOR.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: COLOR.brand, fontFamily: "Inter, sans-serif" }}>Motokah</div>
-            <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ fontSize: 9, fontWeight: 700, fontFamily: "Inter, sans-serif", border: `1px solid ${COLOR.border}`, borderRadius: RADIUS.sm, padding: "4px 7px", color: COLOR.ink }}>
-                {isSwahili ? "🇹🇿 SW" : "🇬🇧 EN"}
-              </div>
-              <div style={{ fontSize: 9, fontWeight: 700, fontFamily: "Inter, sans-serif", border: `1px solid ${COLOR.border}`, borderRadius: RADIUS.sm, padding: "4px 7px", color: COLOR.ink }}>
-                {isKES ? "KES" : "TZS"}
-              </div>
+    <Scene
+      step={8}
+      title="Language and currency"
+      line="Switch to Kiswahili and show prices in your own currency."
+      shots={[
+        { f: 0, x: 180, y: 300, z: 1 },
+        { f: F.menuTap - 10, x: 260, y: 80, z: 1.6 },
+        { f: F.menuTap + 4, x: 260, y: 80, z: 1.6 },
+        { f: F.open + 16, x: 215, y: 340, z: 1.22 },
+        { f: F.swTap + 6, x: 215, y: 360, z: 1.22 },
+        { f: F.currTap - 4, x: 215, y: 440, z: 1.22 },
+        { f: F.kesTap + 6, x: 215, y: 440, z: 1.22 },
+        { f: F.close + 4, x: 180, y: 300, z: 1 },
+        { f: F.close + 26, x: 180, y: 300, z: 1 },
+        { f: F.close + 44, x: 180, y: 300, z: 1.1 },
+      ]}
+      taps={[
+        { frame: F.menuTap, x: HOME_MENU.x, y: HOME_MENU.y },
+        { frame: F.swTap, x: SW.x, y: SW.y },
+        { frame: F.currTap, x: SELECT.x, y: SELECT.y },
+        { frame: F.kesTap, x: KES.x, y: KES.y },
+        { frame: F.closeTap, x: 35, y: 300 },
+      ]}
+    >
+      <HomeScreen section="deals" lang={swahili ? "sw" : "en"} price={kes ? "KES 7,194,231" : "TZS 145,000,000"} />
+
+      {sheetT > 0 && (
+        <>
+          <div style={{ position: "absolute", inset: 0, background: `rgba(15,25,35,${0.5 * sheetT})`, zIndex: 8 }} />
+          <div style={{ position: "absolute", top: 0, bottom: 0, left: SHEET_X, right: 0, height: APP_H, background: "#F4F6F8", zIndex: 9, transform: `translateX(${(1 - sheetT) * 100}%)`, boxShadow: "-12px 0 30px rgba(0,0,0,0.18)", padding: "34px 16px 0", boxSizing: "border-box" }}>
+            <div style={{ fontSize: 19, fontWeight: 800, color: C.brand, marginBottom: 12 }}>Motokah</div>
+            {[swahili ? "Magari ya Kutumika" : "Used Cars", swahili ? "Magari Mapya" : "New Cars", swahili ? "Biashara" : "Commercial", swahili ? "Pikipiki" : "Bikes"].map((l) => (
+              <div key={l} style={{ height: 40, display: "flex", alignItems: "center", fontSize: 14.5, color: C.ink }}>{l}</div>
+            ))}
+            <div style={{ height: 40, display: "flex", alignItems: "center", gap: 7, fontSize: 14.5, color: C.ink }}><IconMapPin size={17} />Change Location (Tanzania)</div>
+            <div style={{ height: 1, background: C.border, margin: "8px 0 12px" }} />
+            <div style={{ fontSize: 11.5, fontWeight: 800, color: C.inkSoft, letterSpacing: "0.04em", marginBottom: 8 }}>LANGUAGE</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {LANGS.map((l, i) => {
+                const on = swahili ? i === 1 : i === 0;
+                return (
+                  <span key={l.code} style={{ height: 40, borderRadius: 9, border: `1px solid ${on ? C.brand : C.border}`, background: on ? C.brandSoft : C.card, color: on ? C.brand : C.ink, fontSize: 13.5, fontWeight: on ? 700 : 500, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 10px", boxSizing: "border-box" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 7 }}><Flag code={l.code} w={19} />{l.name}</span>
+                    {on && <IconCheck size={15} />}
+                  </span>
+                );
+              })}
             </div>
+            <div style={{ height: 42, display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12, fontSize: 14.5 }}>
+              <span style={{ color: C.inkSoft }}>Currency</span>
+              <span style={{ width: 112, height: 40, borderRadius: 8, border: `${frame >= F.currTap && frame < F.kesTap + 4 ? 2 : 1}px solid ${frame >= F.currTap && frame < F.kesTap + 4 ? C.brand : C.border}`, background: C.card, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 10px", boxSizing: "border-box", fontSize: 13.5, fontWeight: 700, color: C.inkStrong }}>
+                {kes ? "KES" : "Auto"}<IconChevronDown size={14} />
+              </span>
+            </div>
+            {listO > 0 && (
+              <div style={{ position: "absolute", left: 160, width: 112, top: 462, background: C.card, borderRadius: 10, border: `1px solid ${C.border}`, boxShadow: "0 14px 34px rgba(0,0,0,0.2)", opacity: listO, overflow: "hidden" }}>
+                {CURRENCIES.slice(0, 5).map((c) => {
+                  const on = c === "KES" && frame >= F.kesTap;
+                  return <div key={c} style={{ height: 30, display: "flex", alignItems: "center", padding: "0 10px", fontSize: 13.5, fontWeight: 600, background: on ? C.brand : "transparent", color: on ? "#fff" : C.ink }}>{c}</div>;
+                })}
+              </div>
+            )}
+            <div style={{ height: 1, background: C.border, margin: "12px 0 6px" }} />
+            <div style={{ height: 40, display: "flex", alignItems: "center", gap: 7, fontSize: 14.5, color: C.ink }}><IconMoon size={17} />{swahili ? "Giza" : "Dark Mode"}</div>
+            <div style={{ height: 40, display: "flex", alignItems: "center", gap: 7, fontSize: 14.5, color: C.ink }}><IconHelpCircle size={17} />How It Works</div>
           </div>
-
-          <div style={{ flex: 1, padding: 14 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif", marginBottom: 4 }}>
-              {isSwahili ? "Tafuta gari lako linalofuata" : "Find your next car"}
-            </div>
-            <div style={{ fontSize: 10, color: COLOR.inkSoft, fontFamily: "Inter, sans-serif", marginBottom: 14 }}>
-              {isSwahili ? "Kote Afrika Mashariki" : "Across East Africa"}
-            </div>
-            <div style={{ background: COLOR.bg, border: `1px solid ${COLOR.border}`, borderRadius: RADIUS.lg, padding: 12 }}>
-              <img src={staticFile("cars/fortuner-white-2019-2.jpg")} alt="" style={{ height: 60, width: "100%", objectFit: "cover", borderRadius: RADIUS.sm, marginBottom: 8, display: "block" }} />
-              <div style={{ fontSize: 10, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif" }}>Toyota Land Cruiser</div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: COLOR.brandInk, fontFamily: "Inter, sans-serif" }}>
-                {isKES ? "KES 5,160,000" : "TZS 145,000,000"}
-              </div>
-            </div>
-          </div>
-
-          {langDropdownOpen && (
-            <div style={{ position: "absolute", top: 46, right: 56, width: 110, background: COLOR.surface, borderRadius: RADIUS.md, boxShadow: SHADOW.lift, border: `1px solid ${COLOR.border}`, overflow: "hidden", zIndex: 5 }}>
-              <div style={{ padding: "8px 10px", fontSize: 10, fontFamily: "Inter, sans-serif", color: COLOR.ink, borderBottom: `1px solid ${COLOR.border}` }}>🇬🇧 English</div>
-              <div style={{ padding: "8px 10px", fontSize: 10, fontFamily: "Inter, sans-serif", color: frame >= F.swTap ? COLOR.brandInk : COLOR.ink, background: frame >= F.swTap ? COLOR.brandSoft : "transparent", fontWeight: frame >= F.swTap ? 700 : 400 }}>🇹🇿 Kiswahili</div>
-            </div>
-          )}
-
-          {currDropdownOpen && (
-            <div style={{ position: "absolute", top: 46, right: 10, width: 90, background: COLOR.surface, borderRadius: RADIUS.md, boxShadow: SHADOW.lift, border: `1px solid ${COLOR.border}`, overflow: "hidden", zIndex: 5 }}>
-              {["TZS", "KES", "UGX", "USD"].map((c) => (
-                <div key={c} style={{
-                  padding: "7px 10px", fontSize: 10, fontFamily: "Inter, sans-serif",
-                  color: c === "KES" && frame >= F.kesTap ? COLOR.brandInk : COLOR.ink,
-                  background: c === "KES" && frame >= F.kesTap ? COLOR.brandSoft : "transparent",
-                  fontWeight: c === "KES" && frame >= F.kesTap ? 700 : 400,
-                }}>
-                  {c}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <Cursor taps={[{ frame: F.langTap, x: 208, y: 27 }, { frame: F.swTap, x: 169, y: 94 }, { frame: F.currTap, x: 250, y: 27 }, { frame: F.kesTap, x: 225, y: 90 }]} />
-      </FullBleedScreen>
-    </AbsoluteFill>
+        </>
+      )}
+    </Scene>
   );
 }
 
-export const CHAPTER8_DURATION = 170;
+export const CHAPTER8_DURATION = 210;

@@ -19,6 +19,7 @@ const SUPA_URL = env.VITE_SUPABASE_URL;
 const SUPA_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
 const IG_TOKEN = env.IG_GRAPH_TOKEN;
 const IG_UID = env.IG_USER_ID;
+const IG_HOST = IG_TOKEN.startsWith('IGAA') ? 'graph.instagram.com' : 'graph.facebook.com';
 const BUCKET = "ig-posts";
 
 async function ensureBucket() {
@@ -59,7 +60,7 @@ function igPost(endpoint, params) {
   const qs = new URLSearchParams(params).toString();
   return new Promise((resolve, reject) => {
     const req = https.request({
-      hostname: "graph.facebook.com",
+      hostname: IG_HOST,
       path: `/v19.0/${endpoint}`,
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded", "Content-Length": Buffer.byteLength(qs) },

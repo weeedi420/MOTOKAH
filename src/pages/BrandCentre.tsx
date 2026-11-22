@@ -1,171 +1,101 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import {
-  ApplicationStrip,
-  ColorSwatches,
-  DownloadCentre,
-  DownloadLink,
-  FileHealthSummary,
-  LogoSpecimens,
-  SectionHeader,
-  SectionNav,
-  UsageRules,
-  VoiceGuide,
-} from "@/components/brand-centre/BrandCentreComponents";
-import { brandCentreVersion, kitDownloads } from "@/data/brandCentreAssets";
 import { Helmet } from "react-helmet-async";
+import { Download } from "@/components/icons";
+
+const base = "/brand-2026";
+const assets = [
+  { name: "Letterhead", file: "letterhead-a4", group: "Office" },
+  { name: "Business card front", file: "business-card-front", group: "Office" },
+  { name: "Business card back", file: "business-card-back", group: "Office" },
+  { name: "DL envelope", file: "envelope-dl", group: "Office" },
+  { name: "Compliment slip", file: "compliment-slip", group: "Office" },
+  { name: "Document folder", file: "document-folder", group: "Office" },
+  { name: "Invoice header", file: "invoice-header", group: "Office" },
+  { name: "Dealer window tag", file: "dealer-window-tag", group: "Dealer" },
+  { name: "Dealer poster", file: "dealer-poster-a3", group: "Dealer" },
+  { name: "Dealer ID badge", file: "dealer-id-badge", group: "Dealer" },
+  { name: "Vehicle key tag", file: "vehicle-key-tag", group: "Dealer" },
+  { name: "Staff shirt", file: "staff-shirt-front", group: "Uniform" },
+  { name: "Staff cap", file: "staff-cap-front", group: "Uniform" },
+  { name: "Instagram post", file: "instagram-post-template", group: "Digital" },
+  { name: "Instagram story", file: "instagram-story-template", group: "Digital" },
+  { name: "Instagram profile", file: "instagram-profile", group: "Digital" },
+  { name: "Launch post", file: "instagram-launch-post", group: "Digital" },
+  { name: "Dealer post", file: "instagram-dealer-post", group: "Digital" },
+] as const;
+
+const downloadClass = "inline-flex min-h-10 items-center gap-2 border border-[#cbdced] px-3 py-2 text-xs font-bold text-[#014dc5] transition hover:border-[#014dc5] hover:bg-[#e9f2fc] focus:outline-none focus:ring-2 focus:ring-[#014dc5]";
 
 export default function BrandCentre() {
   return (
     <>
       <Helmet>
-        <title>Motokah Brand Centre | Logo, Stationery & Dealer Assets</title>
-        <meta
-          name="description"
-          content="Download Motokah logos, brand guidelines, stationery, dealer verification assets, uniforms, event templates and social media files."
-        />
+        <title>Motokah Brand Centre | Logo and Stationery</title>
+        <meta name="description" content="Motokah Africa brand assets, stationery, dealer material and social templates." />
       </Helmet>
       <Header />
-      <main className="bg-[#f8fbfd] text-[#102A43]">
-        <section id="intro" className="relative overflow-hidden bg-[#102A43] text-white">
-          <div className="absolute inset-0 opacity-[.12] [background-image:linear-gradient(90deg,#fff_1px,transparent_1px),linear-gradient(#fff_1px,transparent_1px)] [background-size:48px_48px]" />
-          <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-5 py-16 lg:grid-cols-[.82fr_1.18fr] lg:px-8">
+      <main className="bg-white text-[#102a43]">
+        <section className="border-b border-[#d7e3ef] bg-[#f4f8fd] px-5 py-14 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
             <div>
-              <p className="font-mono text-xs font-black uppercase tracking-[0.34em] text-[#9dcdea]">Motokah brand centre / {brandCentreVersion}</p>
-              <h1 className="mt-7 max-w-3xl text-[clamp(3.4rem,7vw,7rem)] font-black leading-[0.86] tracking-tight">
-                One identity for every road.
-              </h1>
-              <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#c7dbe9]">
-                The official Motokah system for staff, dealers, printers, partners and press: logo files, stationery,
-                verification material, showroom assets, social templates and complete download packs.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <DownloadLink href={kitDownloads[0].href} variant="light">Download complete brand kit</DownloadLink>
-                <a href="#library" className="inline-flex h-10 items-center border border-white/20 px-4 text-xs font-black uppercase tracking-[0.14em] text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white">
-                  Browse library
-                </a>
-              </div>
-              <div className="mt-10">
-                <FileHealthSummary />
-              </div>
+              <p className="text-xs font-bold uppercase text-[#014dc5]">Motokah Africa / Brand Centre</p>
+              <h1 className="mt-5 text-4xl font-extrabold leading-tight sm:text-5xl">One mark. Every road.</h1>
+              <p className="mt-5 max-w-lg text-base leading-7 text-[#536779]">The current Motokah identity for print, dealerships, staff and digital campaigns.</p>
+              <a href={`${base}/motokah-brand-kit-2026.zip`} download className="mt-7 inline-flex min-h-11 items-center gap-2 bg-[#014dc5] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#003d9f] focus:outline-none focus:ring-2 focus:ring-[#014dc5] focus:ring-offset-2">
+                <Download size={18} /> Download brand kit
+              </a>
             </div>
-            <div className="border border-white/15 bg-white/[.08] p-4 shadow-2xl">
-              <div className="grid gap-4">
-                <div className="grid aspect-[16/9] place-items-center bg-[#6BA7D4] p-10">
-                  <img src="/brand-centre/svg/logo-primary-horizontal.svg" alt="Motokah primary logo lockup" className="w-full object-contain" />
+            <img src={`${base}/stationery-mockup.png`} alt="Motokah stationery preview with folder, letterhead, envelope, card and cap" className="w-full object-cover" />
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
+          <h2 className="text-2xl font-extrabold">Logo masters</h2>
+          <div className="mt-7 grid gap-6 md:grid-cols-2">
+            {[
+              { name: "Horizontal logo", file: "motokah-logo-horizontal" },
+              { name: "Africa symbol", file: "motokah-symbol" },
+            ].map(({ name, file }) => (
+              <div key={file} className="border border-[#d7e3ef]">
+                <div className="flex aspect-[16/9] items-center justify-center bg-[#f4f8fd] p-10">
+                  <img src={`${base}/${file}.png`} alt={name} className="max-h-full w-full object-contain" />
                 </div>
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="bg-white p-5"><img src="/brand-centre/png/business-card-front.png" alt="Motokah business card" /></div>
-                  <div className="bg-[#6BA7D4] p-5"><img src="/brand-centre/png/navy-polo-front.png" alt="Motokah navy polo" /></div>
-                  <div className="bg-white p-5"><img src="/brand-centre/png/verified-dealer-badge.png" alt="Motokah verified dealer badge" /></div>
+                <div className="flex flex-wrap items-center justify-between gap-3 p-4">
+                  <h3 className="text-sm font-bold">{name}</h3>
+                  <div className="flex gap-2">
+                    <a className={downloadClass} href={`${base}/${file}.svg`} download><Download size={15} /> SVG</a>
+                    <a className={downloadClass} href={`${base}/${file}.png`} download><Download size={15} /> PNG</a>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="border-t border-[#d7e3ef] bg-[#f8fbfe] px-5 py-14 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <h2 className="text-2xl font-extrabold">Stationery and applications</h2>
+            <div className="mt-7 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {assets.map((asset) => (
+                <article key={asset.file} className="border border-[#d7e3ef] bg-white">
+                  <div className="flex aspect-[4/3] items-center justify-center bg-[#edf3f9] p-4">
+                    <img src={`${base}/${asset.file}.png`} alt={asset.name} loading="lazy" className="max-h-full w-full object-contain" />
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-4">
+                    <div>
+                      <p className="text-xs font-bold uppercase text-[#536779]">{asset.group}</p>
+                      <h3 className="mt-1 text-sm font-bold">{asset.name}</h3>
+                    </div>
+                    <div className="flex gap-2">
+                      <a className={downloadClass} href={`${base}/${asset.file}.svg`} download aria-label={`Download ${asset.name} SVG`}><Download size={15} /> SVG</a>
+                      <a className={downloadClass} href={`${base}/${asset.file}.png`} download aria-label={`Download ${asset.name} PNG`}><Download size={15} /> PNG</a>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
-        </section>
-
-        <SectionNav />
-
-        <section className="px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="logos"
-            kicker="01 / Logo system"
-            title="Clean logo masters, variants and usage rules."
-            copy="The car-outline M mark and Motokah wordmark are rebuilt as production-ready vector artwork with PNG exports for quick use."
-          />
-          <LogoSpecimens />
-          <div className="mt-8">
-            <UsageRules />
-          </div>
-        </section>
-
-        <section className="bg-white px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="colour"
-            kicker="02 / Colour & accessibility"
-            title="Blue, navy, white and verified green."
-            copy="The palette stays disciplined so Motokah feels trusted, clean and recognisable across print, mobile, dealer signage and social posts."
-          />
-          <ColorSwatches />
-        </section>
-
-        <section className="px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="type-voice"
-            kicker="03 / Typography & voice"
-            title="Short, useful, confident."
-            copy="Motokah should sound direct and practical: help buyers compare, help sellers move stock, and make verification feel reassuring."
-          />
-          <VoiceGuide />
-        </section>
-
-        <section className="bg-white px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="office"
-            kicker="04 / Office stationery"
-            title="Documents that make the company feel official."
-            copy="Letterhead, continuation sheet, cards, envelope, compliment slip, invoice header, presentation cover, report cover and internal memo."
-          />
-          <ApplicationStrip category="Print" title="Office and print templates" />
-        </section>
-
-        <section className="px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="dealer"
-            kicker="05 / Dealer & verification"
-            title="Everything needed to onboard and verify a showroom."
-            copy="Dealer tags, verified badges, window signs, vehicle tags, inspection certificates, sold cards, price sheets, welcome cards and partner plaques."
-          />
-          <ApplicationStrip category="Dealer" title="Dealer verification kit" />
-        </section>
-
-        <section className="bg-[#102A43] px-5 py-16 text-white lg:px-8">
-          <SectionHeader
-            id="physical"
-            kicker="06 / Uniforms & physical"
-            title="Staff wear and real-world touchpoints."
-            copy="Shirts, lanyards, caps, totes, key tags, decals, clipboards and document folders. Mockups are placement guides, not manufacturer proofs."
-            dark
-          />
-          <div className="[&_h3]:text-white">
-            <ApplicationStrip category="Uniform" title="Uniform applications" />
-            <div className="mt-10">
-              <ApplicationStrip category="Merch" title="Merchandise and field material" />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-white px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="event"
-            kicker="07 / Outdoor & event"
-            title="Local activation assets for Tanzania and East Africa."
-            copy="Pull-up banners, backdrops, directional signs, counter cards, launch posters, billboard ratios and registration desk graphics."
-          />
-          <ApplicationStrip category="Event" title="Event and showroom assets" />
-        </section>
-
-        <section className="px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="digital"
-            kicker="08 / Digital & social"
-            title="Templates for daily publishing and partner announcements."
-            copy="Instagram, Facebook, LinkedIn, WhatsApp, listing frames, dealer announcements, newsletters, web banners and mobile splash screens."
-          />
-          <ApplicationStrip category="Social" title="Social templates" />
-          <div className="mt-10">
-            <ApplicationStrip category="Digital" title="Digital templates" />
-          </div>
-        </section>
-
-        <section className="bg-white px-5 py-16 lg:px-8">
-          <SectionHeader
-            id="library"
-            kicker="09 / Download centre"
-            title="Search, filter and download real files."
-            copy="Every visible action points to a generated SVG, PNG, PDF or ZIP file. No dead buttons, no placeholder downloads."
-          />
-          <DownloadCentre />
         </section>
       </main>
       <Footer />

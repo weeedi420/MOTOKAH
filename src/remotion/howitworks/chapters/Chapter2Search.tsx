@@ -1,83 +1,90 @@
-import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
-import { IconSearch } from "@tabler/icons-react";
-import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
-import { FullBleedScreen } from "../../components/FullBleedScreen";
-import { Cursor } from "../../components/Cursor";
-import { TypingText } from "../../components/TypingText";
-import { VehicleCard } from "../../components/VehicleCard";
+import { useCurrentFrame } from "remotion";
+import { IconX } from "@/components/icons";
+import { Scene, ListingCard, Typed, Button, C, prog, fade, rise, APP_H } from "../kit";
+import { SearchScreen } from "../screens";
 
-const F = { typeStart: 15, filtersOpen: 60, makeTap: 85, applyTap: 110, resultsIn: 125, openListing: 165 };
+const F = { type: 12, searchTap: 50, results: 58, filtersTap: 84, sheet: 90, cityTap: 112, priceTap: 128, showTap: 146, done: 154 };
+
+const CITIES = ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma"];
+const PRICES = ["Under 50M", "Under 100M", "Under 150M"];
 
 export function Chapter2Search() {
   const frame = useCurrentFrame();
-  const fadeIn = interpolate(frame, [0, 12], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo });
-  const filtersVisible = frame >= F.filtersOpen && frame < F.applyTap + 8;
-  const makeChosen = frame >= F.makeTap;
-  const resultsVisible = frame >= F.resultsIn && frame < F.openListing;
-  const detailVisible = frame >= F.openListing;
-  const resultsOp = interpolate(frame, [F.resultsIn, F.resultsIn + 16], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const detailOp = interpolate(frame, [F.openListing, F.openListing + 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const searched = frame >= F.results;
+  const filtered = frame >= F.done;
+  const sheetT = prog(frame, F.sheet, F.sheet + 14) - prog(frame, F.showTap + 2, F.showTap + 14);
+  const cardO = fade(frame, filtered ? F.done : F.results, 12);
+  const cardY = rise(frame, filtered ? F.done : F.results, 20, 16);
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg }}>
-      <FullBleedScreen scale={SCREEN_SCALE}>
-        <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: fadeIn }}>
-          <div style={{ background: COLOR.bg, padding: "16px 14px 10px", borderBottom: `1px solid ${COLOR.border}`, flexShrink: 0 }}>
-            <div style={{
-              background: COLOR.surface, border: `1px solid ${frame >= 0 && frame < F.filtersOpen ? COLOR.brand : COLOR.border}`,
-              borderRadius: RADIUS.md, padding: "9px 12px", fontSize: 11, color: COLOR.ink, fontFamily: "Inter, sans-serif",
-              display: "flex", alignItems: "center", gap: 6,
-            }}>
-              <IconSearch size={14} style={{ opacity: 0.5, flexShrink: 0 }} />
-              {frame >= F.typeStart && frame < F.filtersOpen ? (
-                <TypingText text="Toyota Hilux" startFrame={F.typeStart} charsPerFrame={0.6} />
-              ) : frame >= F.filtersOpen ? "Toyota Hilux" : <span style={{ color: COLOR.inkMute }}>Search used cars...</span>}
-            </div>
+    <Scene
+      step={2}
+      title="Search and filter"
+      line="Type what you want, then narrow it down by city and price."
+      shots={[
+        { f: 0, x: 180, y: 140, z: 1.18 },
+        { f: F.searchTap + 4, x: 180, y: 140, z: 1.18 },
+        { f: F.results + 14, x: 180, y: 300, z: 1 },
+        { f: F.sheet + 10, x: 180, y: 300, z: 1 },
+        { f: F.sheet + 22, x: 180, y: 420, z: 1.1 },
+        { f: F.showTap + 4, x: 180, y: 420, z: 1.1 },
+        { f: F.done + 14, x: 180, y: 300, z: 1 },
+      ]}
+      taps={[
+        { frame: F.searchTap, x: 325, y: 121 },
+        { frame: F.filtersTap, x: 50, y: 216 },
+        { frame: F.cityTap, x: 178, y: 335 },
+        { frame: F.priceTap, x: 163, y: 451 },
+        { frame: F.showTap, x: 180, y: 515 },
+      ]}
+    >
+      <SearchScreen
+        title={searched ? "Toyota Hilux for Sale" : "Vehicles for Sale in East Africa"}
+        count={filtered ? "18 vehicles found" : searched ? "64 vehicles found" : "2,140 vehicles found"}
+        chips={filtered ? ["Toyota Hilux", "Arusha", "Under 100M"] : searched ? ["Toyota Hilux"] : []}
+        queryActive={frame >= F.type && frame < F.searchTap}
+        query={frame >= F.type ? <Typed text="Toyota Hilux" start={F.type} cps={0.42} caret={frame < F.searchTap} /> : undefined}
+      >
+        {searched && (
+          <div style={{ opacity: cardO, transform: `translateY(${cardY}px)` }}>
+            {filtered ? (
+              <ListingCard title="2019 Toyota Hilux Double Cab" price="TZS 78,500,000" city="Arusha" km="45,000 km" year="2019" body="Pickup" photo="cars/hilux-white-2019-1.jpg" views={93} />
+            ) : (
+              <ListingCard title="2019 Toyota Hilux Double Cab" price="TZS 92,000,000" city="Dar es Salaam" km="71,000 km" year="2019" body="Pickup" photo="cars/hilux-gray-2019-1.jpg" views={120} />
+            )}
           </div>
+        )}
+      </SearchScreen>
 
-          {detailVisible ? (
-            <div style={{ flex: 1, padding: 14, opacity: detailOp }}>
-              <img src={staticFile("cars/hilux-white-2019-1.jpg")} alt="" style={{ width: "100%", height: 110, objectFit: "cover", borderRadius: RADIUS.md, marginBottom: 10, display: "block" }} />
-              <div style={{ fontSize: 14, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif", marginBottom: 4 }}>Toyota Hilux D-Cab</div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: COLOR.brandInk, fontFamily: "Inter, sans-serif", marginBottom: 8 }}>TZS 78,500,000</div>
-              <div style={{ fontSize: 10, color: COLOR.inkSoft, fontFamily: "Inter, sans-serif" }}>45,000 km · Automatic · Dar es Salaam</div>
+      {sheetT > 0 && (
+        <>
+          <div style={{ position: "absolute", inset: 0, background: `rgba(15,25,35,${0.45 * sheetT})`, zIndex: 8 }} />
+          <div style={{ position: "absolute", left: 0, right: 0, top: 230, height: APP_H - 230, background: C.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, zIndex: 9, transform: `translateY(${(1 - sheetT) * 100}%)`, padding: "10px 16px 0", boxSizing: "border-box", boxShadow: "0 -10px 30px rgba(0,0,0,0.15)" }}>
+            <div style={{ width: 40, height: 5, borderRadius: 3, background: C.border, margin: "0 auto 12px" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <div style={{ fontSize: 19, fontWeight: 800, color: C.inkStrong }}>Filters</div>
+              <IconX size={20} style={{ color: C.inkSoft }} />
             </div>
-          ) : (
-            <div style={{ flex: 1, padding: "12px 14px", overflow: "hidden" }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: COLOR.inkSoft, fontFamily: "Inter, sans-serif", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                Filters
-              </div>
-              <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
-                {["Make", "Price Range", "City"].map((f, i) => (
-                  <div key={f} style={{
-                    fontSize: 9, fontWeight: 600, fontFamily: "Inter, sans-serif", padding: "5px 9px", borderRadius: 99,
-                    border: `1px solid ${i === 0 && makeChosen ? COLOR.brand : COLOR.border}`,
-                    background: i === 0 && makeChosen ? COLOR.brandSoft : COLOR.bg,
-                    color: i === 0 && makeChosen ? COLOR.brandInk : COLOR.inkSoft,
-                  }}>
-                    {i === 0 && makeChosen ? "Toyota" : f}
-                  </div>
-                ))}
-              </div>
-
-              {resultsVisible ? (
-                <div style={{ opacity: resultsOp }}>
-                  <VehicleCard title="Toyota Hilux D-Cab" price="TZS 78,500,000" location="Dar es Salaam" km="45,000 km" year="2019" photo="cars/hilux-white-2019-1.jpg" style={{ marginBottom: 8 }} />
-                  <VehicleCard title="Toyota Hilux Vigo" price="TZS 42,000,000" location="Arusha" km="98,000 km" year="2019" photo="cars/hilux-gray-2019-1.jpg" />
-                </div>
-              ) : (
-                <div style={{ fontSize: 10, color: COLOR.inkMute, fontFamily: "Inter, sans-serif", textAlign: "center", marginTop: 40 }}>
-                  {frame >= F.applyTap ? "Searching…" : "Set filters to narrow results"}
-                </div>
-              )}
+            <div style={{ fontSize: 13, fontWeight: 700, color: C.inkSoft, marginBottom: 8 }}>City</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+              {CITIES.map((c) => {
+                const on = c === "Arusha" && frame >= F.cityTap + 2;
+                return <span key={c} style={{ padding: "7px 10px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: `1px solid ${on ? C.brand : C.border}`, background: on ? C.brand : C.card, color: on ? "#fff" : C.ink }}>{c}</span>;
+              })}
             </div>
-          )}
-        </div>
-
-        <Cursor taps={[{ frame: F.filtersOpen, x: 140, y: 82 }, { frame: F.makeTap, x: 35, y: 109 }, { frame: F.openListing, x: 140, y: 255 }]} />
-      </FullBleedScreen>
-    </AbsoluteFill>
+            <div style={{ fontSize: 13, fontWeight: 700, color: C.inkSoft, marginBottom: 8 }}>Price (TZS)</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+              {PRICES.map((p) => {
+                const on = p === "Under 100M" && frame >= F.priceTap + 2;
+                return <span key={p} style={{ padding: "7px 10px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: `1px solid ${on ? C.brand : C.border}`, background: on ? C.brand : C.card, color: on ? "#fff" : C.ink }}>{p}</span>;
+              })}
+            </div>
+            <Button pressed={frame >= F.showTap && frame < F.showTap + 6}>Show 18 results</Button>
+          </div>
+        </>
+      )}
+    </Scene>
   );
 }
 
-export const CHAPTER2_DURATION = 190;
+export const CHAPTER2_DURATION = 185;

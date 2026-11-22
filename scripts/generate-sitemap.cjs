@@ -524,9 +524,21 @@ async function main() {
     "</urlset>",
   ];
 
+  // Individual listing pages for jiji/showroom/mock listings (not Supabase UUIDs — those
+  // are in approvedListings). qualityListings are full Listing objects at runtime even though
+  // typed as CountableListing; .id always present on mock/jiji/ig entries.
+  const mockListingPages = qualityListings
+    .filter((l) => l.id && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(l.id))
+    .map((l) => url(`${BASE}/listing/${encodeURIComponent(l.id)}`, "weekly", 0.6));
+
+  console.log(`Static/mock listing pages added: ${mockListingPages.length}`);
+
   lines.splice(-1, 0,
     "  <!-- Approved listings with images and seller contact -->",
     ...approvedListings.map((listing) => url(`${BASE}/listing/${listing.id}`, undefined, undefined, listing.updated_at?.slice(0, 10))),
+    "",
+    "  <!-- Jiji / Instagram showroom listing pages (quality-passed) -->",
+    ...mockListingPages,
     "",
     "  <!-- Blog posts (live from Supabase, published only) -->",
     ...blogPosts.map((post) => url(`${BASE}/blog/${post.slug}`, "monthly", 0.7, post.created_at?.slice(0, 10))),
@@ -535,7 +547,7 @@ async function main() {
   const dest = path.join(__dirname, "../public/sitemap.xml");
   fs.writeFileSync(dest, lines.join("\n"), "utf8");
   console.log(`Sitemap written: ${dest}`);
-  console.log(`URLs: ${(lines.join("\n").match(/<url>/g) || []).length} (${approvedListings.length} approved listings, ${blogPosts.length} blog posts)`);
+  console.log(`URLs: ${(lines.join("\n").match(/<url>/g) || []).length} (${approvedListings.length} approved + ${mockListingPages.length} jiji/ig listings, ${blogPosts.length} blog posts)`);
 }
 
 main().catch((error) => {

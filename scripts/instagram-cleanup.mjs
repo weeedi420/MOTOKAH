@@ -22,6 +22,7 @@ const APPLY = process.argv.includes("--apply");
 const LIMIT_ARG = process.argv.find((arg) => arg.startsWith("--limit="));
 const LIMIT = Number(LIMIT_ARG?.split("=")[1] || 100);
 const env = loadEnv(ROOT);
+const IG_HOST = env.IG_GRAPH_TOKEN?.startsWith('IGAA') ? 'graph.instagram.com' : 'graph.facebook.com';
 
 requireEnv(env, ["IG_USER_ID", "IG_GRAPH_TOKEN"]);
 
@@ -69,7 +70,7 @@ function graphRequest(method, pathname, params = {}) {
   return new Promise((resolve, reject) => {
     const req = https.request(
       {
-        hostname: "graph.facebook.com",
+        hostname: IG_HOST,
         path: pathWithQuery,
         method,
       },

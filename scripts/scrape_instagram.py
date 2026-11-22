@@ -26,7 +26,7 @@ SESSION_ID  = os.getenv("INSTAGRAM_SESSION_ID", "")
 IG_USERNAME = "motokahafrica"
 IG_USER_ID  = "65726780869"
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://eiofmomywxcsezbyzjth.supabase.co")
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://dimywnbmmliluounwqfb.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
 ACCOUNTS = [
