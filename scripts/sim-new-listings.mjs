@@ -5,11 +5,14 @@
  * an active marketplace. Sends a mix of "new listing" and "new signup" emails.
  *
  * Usage:
- *   node scripts/sim-new-listings.mjs             # auto mode: 1-3 mixed events
- *   node scripts/sim-new-listings.mjs --count 5   # send exactly 5
- *   node scripts/sim-new-listings.mjs --type listing   # listings only
- *   node scripts/sim-new-listings.mjs --type signup    # signups only
- *   node scripts/sim-new-listings.mjs --type analytics # weekly growth report only
+ *   node scripts/sim-new-listings.mjs                           # 1 mixed event
+ *   node scripts/sim-new-listings.mjs --count 3                 # 3 events
+ *   node scripts/sim-new-listings.mjs --type signup             # signups only
+ *   node scripts/sim-new-listings.mjs --type listing            # listings only
+ *   node scripts/sim-new-listings.mjs --type listing-or-signup  # random mix
+ *   node scripts/sim-new-listings.mjs --type analytics          # weekly report
+ *   node scripts/sim-new-listings.mjs --type pending-warning    # end-of-day approval alert
+ *   node scripts/sim-new-listings.mjs --skip-chance 45          # 45% chance to skip
  */
 
 import { config } from "dotenv";
@@ -20,7 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: join(__dirname, "../.env.local") });
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-const ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const ANON_KEY    = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 const ADMIN_INBOX = "motokahafrica@gmail.com";
 
 if (!SUPABASE_URL || !ANON_KEY) {
@@ -28,112 +31,138 @@ if (!SUPABASE_URL || !ANON_KEY) {
   process.exit(1);
 }
 
-// ── Name pools ────────────────────────────────────────────────────────────────
+// ── Country-specific name pools ───────────────────────────────────────────────
+// Real, commonly used names per country — not generic pan-African lists
 
-const FIRST_NAMES = [
-  "Amani", "Baraka", "Chidi", "Daudi", "Emmanuel", "Farida", "Grace", "Hassan",
-  "Ibrahim", "Juma", "Kioni", "Lilian", "Musa", "Neema", "Omar", "Pendo",
-  "Rashid", "Salma", "Tariq", "Upendo", "Valentine", "Wanjiru", "Yusuf", "Zawadi",
-  "Abdi", "Beatrice", "Calleb", "Dorcas", "Evans", "Fatuma", "George", "Halima",
-  "Ismail", "Joyce", "Kipchoge", "Leila", "Moses", "Naomi", "Ochieng", "Priscilla",
-  "Ruth", "Samuel", "Tabitha", "Victor", "Wambua", "Amara", "Boniface", "Caroline",
-  "Dennis", "Elizabeth", "Felix", "Gloria", "Henry", "Irene", "Jackson", "Kelvin",
-  "Lydia", "Martin", "Nadia", "Paul", "Rehema", "Simon", "Tina", "Usman",
-];
+const NAMES_TZ = {
+  first: [
+    "Juma","Hassan","Rashidi","Omar","Said","Hamisi","Bakari","Ali","Khamisi","Rajabu",
+    "Abdallah","Ramadhan","Iddi","Musa","Salim","Fatuma","Zainab","Amina","Mariamu",
+    "Zuhura","Halima","Mwajuma","Safia","Mwanaisha","Rahma","Asha","Rukia","Pili",
+    "Tatu","Rehema","Mwanajuma","Farida","Latifa","Mariam","Nuhu","Rabia","Shabani",
+    "Suleiman","Yusuf","Zubeir",
+  ],
+  last: [
+    "Juma","Hassan","Ally","Ramadhani","Kibwana","Omar","Hamisi","Chande","Bakari",
+    "Khamisi","Mwamba","Rashidi","Said","Salim","Makame","Shariff","Msemo","Mtoro",
+    "Amri","Mwinyi","Mbwana","Kombo","Nassoro","Seleman","Suleiman",
+  ],
+};
 
-const LAST_NAMES = [
-  "Mwangi", "Odhiambo", "Kamau", "Njoroge", "Kiplagat", "Achieng", "Omondi", "Wambua",
-  "Msomi", "Makame", "Juma", "Hassan", "Salim", "Rashidi", "Musa", "Otieno",
-  "Kamande", "Gatheru", "Wanjiku", "Muriu", "Gitau", "Karanja", "Ngugi", "Kimani",
-  "Banda", "Phiri", "Tembo", "Mwamba", "Zulu", "Dlamini", "Nkosi", "Sithole",
-  "Mensah", "Asante", "Boateng", "Adjei", "Owusu", "Acheampong", "Darko", "Quaye",
-  "Waweru", "Waithaka", "Maina", "Mumo", "Mutua", "Musyoka", "Ndung'u", "Kihara",
-  "Osei", "Nkrumah", "Addo", "Agyemang", "Obeng", "Sarfo", "Tetteh", "Ankrah",
-];
+const NAMES_KE = {
+  first: [
+    "Kamau","John","Peter","Samuel","Francis","Moses","Patrick","David","Paul","Michael",
+    "James","Robert","Thomas","Timothy","Joseph","Wanjiku","Susan","Grace","Mary","Rose",
+    "Beatrice","Agnes","Elizabeth","Irene","Lucy","Ruth","Tabitha","Lydia","Eunice",
+    "Priscilla","Odhiambo","Otieno","Kipchoge","Chebet","Achieng","Naliaka","Simiyu",
+    "Wafula","Barasa","Jeptoo",
+  ],
+  last: [
+    "Mwangi","Kamau","Odhiambo","Otieno","Ndirangu","Waithera","Karanja","Wambui",
+    "Kimani","Gitau","Ngugi","Muriu","Njoroge","Waweru","Gatheru","Mumo","Mutua",
+    "Musyoka","Kiplagat","Chebet","Achieng","Ouma","Onyango","Obiero","Simiyu","Wafula",
+    "Barasa","Khisa","Namwamba","Juma",
+  ],
+};
+
+const NAMES_UG = {
+  first: [
+    "Paul","Robert","Patrick","John","Moses","David","Michael","Samuel","Joseph","Francis",
+    "Peter","Timothy","Grace","Sarah","Agnes","Mary","Lydia","Esther","Ruth","Hannah",
+    "Dorcas","Priscilla","Lucy","Rose","Susan","Faridah","Mariam","Aisha","Ibrahim","Rashid",
+  ],
+  last: [
+    "Mukasa","Namukasa","Kiggundu","Nakakande","Ssebatta","Nanteza","Opio","Akello",
+    "Byamukama","Tumusiime","Kasule","Nabwire","Mutebi","Namutebi","Ayebale","Ssekandi",
+    "Nsubuga","Kayiira","Lubega","Semakula","Kizza","Nankya","Mbabazi","Atim","Aber",
+  ],
+};
+
+const NAMES_ETH = {
+  first: [
+    "Abebe","Girma","Tesfaye","Dawit","Yohannes","Ermias","Solomon","Yonas","Mulugeta",
+    "Tewodros","Aster","Tigist","Mekdes","Hana","Selam","Rahel","Bethlehem","Tsehay",
+    "Almaz","Meaza","Biruk","Natnael","Eyob","Henok","Kaleab",
+  ],
+  last: [
+    "Tadesse","Haile","Bekele","Worku","Tesfaye","Alemu","Kebede","Mekonnen","Girma",
+    "Desta","Negash","Wolde","Abebe","Gebre","Tekle","Ayele","Lemma","Teferi","Assefa",
+    "Demeke","Kassa","Mamo","Tsegay","Berhe","Hagos",
+  ],
+};
+
+const CITY_COUNTRY = {
+  "Dar es Salaam": "Tanzania", "Arusha": "Tanzania", "Mwanza": "Tanzania",
+  "Dodoma": "Tanzania",        "Zanzibar": "Tanzania", "Moshi": "Tanzania",
+  "Nairobi": "Kenya",          "Mombasa": "Kenya",    "Kisumu": "Kenya", "Nakuru": "Kenya",
+  "Kampala": "Uganda",         "Jinja": "Uganda",     "Entebbe": "Uganda",
+  "Addis Ababa": "Ethiopia",
+};
 
 const CITIES = [
-  // Tanzania (highest weight — primary market)
-  "Dar es Salaam", "Dar es Salaam", "Dar es Salaam", "Dar es Salaam",
-  "Arusha", "Arusha", "Mwanza", "Dodoma", "Zanzibar", "Moshi",
+  // Tanzania (primary market — highest weight)
+  "Dar es Salaam","Dar es Salaam","Dar es Salaam","Dar es Salaam",
+  "Arusha","Arusha","Mwanza","Dodoma","Zanzibar","Moshi",
   // Kenya
-  "Nairobi", "Nairobi", "Nairobi", "Mombasa", "Mombasa", "Kisumu", "Nakuru",
+  "Nairobi","Nairobi","Nairobi","Mombasa","Mombasa","Kisumu","Nakuru",
   // Uganda
-  "Kampala", "Kampala", "Jinja", "Entebbe",
+  "Kampala","Kampala","Jinja","Entebbe",
   // Ethiopia
   "Addis Ababa",
 ];
 
 const CARS = [
-  { make: "Toyota",        model: "IST",               cc: 1300, price: () => ri(6_500_000, 14_000_000),  currency: "TZS", year: () => ri(2010, 2018) },
-  { make: "Toyota",        model: "Vitz",              cc: 1000, price: () => ri(5_000_000, 11_000_000),  currency: "TZS", year: () => ri(2010, 2019) },
-  { make: "Toyota",        model: "Fielder",           cc: 1500, price: () => ri(10_000_000, 22_000_000), currency: "TZS", year: () => ri(2012, 2020) },
-  { make: "Toyota",        model: "Harrier",           cc: 2000, price: () => ri(22_000_000, 50_000_000), currency: "TZS", year: () => ri(2010, 2017) },
-  { make: "Toyota",        model: "Land Cruiser Prado",cc: 2700, price: () => ri(60_000_000, 110_000_000),currency: "TZS", year: () => ri(2008, 2016) },
-  { make: "Toyota",        model: "Probox",            cc: 1300, price: () => ri(6_000_000, 13_000_000),  currency: "TZS", year: () => ri(2008, 2018) },
-  { make: "Toyota",        model: "Sienta",            cc: 1500, price: () => ri(14_000_000, 26_000_000), currency: "TZS", year: () => ri(2012, 2020) },
-  { make: "Toyota",        model: "Wish",              cc: 1800, price: () => ri(12_000_000, 22_000_000), currency: "TZS", year: () => ri(2008, 2016) },
-  { make: "Toyota",        model: "Premio",            cc: 1800, price: () => ri(14_000_000, 28_000_000), currency: "TZS", year: () => ri(2010, 2018) },
-  { make: "Toyota",        model: "Allion",            cc: 1800, price: () => ri(13_000_000, 26_000_000), currency: "TZS", year: () => ri(2010, 2018) },
-  { make: "Mazda",         model: "Demio",             cc: 1300, price: () => ri(6_000_000, 13_000_000),  currency: "TZS", year: () => ri(2010, 2019) },
-  { make: "Mazda",         model: "Atenza",            cc: 2000, price: () => ri(15_000_000, 28_000_000), currency: "TZS", year: () => ri(2010, 2017) },
-  { make: "Mazda",         model: "CX-5",              cc: 2000, price: () => ri(28_000_000, 55_000_000), currency: "TZS", year: () => ri(2012, 2019) },
-  { make: "Nissan",        model: "Note",              cc: 1200, price: () => ri(7_000_000, 15_000_000),  currency: "TZS", year: () => ri(2010, 2019) },
-  { make: "Nissan",        model: "X-Trail",           cc: 2000, price: () => ri(18_000_000, 40_000_000), currency: "TZS", year: () => ri(2008, 2017) },
-  { make: "Nissan",        model: "Tiida",             cc: 1500, price: () => ri(7_000_000, 15_000_000),  currency: "TZS", year: () => ri(2008, 2015) },
-  { make: "Subaru",        model: "Forester",          cc: 2000, price: () => ri(20_000_000, 42_000_000), currency: "TZS", year: () => ri(2010, 2018) },
-  { make: "Subaru",        model: "Outback",           cc: 2500, price: () => ri(22_000_000, 48_000_000), currency: "TZS", year: () => ri(2010, 2018) },
-  { make: "Honda",         model: "Fit",               cc: 1300, price: () => ri(7_000_000, 16_000_000),  currency: "TZS", year: () => ri(2010, 2019) },
-  { make: "Honda",         model: "Freed",             cc: 1500, price: () => ri(12_000_000, 24_000_000), currency: "TZS", year: () => ri(2010, 2018) },
-  { make: "Mitsubishi",    model: "Outlander",         cc: 2000, price: () => ri(18_000_000, 40_000_000), currency: "TZS", year: () => ri(2008, 2017) },
-  { make: "Mitsubishi",    model: "RVR",               cc: 1800, price: () => ri(14_000_000, 28_000_000), currency: "TZS", year: () => ri(2010, 2018) },
-  { make: "Mercedes-Benz", model: "C200",              cc: 2000, price: () => ri(25_000_000, 55_000_000), currency: "TZS", year: () => ri(2008, 2016) },
+  { make:"Toyota",        model:"IST",                cc:1300, price:()=>ri(6_500_000,14_000_000),   currency:"TZS", year:()=>ri(2010,2018) },
+  { make:"Toyota",        model:"Vitz",               cc:1000, price:()=>ri(5_000_000,11_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
+  { make:"Toyota",        model:"Fielder",            cc:1500, price:()=>ri(10_000_000,22_000_000),  currency:"TZS", year:()=>ri(2012,2020) },
+  { make:"Toyota",        model:"Harrier",            cc:2000, price:()=>ri(22_000_000,50_000_000),  currency:"TZS", year:()=>ri(2010,2017) },
+  { make:"Toyota",        model:"Land Cruiser Prado", cc:2700, price:()=>ri(60_000_000,110_000_000), currency:"TZS", year:()=>ri(2008,2016) },
+  { make:"Toyota",        model:"Probox",             cc:1300, price:()=>ri(6_000_000,13_000_000),   currency:"TZS", year:()=>ri(2008,2018) },
+  { make:"Toyota",        model:"Sienta",             cc:1500, price:()=>ri(14_000_000,26_000_000),  currency:"TZS", year:()=>ri(2012,2020) },
+  { make:"Toyota",        model:"Wish",               cc:1800, price:()=>ri(12_000_000,22_000_000),  currency:"TZS", year:()=>ri(2008,2016) },
+  { make:"Toyota",        model:"Premio",             cc:1800, price:()=>ri(14_000_000,28_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
+  { make:"Toyota",        model:"Allion",             cc:1800, price:()=>ri(13_000_000,26_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
+  { make:"Mazda",         model:"Demio",              cc:1300, price:()=>ri(6_000_000,13_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
+  { make:"Mazda",         model:"Atenza",             cc:2000, price:()=>ri(15_000_000,28_000_000),  currency:"TZS", year:()=>ri(2010,2017) },
+  { make:"Mazda",         model:"CX-5",               cc:2000, price:()=>ri(28_000_000,55_000_000),  currency:"TZS", year:()=>ri(2012,2019) },
+  { make:"Nissan",        model:"Note",               cc:1200, price:()=>ri(7_000_000,15_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
+  { make:"Nissan",        model:"X-Trail",            cc:2000, price:()=>ri(18_000_000,40_000_000),  currency:"TZS", year:()=>ri(2008,2017) },
+  { make:"Nissan",        model:"Tiida",              cc:1500, price:()=>ri(7_000_000,15_000_000),   currency:"TZS", year:()=>ri(2008,2015) },
+  { make:"Subaru",        model:"Forester",           cc:2000, price:()=>ri(20_000_000,42_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
+  { make:"Subaru",        model:"Outback",            cc:2500, price:()=>ri(22_000_000,48_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
+  { make:"Honda",         model:"Fit",                cc:1300, price:()=>ri(7_000_000,16_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
+  { make:"Honda",         model:"Freed",              cc:1500, price:()=>ri(12_000_000,24_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
+  { make:"Mitsubishi",    model:"Outlander",          cc:2000, price:()=>ri(18_000_000,40_000_000),  currency:"TZS", year:()=>ri(2008,2017) },
+  { make:"Mitsubishi",    model:"RVR",                cc:1800, price:()=>ri(14_000_000,28_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
+  { make:"Mercedes-Benz", model:"C200",               cc:2000, price:()=>ri(25_000_000,55_000_000),  currency:"TZS", year:()=>ri(2008,2016) },
 ];
 
-const CONDITIONS   = ["Foreign Used", "Foreign Used", "Foreign Used", "Locally Used", "New"];
-const COLORS       = ["White", "Silver", "Black", "Pearl White", "Grey", "Blue", "Maroon", "Champagne", "Red"];
-const SELLER_TYPES = ["Private Seller", "Private Seller", "Dealer", "Private Seller", "Individual"];
-
-const PHONE_PREFIX = { Tanzania: "+255", Kenya: "+254", Uganda: "+256", Ethiopia: "+251" };
-const CITY_COUNTRY = {
-  "Dar es Salaam": "Tanzania", "Arusha": "Tanzania", "Mwanza": "Tanzania",
-  "Dodoma": "Tanzania",        "Zanzibar": "Tanzania", "Moshi": "Tanzania",
-  "Nairobi": "Kenya",          "Mombasa": "Kenya",   "Kisumu": "Kenya", "Nakuru": "Kenya",
-  "Kampala": "Uganda",         "Jinja": "Uganda",    "Entebbe": "Uganda",
-  "Addis Ababa": "Ethiopia",
-};
+const CONDITIONS   = ["Foreign Used","Foreign Used","Foreign Used","Locally Used","New"];
+const COLORS       = ["White","Silver","Black","Pearl White","Grey","Blue","Maroon","Champagne","Red"];
+const SELLER_TYPES = ["Private Seller","Private Seller","Dealer","Private Seller","Individual"];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const ri  = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const pick = (arr)     => arr[Math.floor(Math.random() * arr.length)];
+const ri   = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const pick = (arr)      => arr[Math.floor(Math.random() * arr.length)];
 
-function fakePerson(city) {
-  const country  = CITY_COUNTRY[city] || "Tanzania";
-  const prefix   = PHONE_PREFIX[country] || "+255";
-  const first    = pick(FIRST_NAMES);
-  const last     = pick(LAST_NAMES);
-  const digits   = String(ri(700_000_000, 799_999_999));
-  const phone    = `${prefix} ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
-  const domains  = ["gmail.com", "gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
-  const email    = `${first.toLowerCase()}.${last.toLowerCase().replace(/[^a-z]/g, "")}${ri(10, 99)}@${pick(domains)}`;
-  return { name: `${first} ${last}`, email, phone };
+function fakeName(city) {
+  const country = CITY_COUNTRY[city] || "Tanzania";
+  const pool    = country === "Kenya" ? NAMES_KE
+                : country === "Uganda" ? NAMES_UG
+                : country === "Ethiopia" ? NAMES_ETH
+                : NAMES_TZ;
+  return `${pick(pool.first)} ${pick(pool.last)}`;
 }
 
 function esc(s) {
-  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
-// ── Email builders ────────────────────────────────────────────────────────────
+// ── Base email template ───────────────────────────────────────────────────────
 
-/**
- * Base email template — Postmark-style structure:
- * - bgcolor attributes on <td> (more reliable than CSS background-color in Gmail Android)
- * - <style> block with class names (not just inline)
- * - Border-trick CTA button (renders in Outlook without VML)
- * - Preheader text for inbox preview
- * - 4px accent bar pattern (Stripe/Linear style)
- */
-function emailBase({ preheader, badge, badgeStyle, headline, subtext, cardHtml, buttonUrl, buttonText }) {
+function emailBase({ preheader, badge, badgeStyle, headline, subtext, cardHtml, buttonUrl, buttonText, buttonColor }) {
+  const btnColor = buttonColor || "#0066cc";
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -147,9 +176,7 @@ body{background-color:#eef0f3 !important;color-scheme:light only}
 table{border-collapse:collapse}
 img{border:0;line-height:100%;outline:none;text-decoration:none}
 .preheader{display:none!important;visibility:hidden;mso-hide:all;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden}
-.row-label{font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;padding:12px 0 3px}
-.row-value{font-size:15px;color:#111827;font-weight:600;padding-bottom:0}
-/* Force light mode in Gmail Android dark mode — Gmail wraps content in [data-ogsc] */
+/* Force light mode in Gmail Android dark mode */
 [data-ogsc] body,[data-ogsc] .body-wrap{background-color:#eef0f3 !important}
 [data-ogsc] .email-card{background-color:#ffffff !important}
 [data-ogsc] .card-inner{background-color:#f8fafc !important}
@@ -158,8 +185,8 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
 [data-ogsc] p,[data-ogsc] .body-text{color:#6b7280 !important}
 [data-ogsc] .label-text{color:#9ca3af !important}
 [data-ogsc] .value-text{color:#111827 !important}
-[data-ogsc] .accent-bar{background-color:#0066cc !important}
-/* iOS Mail / Apple Mail dark mode */
+[data-ogsc] .accent-bar{background-color:${btnColor} !important}
+/* Apple Mail dark mode */
 @media (prefers-color-scheme: dark) {
   body{background-color:#eef0f3 !important}
   .email-card{background-color:#ffffff !important}
@@ -178,11 +205,9 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
 </head>
 <body bgcolor="#eef0f3">
 <span class="preheader">${esc(preheader)}</span>
-
 <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eef0f3">
 <tr><td align="center" style="padding:28px 16px 40px">
 
-  <!-- WORDMARK -->
   <table class="wrapper" width="560" cellpadding="0" cellspacing="0" style="max-width:560px">
   <tr><td align="center" style="padding:0 0 18px">
     <a href="https://www.motokah.com" style="text-decoration:none">
@@ -191,49 +216,28 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
   </td></tr>
   </table>
 
-  <!-- CARD -->
   <table class="wrapper email-card" width="560" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="max-width:560px;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb;background-color:#ffffff">
-
-    <!-- ACCENT BAR -->
-    <tr><td class="accent-bar" bgcolor="#0066cc" height="4" style="background-color:#0066cc;font-size:0;line-height:0;mso-line-height-rule:exactly">&nbsp;</td></tr>
-
-    <!-- BODY -->
+    <tr><td class="accent-bar" bgcolor="${btnColor}" height="4" style="background-color:${btnColor};font-size:0;line-height:0;mso-line-height-rule:exactly">&nbsp;</td></tr>
     <tr><td class="content-cell" style="padding:32px 36px 28px;background-color:#ffffff">
-
-      <!-- BADGE -->
       <table cellpadding="0" cellspacing="0"><tr>
         <td style="${badgeStyle};font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:5px 12px;border-radius:4px">${esc(badge)}</td>
       </tr></table>
-
-      <!-- HEADLINE -->
       <h1 class="headline" style="margin:18px 0 6px;font-size:21px;font-weight:800;color:#0f172a;line-height:1.3">${headline}</h1>
       <p class="body-text" style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.6">${subtext}</p>
-
-      <!-- DATA CARD -->
       <table class="card-inner" width="100%" cellpadding="0" cellspacing="0" bgcolor="#f8fafc" style="border-radius:8px;border:1px solid #e5e7eb;background-color:#f8fafc">
-      <tr><td style="padding:20px 22px">
-        ${cardHtml}
-      </td></tr>
+      <tr><td style="padding:20px 22px">${cardHtml}</td></tr>
       </table>
-
-      <!-- CTA BUTTON -->
       <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px">
       <tr><td align="center">
-        <a href="${buttonUrl}" style="background-color:#0066cc;border-top:13px solid #0066cc;border-bottom:13px solid #0066cc;border-left:28px solid #0066cc;border-right:28px solid #0066cc;border-radius:6px;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;display:inline-block;letter-spacing:.2px">${esc(buttonText)}</a>
+        <a href="${buttonUrl}" style="background-color:${btnColor};border-top:13px solid ${btnColor};border-bottom:13px solid ${btnColor};border-left:28px solid ${btnColor};border-right:28px solid ${btnColor};border-radius:6px;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;display:inline-block;letter-spacing:.2px">${esc(buttonText)}</a>
       </td></tr>
       </table>
-
     </td></tr>
-
-    <!-- CARD FOOTER -->
     <tr><td class="card-footer" bgcolor="#f8fafc" style="padding:14px 36px;border-top:1px solid #e5e7eb;background-color:#f8fafc">
       <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">Motokah Admin &bull; <a href="https://www.motokah.com/admin" style="color:#6b7280;text-decoration:none">Open Dashboard</a></p>
     </td></tr>
-
   </table>
-  <!-- END CARD -->
 
-  <!-- BOTTOM FOOTER -->
   <table class="wrapper" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;margin-top:20px">
   <tr><td align="center">
     <p style="margin:0;font-size:12px;color:#9ca3af"><a href="https://www.motokah.com" style="color:#9ca3af;text-decoration:none">motokah.com</a> &bull; East Africa's Car Marketplace</p>
@@ -246,40 +250,42 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
 </html>`;
 }
 
+// ── Email builders ────────────────────────────────────────────────────────────
+
 function buildListingEmail(listing) {
   const { price, currency, city, condition, color, mileage, year, make, model, cc } = listing;
   const cardHtml = `
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td width="50%" valign="top">
-          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Make &amp; Model</p>
-          <p class="row-value" style="font-size:15px;color:#111827;font-weight:700;margin:0">${esc(make)} ${esc(model)}</p>
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Make &amp; Model</p>
+          <p style="font-size:15px;color:#111827;font-weight:700;margin:0">${esc(make)} ${esc(model)}</p>
           <p style="font-size:13px;color:#6b7280;margin:2px 0 0">${esc(year)} &bull; ${cc}cc &bull; ${esc(color)}</p>
         </td>
         <td width="50%" valign="top" align="right">
-          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Asking Price</p>
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Asking Price</p>
           <p style="font-size:19px;color:#0066cc;font-weight:800;margin:0">${esc(currency)} ${Number(price).toLocaleString()}</p>
         </td>
       </tr>
       <tr><td colspan="2" style="padding:14px 0 0"><div style="height:1px;background-color:#e5e7eb;font-size:0;line-height:0">&nbsp;</div></td></tr>
       <tr>
         <td style="padding-top:14px">
-          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Location</p>
-          <p class="row-value" style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(city)}</p>
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Location</p>
+          <p style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(city)}</p>
         </td>
         <td style="padding-top:14px" align="right">
-          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Mileage</p>
-          <p class="row-value" style="font-size:14px;color:#374151;font-weight:600;margin:0">${Number(mileage).toLocaleString()} km</p>
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Mileage</p>
+          <p style="font-size:14px;color:#374151;font-weight:600;margin:0">${Number(mileage).toLocaleString()} km</p>
         </td>
       </tr>
       <tr><td colspan="2" style="padding:12px 0 0"><div style="height:1px;background-color:#e5e7eb;font-size:0;line-height:0">&nbsp;</div></td></tr>
       <tr>
         <td style="padding-top:12px">
-          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Condition</p>
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Condition</p>
           <p style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(condition)}</p>
         </td>
         <td style="padding-top:12px" align="right">
-          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Source</p>
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Source</p>
           <p style="font-size:13px;color:#374151;font-weight:600;margin:0">Organic</p>
           <p style="font-size:11px;color:#9ca3af;margin:2px 0 0">Found through Google</p>
         </td>
@@ -300,15 +306,15 @@ function buildListingEmail(listing) {
   };
 }
 
-function buildSignupEmail(person, city, sellerType) {
+function buildSignupEmail(name, city, sellerType) {
   const typeLabel = sellerType === "Dealer" ? "Dealer" : "Private Seller";
-  const isDealer = sellerType === "Dealer";
+  const isDealer  = sellerType === "Dealer";
   const cardHtml = `
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td width="50%" valign="top">
           <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Name</p>
-          <p style="font-size:16px;color:#111827;font-weight:700;margin:0">${esc(person.name)}</p>
+          <p style="font-size:16px;color:#111827;font-weight:700;margin:0">${esc(name)}</p>
         </td>
         <td width="50%" valign="top" align="right">
           <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Account Type</p>
@@ -329,12 +335,12 @@ function buildSignupEmail(person, city, sellerType) {
       </tr>
     </table>`;
   return {
-    subject: `New member on Motokah: ${person.name} — ${city}`,
+    subject: `New member on Motokah: ${name} — ${city}`,
     html: emailBase({
-      preheader: `${person.name} (${typeLabel}) just created an account on Motokah from ${city}`,
+      preheader: `${name} (${typeLabel}) just created an account on Motokah from ${city}`,
       badge: "New Member",
       badgeStyle: "background-color:#dbeafe;color:#1d4ed8",
-      headline: `${esc(person.name)} just joined Motokah`,
+      headline: `${esc(name)} just joined Motokah`,
       subtext: "A new user has created an account on the platform.",
       cardHtml,
       buttonUrl: "https://www.motokah.com/admin/users",
@@ -343,26 +349,62 @@ function buildSignupEmail(person, city, sellerType) {
   };
 }
 
-// ── Event generator ───────────────────────────────────────────────────────────
+function buildPendingWarningEmail() {
+  const count      = ri(2, 6);
+  const avgHours   = (Math.random() * 6 + 2).toFixed(1);
 
-function generateListingEvent() {
-  const city      = pick(CITIES);
-  const car       = pick(CARS);
-  const year      = car.year();
-  const color     = pick(COLORS);
-  const mileage   = ri(18_000, 140_000);
-  const title     = `${year} ${car.make} ${car.model} ${car.cc}cc ${color}`;
-  return buildListingEmail({ title, price: car.price(), currency: car.currency, city, condition: pick(CONDITIONS), color, mileage, year, make: car.make, model: car.model, cc: car.cc });
+  // Generate N simulated pending listings
+  const pending = [];
+  for (let i = 0; i < count; i++) {
+    const car     = pick(CARS);
+    const year    = car.year();
+    const city    = pick(CITIES);
+    const hrsAgo  = ri(2, 8);
+    const minsAgo = ri(5, 59);
+    pending.push({ label: `${year} ${car.make} ${car.model}`, city, hrsAgo, minsAgo });
+  }
+
+  const rows = pending.map((p, idx) => `
+      <tr>
+        <td style="padding:11px 0;${idx < pending.length - 1 ? "border-bottom:1px solid #fecaca" : ""}">
+          <p style="margin:0;font-size:14px;color:#111827;font-weight:600">${esc(p.label)}</p>
+          <p style="margin:2px 0 0;font-size:12px;color:#9ca3af">${esc(p.city)}</p>
+        </td>
+        <td align="right" style="padding:11px 0;${idx < pending.length - 1 ? "border-bottom:1px solid #fecaca" : ""}">
+          <p style="margin:0;font-size:13px;color:#dc2626;font-weight:700">${p.hrsAgo}h ${p.minsAgo}m ago</p>
+        </td>
+      </tr>`).join("");
+
+  const cardHtml = `
+    <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#fef2f2" style="border:1px solid #fecaca;border-radius:8px;margin-bottom:16px">
+      <tr><td style="padding:14px 16px">
+        <p style="margin:0 0 3px;font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:.5px">Approval Target</p>
+        <p style="margin:0;font-size:14px;color:#dc2626;font-weight:600">Under 5 minutes &bull; Current avg: ${avgHours} hours</p>
+      </td></tr>
+    </table>
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding-bottom:8px;font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600">Vehicle</td>
+        <td align="right" style="padding-bottom:8px;font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600">Waiting</td>
+      </tr>
+      ${rows}
+    </table>`;
+
+  return {
+    subject: `⚠ ${count} listing${count === 1 ? "" : "s"} pending approval — sellers are waiting`,
+    html: emailBase({
+      preheader: `${count} car listing${count === 1 ? "" : "s"} submitted today still need admin approval — buyer confidence at risk`,
+      badge: "Action Required",
+      badgeStyle: "background-color:#fef2f2;color:#dc2626",
+      headline: `${count} listing${count === 1 ? "" : "s"} need your approval`,
+      subtext: `These vehicles were submitted today and are still awaiting review. Sellers are waiting — every hour of delay risks losing their confidence in the platform and may push buyers to competitors.`,
+      cardHtml,
+      buttonUrl: "https://www.motokah.com/admin/listings",
+      buttonText: "Review & Approve Now →",
+      buttonColor: "#dc2626",
+    }),
+  };
 }
-
-function generateSignupEvent() {
-  const city    = pick(CITIES);
-  const person  = fakePerson(city);
-  const type    = pick(SELLER_TYPES);
-  return buildSignupEmail(person, city, type);
-}
-
-// ── Analytics report builder ─────────────────────────────────────────────────
 
 function buildAnalyticsEmail() {
   const visitors    = ri(620, 1850);
@@ -371,24 +413,19 @@ function buildAnalyticsEmail() {
   const leads       = ri(4, 22);
   const wishlistAdd = ri(18, 74);
   const pageViews   = visitors * ri(2, 4) + ri(0, 300);
-  const topCity     = pick(["Dar es Salaam", "Nairobi", "Arusha", "Mombasa", "Kampala"]);
-  const topModel    = pick(["Toyota IST", "Toyota Fielder", "Toyota Vitz", "Mazda Demio", "Subaru Forester", "Toyota Harrier", "Nissan Note"]);
+  const topCity     = pick(["Dar es Salaam","Nairobi","Arusha","Mombasa","Kampala"]);
+  const topModel    = pick(["Toyota IST","Toyota Fielder","Toyota Vitz","Mazda Demio","Subaru Forester","Toyota Harrier","Nissan Note"]);
   const rankFrom    = ri(16, 28);
   const rankTo      = ri(2, 6);
-  const keyword     = `${topModel} ${pick(["Tanzania", "Kenya", "for sale", "price"])}`;
+  const keyword     = `${topModel} ${pick(["Tanzania","Kenya","for sale","price"])}`;
   const newListings = ri(3, 18);
   const mobileChg   = ri(4, 19);
   const bounce      = ri(44, 68);
-
-  // Pick a random week ending today-ish
-  const now   = new Date();
-  const weekEnd = now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-  const weekStart = new Date(now - 7 * 86400000).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-
-  const subject = `Motokah Weekly Report — ${weekStart}–${weekEnd}`;
+  const now         = new Date();
+  const weekEnd     = now.toLocaleDateString("en-GB", { day:"numeric", month:"short", year:"numeric" });
+  const weekStart   = new Date(now - 7 * 86400000).toLocaleDateString("en-GB", { day:"numeric", month:"short" });
 
   const cardHtml = `
-    <!-- KPI row -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px">
       <tr>
         <td width="32%" style="padding-right:5px" valign="top">
@@ -420,9 +457,7 @@ function buildAnalyticsEmail() {
         </td>
       </tr>
     </table>
-    <!-- divider -->
     <div style="height:1px;background-color:#e5e7eb;margin-bottom:16px"></div>
-    <!-- SEO ranking -->
     <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#fffbeb" style="border:1px solid #fde68a;border-radius:8px;margin-bottom:14px">
       <tr><td style="padding:14px 16px">
         <p style="margin:0 0 4px;font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.5px">Google Ranking Update</p>
@@ -430,7 +465,6 @@ function buildAnalyticsEmail() {
         <p style="margin:0;font-size:13px;color:#374151">Position <strong>#${rankFrom}</strong> moved to <strong>#${rankTo}</strong> this week</p>
       </td></tr>
     </table>
-    <!-- weekly stats -->
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td style="padding:5px 0;font-size:13px;color:#6b7280;font-weight:500">New listings</td>
@@ -455,7 +489,7 @@ function buildAnalyticsEmail() {
     </table>`;
 
   return {
-    subject,
+    subject: `Motokah Weekly Report — ${weekStart}–${weekEnd}`,
     html: emailBase({
       preheader: `${visitors.toLocaleString()} visitors, ${leads} buyer leads, ${newListings} new listings — ${weekStart}–${weekEnd}`,
       badge: "Weekly Report",
@@ -469,19 +503,37 @@ function buildAnalyticsEmail() {
   };
 }
 
+// ── Event generator ───────────────────────────────────────────────────────────
+
+function generateListingEvent() {
+  const city    = pick(CITIES);
+  const car     = pick(CARS);
+  const year    = car.year();
+  const color   = pick(COLORS);
+  const mileage = ri(18_000, 140_000);
+  return buildListingEmail({ price: car.price(), currency: car.currency, city, condition: pick(CONDITIONS), color, mileage, year, make: car.make, model: car.model, cc: car.cc });
+}
+
+function generateSignupEvent() {
+  const city = pick(CITIES);
+  const name = fakeName(city);
+  const type = pick(SELLER_TYPES);
+  return buildSignupEmail(name, city, type);
+}
+
 function generateEvent(forcedType) {
   const r = Math.random();
   let type;
   if (forcedType === "listing-or-signup") {
-    // Daily activity slots — no analytics, natural listing/signup mix
-    type = r < 0.62 ? "listing" : "signup";
+    type = r < 0.60 ? "listing" : "signup";
   } else {
-    // 60% listing, 25% signup, 15% analytics
     type = forcedType || (r < 0.60 ? "listing" : r < 0.85 ? "signup" : "analytics");
   }
-  if (type === "listing")   return generateListingEvent();
-  if (type === "analytics") return buildAnalyticsEmail();
-  return generateSignupEvent();
+  if (type === "listing")         return generateListingEvent();
+  if (type === "signup")          return generateSignupEvent();
+  if (type === "analytics")       return buildAnalyticsEmail();
+  if (type === "pending-warning") return buildPendingWarningEmail();
+  return generateListingEvent();
 }
 
 // ── HTTP send ─────────────────────────────────────────────────────────────────
@@ -502,21 +554,18 @@ async function sendEmail(subject, html) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-const args = process.argv.slice(2);
-const countArg     = args[args.indexOf("--count") + 1];
-const typeArg      = args[args.indexOf("--type") + 1] || null;
+const args          = process.argv.slice(2);
+const countArg      = args[args.indexOf("--count") + 1];
+const typeArg       = args[args.indexOf("--type") + 1] || null;
 const skipChanceArg = args[args.indexOf("--skip-chance") + 1];
-const skipChance   = skipChanceArg ? parseInt(skipChanceArg, 10) : 0;
+const skipChance    = skipChanceArg ? parseInt(skipChanceArg, 10) : 0;
 
-// Random daily variation: each slot independently decides whether to fire
 if (skipChance > 0 && Math.random() * 100 < skipChance) {
   console.log("Skipped (random quiet slot). No email sent.");
   process.exit(0);
 }
 
-// Default when called by cron: 1 event (count is controlled by how many slots fire)
 const count = countArg ? parseInt(countArg, 10) : 1;
-
 console.log(`Sending ${count} event${count === 1 ? "" : "s"} (${typeArg || "mixed"}) to ${ADMIN_INBOX}…\n`);
 
 let sent = 0;
@@ -524,8 +573,7 @@ for (let i = 0; i < count; i++) {
   const { subject, html } = generateEvent(typeArg);
   try {
     await sendEmail(subject, html);
-    const type = subject.startsWith("New Listing") ? "listing" : subject.startsWith("New User") ? "signup" : "analytics";
-    console.log(`✓ [${i + 1}/${count}] [${type}] ${subject.replace(/^(New Listing Pending Approval|New User Registered on Motokah): /, "")}`);
+    console.log(`✓ [${i + 1}/${count}] ${subject}`);
     sent++;
   } catch (err) {
     console.error(`✗ [${i + 1}/${count}] ${err.message}`);
