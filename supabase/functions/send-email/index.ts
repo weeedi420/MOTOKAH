@@ -38,10 +38,13 @@ serve(async (req) => {
     //  - everyone else (signup / new listing / dealer application alerts): only the Motokah inbox
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const internalSecret = Deno.env.get("INTERNAL_PUSH_SECRET");
-    let privileged = !!internalSecret && req.headers.get("x-internal-secret") === internalSecret;
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const bearerToken = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+    let privileged =
+      (!!internalSecret && req.headers.get("x-internal-secret") === internalSecret) ||
+      (!!serviceRoleKey && bearerToken === serviceRoleKey);
     if (!privileged) {
-      const jwt = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
-      const { data: caller } = jwt ? await admin.auth.getUser(jwt) : { data: { user: null } };
+      const { data: caller } = bearerToken ? await admin.auth.getUser(bearerToken) : { data: { user: null } };
       if (caller?.user) {
         const { data: roles } = await admin
           .from("user_roles")
