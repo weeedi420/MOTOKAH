@@ -211,8 +211,8 @@ function buildAnalyticsEmail() {
   const pageViews   = visitors * ri(2, 4) + ri(0, 300);
   const topCity     = pick(["Dar es Salaam", "Nairobi", "Arusha", "Mombasa", "Kampala"]);
   const topModel    = pick(["Toyota IST", "Toyota Fielder", "Toyota Vitz", "Mazda Demio", "Subaru Forester", "Toyota Harrier", "Nissan Note"]);
-  const rankFrom    = ri(8, 22);
-  const rankTo      = Math.max(1, rankFrom - ri(2, 7));
+  const rankFrom    = ri(16, 28);
+  const rankTo      = ri(2, 6);
   const keyword     = `${topModel} ${pick(["Tanzania", "Kenya", "for sale", "price"])}`;
   const newListings = ri(3, 18);
   const mobileChg   = ri(4, 19);
