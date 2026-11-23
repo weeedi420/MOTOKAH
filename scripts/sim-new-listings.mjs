@@ -126,144 +126,189 @@ function esc(s) {
 // ── Email builders ────────────────────────────────────────────────────────────
 
 /**
- * Force light-mode in all major email clients:
- * - Apple Mail / iOS: <meta name="color-scheme" content="light">
- * - Outlook: color-scheme CSS on :root
- * - Gmail dark mode: !important on all background-color inline styles
+ * Base email template — Postmark-style structure:
+ * - bgcolor attributes on <td> (more reliable than CSS background-color in Gmail Android)
+ * - <style> block with class names (not just inline)
+ * - Border-trick CTA button (renders in Outlook without VML)
+ * - Preheader text for inbox preview
+ * - 4px accent bar pattern (Stripe/Linear style)
  */
-function wrapEmail(bodyHtml) {
-  const forced = bodyHtml
-    .replace(/background:(#[0-9a-fA-F]{3,8})\b/g, "background-color:$1 !important")
-    .replace(/color:(#[0-9a-fA-F]{3,8})\b/g, "color:$1 !important");
-  return `<!DOCTYPE html>
-<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+function emailBase({ preheader, badge, badgeStyle, headline, subtext, cardHtml, buttonUrl, buttonText }) {
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">
-<style>
-:root { color-scheme: light only; }
-body { margin:0; padding:0; background-color:#f4f6f8 !important; }
-@media (prefers-color-scheme: dark) {
-  body { background-color:#f4f6f8 !important; }
+<style type="text/css">
+body,table,td,p,a{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+body{background-color:#eef0f3}
+table{border-collapse:collapse}
+img{border:0;line-height:100%;outline:none;text-decoration:none}
+.preheader{display:none!important;visibility:hidden;mso-hide:all;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden}
+.row-label{font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;padding:12px 0 3px}
+.row-value{font-size:15px;color:#111827;font-weight:600;padding-bottom:0}
+@media only screen and (max-width:620px){
+  .wrapper{width:100%!important}
+  .content-cell{padding:24px 20px!important}
 }
 </style>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f6f8 !important">
-${forced}
+<body bgcolor="#eef0f3">
+<span class="preheader">${esc(preheader)}</span>
+
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eef0f3">
+<tr><td align="center" style="padding:28px 16px 40px">
+
+  <!-- WORDMARK -->
+  <table class="wrapper" width="560" cellpadding="0" cellspacing="0" style="max-width:560px">
+  <tr><td align="center" style="padding:0 0 18px">
+    <a href="https://www.motokah.com" style="text-decoration:none">
+      <span style="font-size:22px;font-weight:900;color:#0066cc;letter-spacing:4px;text-transform:uppercase;font-family:Georgia,'Times New Roman',serif">MOTOKAH</span>
+    </a>
+  </td></tr>
+  </table>
+
+  <!-- CARD -->
+  <table class="wrapper" width="560" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="max-width:560px;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb">
+
+    <!-- ACCENT BAR -->
+    <tr><td bgcolor="#0066cc" height="4" style="font-size:0;line-height:0;mso-line-height-rule:exactly">&nbsp;</td></tr>
+
+    <!-- BODY -->
+    <tr><td class="content-cell" style="padding:32px 36px 28px">
+
+      <!-- BADGE -->
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="${badgeStyle};font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:5px 12px;border-radius:4px">${esc(badge)}</td>
+      </tr></table>
+
+      <!-- HEADLINE -->
+      <h1 style="margin:18px 0 6px;font-size:21px;font-weight:800;color:#0f172a;line-height:1.3">${headline}</h1>
+      <p style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.6">${subtext}</p>
+
+      <!-- DATA CARD -->
+      <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f8fafc" style="border-radius:8px;border:1px solid #e5e7eb">
+      <tr><td style="padding:20px 22px">
+        ${cardHtml}
+      </td></tr>
+      </table>
+
+      <!-- CTA BUTTON -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px">
+      <tr><td align="center">
+        <a href="${buttonUrl}" style="background-color:#0066cc;border-top:13px solid #0066cc;border-bottom:13px solid #0066cc;border-left:28px solid #0066cc;border-right:28px solid #0066cc;border-radius:6px;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;display:inline-block;letter-spacing:.2px">${esc(buttonText)}</a>
+      </td></tr>
+      </table>
+
+    </td></tr>
+
+    <!-- CARD FOOTER -->
+    <tr><td bgcolor="#f8fafc" style="padding:14px 36px;border-top:1px solid #e5e7eb">
+      <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">Motokah Admin &bull; <a href="https://www.motokah.com/admin" style="color:#6b7280;text-decoration:none">Open Dashboard</a></p>
+    </td></tr>
+
+  </table>
+  <!-- END CARD -->
+
+  <!-- BOTTOM FOOTER -->
+  <table class="wrapper" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;margin-top:20px">
+  <tr><td align="center">
+    <p style="margin:0;font-size:12px;color:#9ca3af"><a href="https://www.motokah.com" style="color:#9ca3af;text-decoration:none">motokah.com</a> &bull; East Africa's Car Marketplace</p>
+  </td></tr>
+  </table>
+
+</td></tr>
+</table>
 </body>
 </html>`;
 }
 
 function buildListingEmail(listing) {
-  const { title, price, currency, city, condition, color, mileage, year, make, model, cc } = listing;
+  const { price, currency, city, condition, color, mileage, year, make, model, cc } = listing;
+  const cardHtml = `
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="50%" valign="top">
+          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Make &amp; Model</p>
+          <p class="row-value" style="font-size:15px;color:#111827;font-weight:700;margin:0">${esc(make)} ${esc(model)}</p>
+          <p style="font-size:13px;color:#6b7280;margin:2px 0 0">${esc(year)} &bull; ${cc}cc &bull; ${esc(color)}</p>
+        </td>
+        <td width="50%" valign="top" align="right">
+          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Asking Price</p>
+          <p style="font-size:19px;color:#0066cc;font-weight:800;margin:0">${esc(currency)} ${Number(price).toLocaleString()}</p>
+        </td>
+      </tr>
+      <tr><td colspan="2" style="padding:14px 0 0"><div style="height:1px;background-color:#e5e7eb;font-size:0;line-height:0">&nbsp;</div></td></tr>
+      <tr>
+        <td style="padding-top:14px">
+          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Location</p>
+          <p class="row-value" style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(city)}</p>
+        </td>
+        <td style="padding-top:14px" align="right">
+          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Mileage</p>
+          <p class="row-value" style="font-size:14px;color:#374151;font-weight:600;margin:0">${Number(mileage).toLocaleString()} km</p>
+        </td>
+      </tr>
+      <tr><td colspan="2" style="padding:12px 0 0"><div style="height:1px;background-color:#e5e7eb;font-size:0;line-height:0">&nbsp;</div></td></tr>
+      <tr>
+        <td colspan="2" style="padding-top:12px">
+          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Condition</p>
+          <p style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(condition)}</p>
+        </td>
+      </tr>
+    </table>`;
   return {
     subject: `New listing pending review: ${year} ${make} ${model}`,
-    html: wrapEmail(`
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:580px;margin:0 auto;background:#f4f6f8">
-  <div style="background:#ffffff;border-radius:0;padding:20px 28px 16px">
-    <table width="100%" cellpadding="0" cellspacing="0"><tr>
-      <td valign="middle">
-        <span style="display:inline-block;width:32px;height:32px;background:#0066cc;border-radius:50%;text-align:center;line-height:32px;font-size:14px;font-weight:900;color:#fff;vertical-align:middle">M</span>
-        <span style="margin-left:8px;font-size:18px;font-weight:900;color:#0066cc;letter-spacing:1px;vertical-align:middle">MOTOKAH</span>
-      </td>
-    </tr></table>
-    <div style="border-bottom:2px solid #0066cc;margin-top:14px"></div>
-  </div>
-
-  <div style="background:#ffffff;padding:24px 28px 0">
-    <p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#16a34a;letter-spacing:.8px;text-transform:uppercase">✓ NEW LISTING SUBMITTED</p>
-    <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:#111827;line-height:1.3">${esc(year)} ${esc(make)} ${esc(model)} — pending your approval</h1>
-    <p style="margin:0 0 20px;font-size:14px;color:#6b7280">A new vehicle ad has been submitted on Motokah and is waiting for admin review before going live.</p>
-
-    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:20px;margin-bottom:20px">
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-          <td style="padding-bottom:12px">
-            <span style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px">Make &amp; Model</span><br>
-            <span style="font-size:16px;font-weight:700;color:#111827">${esc(make)} ${esc(model)} ${esc(year)}</span>
-          </td>
-          <td align="right" style="padding-bottom:12px">
-            <span style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px">Asking Price</span><br>
-            <span style="font-size:16px;font-weight:700;color:#0066cc">${esc(currency)} ${Number(price).toLocaleString()}</span>
-          </td>
-        </tr>
-        <tr><td colspan="2"><div style="border-top:1px solid #e5e7eb;margin-bottom:12px"></div></td></tr>
-        <tr>
-          <td><span style="font-size:12px;color:#6b7280">📍 ${esc(city)}</span></td>
-          <td align="right"><span style="font-size:12px;color:#6b7280">🛣 ${Number(mileage).toLocaleString()} km</span></td>
-        </tr>
-        <tr>
-          <td style="padding-top:6px"><span style="font-size:12px;color:#6b7280">⚙️ ${cc}cc &bull; ${esc(color)}</span></td>
-          <td align="right" style="padding-top:6px"><span style="font-size:12px;color:#6b7280">🏷 ${esc(condition)}</span></td>
-        </tr>
-      </table>
-    </div>
-
-    <div style="text-align:center;padding-bottom:28px">
-      <a href="https://www.motokah.com/admin/listings" style="display:inline-block;background:#0066cc;color:#ffffff;font-size:14px;font-weight:700;padding:14px 36px;border-radius:8px;text-decoration:none">Review &amp; Approve Listing →</a>
-    </div>
-  </div>
-
-  <div style="background:#111827;padding:16px 28px;border-radius:0 0 4px 4px;text-align:center">
-    <p style="margin:0 0 2px;font-size:13px;color:#ffffff;font-weight:600">Motokah Admin Notifications</p>
-    <p style="margin:0;font-size:11px;color:#9ca3af">You're receiving this because you are an admin on <a href="https://www.motokah.com" style="color:#60a5fa;text-decoration:none">motokah.com</a></p>
-  </div>
-</div>`),
+    html: emailBase({
+      preheader: `${year} ${make} ${model} from ${city} — needs your approval before going live`,
+      badge: "New Listing",
+      badgeStyle: "background-color:#dcfce7;color:#15803d",
+      headline: `${esc(year)} ${esc(make)} ${esc(model)}`,
+      subtext: "A new vehicle listing has been submitted and is waiting for admin approval before going live.",
+      cardHtml,
+      buttonUrl: "https://www.motokah.com/admin/listings",
+      buttonText: "Review & Approve Listing →",
+    }),
   };
 }
 
 function buildSignupEmail(person, city, sellerType) {
   const typeLabel = sellerType === "Dealer" ? "Dealer" : "Private Seller";
+  const isDealer = sellerType === "Dealer";
+  const cardHtml = `
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="50%" valign="top">
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Name</p>
+          <p style="font-size:16px;color:#111827;font-weight:700;margin:0">${esc(person.name)}</p>
+        </td>
+        <td width="50%" valign="top" align="right">
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Account Type</p>
+          <p style="font-size:14px;font-weight:700;margin:0;color:${isDealer ? "#0066cc" : "#374151"}">${esc(typeLabel)}</p>
+        </td>
+      </tr>
+      <tr><td colspan="2" style="padding:14px 0 0"><div style="height:1px;background-color:#e5e7eb;font-size:0;line-height:0">&nbsp;</div></td></tr>
+      <tr>
+        <td colspan="2" style="padding-top:14px">
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Location</p>
+          <p style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(city)}</p>
+        </td>
+      </tr>
+    </table>`;
   return {
     subject: `New member on Motokah: ${person.name} — ${city}`,
-    html: wrapEmail(`
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:580px;margin:0 auto;background:#f4f6f8">
-  <div style="background:#ffffff;padding:20px 28px 16px">
-    <table width="100%" cellpadding="0" cellspacing="0"><tr>
-      <td valign="middle">
-        <span style="display:inline-block;width:32px;height:32px;background:#0066cc;border-radius:50%;text-align:center;line-height:32px;font-size:14px;font-weight:900;color:#fff;vertical-align:middle">M</span>
-        <span style="margin-left:8px;font-size:18px;font-weight:900;color:#0066cc;letter-spacing:1px;vertical-align:middle">MOTOKAH</span>
-      </td>
-    </tr></table>
-    <div style="border-bottom:2px solid #0066cc;margin-top:14px"></div>
-  </div>
-
-  <div style="background:#ffffff;padding:24px 28px 0">
-    <p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#0066cc;letter-spacing:.8px;text-transform:uppercase">● NEW MEMBER</p>
-    <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:#111827;line-height:1.3">${esc(person.name)} just joined Motokah</h1>
-    <p style="margin:0 0 20px;font-size:14px;color:#6b7280">A new user created an account on the platform.</p>
-
-    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:20px;margin-bottom:20px">
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-          <td style="padding-bottom:12px">
-            <span style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px">Name</span><br>
-            <span style="font-size:16px;font-weight:700;color:#111827">${esc(person.name)}</span>
-          </td>
-          <td align="right" style="padding-bottom:12px">
-            <span style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px">Account Type</span><br>
-            <span style="font-size:16px;font-weight:700;color:#111827">${esc(typeLabel)}</span>
-          </td>
-        </tr>
-        <tr><td colspan="2"><div style="border-top:1px solid #e5e7eb;margin-bottom:12px"></div></td></tr>
-        <tr>
-          <td colspan="2"><span style="font-size:13px;color:#6b7280">📍 ${esc(city)}</span></td>
-        </tr>
-      </table>
-    </div>
-
-    <div style="text-align:center;padding-bottom:28px">
-      <a href="https://www.motokah.com/admin/users" style="display:inline-block;background:#0066cc;color:#ffffff;font-size:14px;font-weight:700;padding:14px 36px;border-radius:8px;text-decoration:none">View All Users →</a>
-    </div>
-  </div>
-
-  <div style="background:#111827;padding:16px 28px;border-radius:0 0 4px 4px;text-align:center">
-    <p style="margin:0 0 2px;font-size:13px;color:#ffffff;font-weight:600">Motokah Admin Notifications</p>
-    <p style="margin:0;font-size:11px;color:#9ca3af">You're receiving this because you are an admin on <a href="https://www.motokah.com" style="color:#60a5fa;text-decoration:none">motokah.com</a></p>
-  </div>
-</div>`),
+    html: emailBase({
+      preheader: `${person.name} (${typeLabel}) just created an account on Motokah from ${city}`,
+      badge: "New Member",
+      badgeStyle: "background-color:#dbeafe;color:#1d4ed8",
+      headline: `${esc(person.name)} just joined Motokah`,
+      subtext: "A new user has created an account on the platform.",
+      cardHtml,
+      buttonUrl: "https://www.motokah.com/admin/users",
+      buttonText: "View All Users →",
+    }),
   };
 }
 
@@ -311,86 +356,98 @@ function buildAnalyticsEmail() {
 
   const subject = `Motokah Weekly Report — ${weekStart}–${weekEnd}`;
 
-  const html = wrapEmail(`
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:580px;margin:0 auto;background:#f4f6f8">
-  <div style="background:#ffffff;padding:20px 28px 16px">
-    <table width="100%" cellpadding="0" cellspacing="0"><tr>
-      <td valign="middle">
-        <span style="display:inline-block;width:32px;height:32px;background:#0066cc;border-radius:50%;text-align:center;line-height:32px;font-size:14px;font-weight:900;color:#fff;vertical-align:middle">M</span>
-        <span style="margin-left:8px;font-size:18px;font-weight:900;color:#0066cc;letter-spacing:1px;vertical-align:middle">MOTOKAH</span>
-      </td>
-    </tr></table>
-    <div style="border-bottom:2px solid #0066cc;margin-top:14px"></div>
-  </div>
-  <div style="background:#ffffff;padding:24px 28px 0">
-    <p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#0066cc;letter-spacing:.8px;text-transform:uppercase">📊 WEEKLY PERFORMANCE REPORT</p>
-    <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#111827">${weekStart} – ${weekEnd}</h1>
-    <p style="margin:0 0 20px;font-size:14px;color:#6b7280">Here's how Motokah performed this week across East Africa.</p>
-  <div style="padding:24px">
-    <!-- KPI row — use table for email client compat -->
+  const cardHtml = `
+    <!-- KPI row -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px">
       <tr>
-        <td width="32%" style="padding-right:6px">
-          <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;text-align:center">
-            <p style="margin:0;font-size:24px;font-weight:800;color:#0066cc">${visitors.toLocaleString()}</p>
-            <p style="margin:4px 0 0;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Visitors</p>
-            <p style="margin:3px 0 0;font-size:11px;color:#16a34a;font-weight:600">↑ ${visitChg}%</p>
-          </div>
+        <td width="32%" style="padding-right:5px" valign="top">
+          <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f0f7ff" style="border:1px solid #bfdbfe;border-radius:8px">
+            <tr><td style="padding:14px;text-align:center">
+              <p style="margin:0;font-size:22px;font-weight:800;color:#0066cc;line-height:1">${visitors.toLocaleString()}</p>
+              <p style="margin:5px 0 0;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Visitors</p>
+              <p style="margin:3px 0 0;font-size:11px;color:#16a34a;font-weight:700">+${visitChg}%</p>
+            </td></tr>
+          </table>
         </td>
-        <td width="32%" style="padding:0 3px">
-          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;text-align:center">
-            <p style="margin:0;font-size:24px;font-weight:800;color:#16a34a">${leads}</p>
-            <p style="margin:4px 0 0;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Buyer Leads</p>
-            <p style="margin:3px 0 0;font-size:11px;color:#0066cc;font-weight:600">${leads > 10 ? "Strong week" : "Growing"}</p>
-          </div>
+        <td width="32%" style="padding:0 3px" valign="top">
+          <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f0fdf4" style="border:1px solid #bbf7d0;border-radius:8px">
+            <tr><td style="padding:14px;text-align:center">
+              <p style="margin:0;font-size:22px;font-weight:800;color:#16a34a;line-height:1">${leads}</p>
+              <p style="margin:5px 0 0;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Buyer Leads</p>
+              <p style="margin:3px 0 0;font-size:11px;color:#0066cc;font-weight:700">${leads > 10 ? "Strong week" : "Growing"}</p>
+            </td></tr>
+          </table>
         </td>
-        <td width="32%" style="padding-left:6px">
-          <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;text-align:center">
-            <p style="margin:0;font-size:24px;font-weight:800;color:#111827">${pageViews.toLocaleString()}</p>
-            <p style="margin:4px 0 0;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Page Views</p>
-            <p style="margin:3px 0 0;font-size:11px;color:#6b7280;font-weight:600">avg ${(pageViews / visitors).toFixed(1)}/visit</p>
-          </div>
+        <td width="32%" style="padding-left:5px" valign="top">
+          <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f9fafb" style="border:1px solid #e5e7eb;border-radius:8px">
+            <tr><td style="padding:14px;text-align:center">
+              <p style="margin:0;font-size:22px;font-weight:800;color:#111827;line-height:1">${pageViews.toLocaleString()}</p>
+              <p style="margin:5px 0 0;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Page Views</p>
+              <p style="margin:3px 0 0;font-size:11px;color:#6b7280;font-weight:700">${(pageViews / visitors).toFixed(1)}/visit</p>
+            </td></tr>
+          </table>
         </td>
       </tr>
     </table>
+    <!-- divider -->
+    <div style="height:1px;background-color:#e5e7eb;margin-bottom:16px"></div>
+    <!-- SEO ranking -->
+    <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#fffbeb" style="border:1px solid #fde68a;border-radius:8px;margin-bottom:14px">
+      <tr><td style="padding:14px 16px">
+        <p style="margin:0 0 4px;font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.5px">Google Ranking Update</p>
+        <p style="margin:0 0 3px;font-size:14px;color:#111827;font-weight:600">"${esc(keyword)}"</p>
+        <p style="margin:0;font-size:13px;color:#374151">Position <strong>#${rankFrom}</strong> moved to <strong>#${rankTo}</strong> this week</p>
+      </td></tr>
+    </table>
+    <!-- weekly stats -->
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding:5px 0;font-size:13px;color:#6b7280;font-weight:500">New listings</td>
+        <td align="right" style="padding:5px 0;font-size:13px;font-weight:700;color:#111827">${newListings}</td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;font-size:13px;color:#6b7280;font-weight:500">Wishlist saves</td>
+        <td align="right" style="padding:5px 0;font-size:13px;font-weight:700;color:#111827">${wishlistAdd}</td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;font-size:13px;color:#6b7280;font-weight:500">Top city</td>
+        <td align="right" style="padding:5px 0;font-size:13px;font-weight:700;color:#111827">${topCity}</td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;font-size:13px;color:#6b7280;font-weight:500">Mobile traffic</td>
+        <td align="right" style="padding:5px 0;font-size:13px;font-weight:700;color:#16a34a">+${mobileChg}%</td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;font-size:13px;color:#6b7280;font-weight:500">Bounce rate</td>
+        <td align="right" style="padding:5px 0;font-size:13px;font-weight:700;color:#111827">${bounce}%</td>
+      </tr>
+    </table>`;
 
-    <!-- SEO -->
-    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:16px;margin-bottom:16px">
-      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.5px">🔍 Google Ranking Update</p>
-      <p style="margin:0 0 4px;font-size:15px;color:#111827"><strong>"${esc(keyword)}"</strong></p>
-      <p style="margin:0;font-size:14px;color:#374151">Moved from position <strong>#${rankFrom}</strong> to <strong>#${rankTo}</strong> on Google this week.</p>
-    </div>
-
-    <!-- Activity -->
-    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-bottom:20px">
-      <p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:.5px">This week</p>
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr><td style="padding:4px 0;font-size:13px;color:#374151">🚗 New listings</td><td align="right" style="font-size:13px;font-weight:700;color:#111827">${newListings}</td></tr>
-        <tr><td style="padding:4px 0;font-size:13px;color:#374151">❤️ Wishlist saves</td><td align="right" style="font-size:13px;font-weight:700;color:#111827">${wishlistAdd}</td></tr>
-        <tr><td style="padding:4px 0;font-size:13px;color:#374151">📍 Top city</td><td align="right" style="font-size:13px;font-weight:700;color:#111827">${topCity}</td></tr>
-        <tr><td style="padding:4px 0;font-size:13px;color:#374151">📱 Mobile traffic up</td><td align="right" style="font-size:13px;font-weight:700;color:#111827">${mobileChg}%</td></tr>
-        <tr><td style="padding:4px 0;font-size:13px;color:#374151">↩️ Bounce rate</td><td align="right" style="font-size:13px;font-weight:700;color:#111827">${bounce}%</td></tr>
-      </table>
-    </div>
-
-    <div style="text-align:center;padding-bottom:28px">
-      <a href="https://www.motokah.com/admin" style="display:inline-block;background:#0066cc;color:#ffffff;font-size:14px;font-weight:700;padding:14px 36px;border-radius:8px;text-decoration:none">Open Admin Dashboard →</a>
-    </div>
-  </div>
-
-  <div style="background:#111827;padding:16px 28px;border-radius:0 0 4px 4px;text-align:center">
-    <p style="margin:0 0 2px;font-size:13px;color:#ffffff;font-weight:600">Motokah Admin Notifications</p>
-    <p style="margin:0;font-size:11px;color:#9ca3af">You're receiving this because you are an admin on <a href="https://www.motokah.com" style="color:#60a5fa;text-decoration:none">motokah.com</a></p>
-  </div>
-</div>`);
-
-  return { subject, html };
+  return {
+    subject,
+    html: emailBase({
+      preheader: `${visitors.toLocaleString()} visitors, ${leads} buyer leads, ${newListings} new listings — ${weekStart}–${weekEnd}`,
+      badge: "Weekly Report",
+      badgeStyle: "background-color:#f0f7ff;color:#1d4ed8",
+      headline: `${weekStart} – ${weekEnd}`,
+      subtext: "Here's how Motokah performed this week across East Africa.",
+      cardHtml,
+      buttonUrl: "https://www.motokah.com/admin",
+      buttonText: "Open Admin Dashboard →",
+    }),
+  };
 }
 
 function generateEvent(forcedType) {
-  // 60% listing, 25% signup, 15% analytics — natural activity mix
   const r = Math.random();
-  const type = forcedType || (r < 0.60 ? "listing" : r < 0.85 ? "signup" : "analytics");
+  let type;
+  if (forcedType === "listing-or-signup") {
+    // Daily activity slots — no analytics, natural listing/signup mix
+    type = r < 0.62 ? "listing" : "signup";
+  } else {
+    // 60% listing, 25% signup, 15% analytics
+    type = forcedType || (r < 0.60 ? "listing" : r < 0.85 ? "signup" : "analytics");
+  }
   if (type === "listing")   return generateListingEvent();
   if (type === "analytics") return buildAnalyticsEmail();
   return generateSignupEvent();
@@ -415,11 +472,19 @@ async function sendEmail(subject, html) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 const args = process.argv.slice(2);
-const countArg = args[args.indexOf("--count") + 1];
-const typeArg  = args[args.indexOf("--type") + 1] || null;   // "listing" | "signup" | null
+const countArg     = args[args.indexOf("--count") + 1];
+const typeArg      = args[args.indexOf("--type") + 1] || null;
+const skipChanceArg = args[args.indexOf("--skip-chance") + 1];
+const skipChance   = skipChanceArg ? parseInt(skipChanceArg, 10) : 0;
 
-// Default when called by cron: 1-3 events, looks like a natural trickle
-const count = countArg ? parseInt(countArg, 10) : ri(1, 3);
+// Random daily variation: each slot independently decides whether to fire
+if (skipChance > 0 && Math.random() * 100 < skipChance) {
+  console.log("Skipped (random quiet slot). No email sent.");
+  process.exit(0);
+}
+
+// Default when called by cron: 1 event (count is controlled by how many slots fire)
+const count = countArg ? parseInt(countArg, 10) : 1;
 
 console.log(`Sending ${count} event${count === 1 ? "" : "s"} (${typeArg || "mixed"}) to ${ADMIN_INBOX}…\n`);
 
