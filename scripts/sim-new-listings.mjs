@@ -126,56 +126,112 @@ function esc(s) {
 // ── Email builders ────────────────────────────────────────────────────────────
 
 function buildListingEmail(listing) {
-  const { title, price, currency, city, condition, color, seller } = listing;
+  const { title, price, currency, city, condition, color, mileage, year, make, model, cc } = listing;
   return {
-    subject: `New Listing Pending Approval: ${title}`,
+    subject: `New Listing: ${year} ${make} ${model} — ${city}`,
     html: `
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
-  <div style="background:#0284c7;padding:20px 24px;color:#fff">
-    <h1 style="margin:0;font-size:20px;font-weight:700">New Vehicle Ad Awaiting Review</h1>
-    <p style="margin:4px 0 0;font-size:13px;opacity:.9">Motokah Marketplace Admin Alert</p>
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff">
+  <!-- Header -->
+  <div style="background:#0284c7;padding:28px 32px 24px;border-radius:12px 12px 0 0">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+      <tr>
+        <td>
+          <span style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.5px">motokah</span>
+          <span style="font-size:22px;font-weight:300;color:rgba(255,255,255,0.7)">.com</span>
+        </td>
+        <td align="right">
+          <span style="background:rgba(255,255,255,0.15);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase">New Listing</span>
+        </td>
+      </tr>
+    </table>
   </div>
-  <div style="padding:24px">
-    <p style="font-size:15px;color:#111827;margin-top:0">A seller just posted a new vehicle listing that requires admin approval before going live:</p>
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0">
-      <h3 style="margin:0 0 8px;color:#0f172a;font-size:16px">${esc(title)}</h3>
-      <p style="margin:4px 0;font-size:14px;color:#0284c7;font-weight:bold">Price: ${esc(currency)} ${Number(price).toLocaleString()}</p>
-      <p style="margin:4px 0;font-size:13px;color:#64748b">Location: ${esc(city)} &bull; Condition: ${esc(condition)} &bull; Colour: ${esc(color)}</p>
-      <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0"/>
-      <p style="margin:2px 0;font-size:13px;color:#334155"><strong>Seller:</strong> ${esc(seller.name)} (${esc(seller.email)})</p>
-      <p style="margin:2px 0;font-size:13px;color:#334155"><strong>Phone / WhatsApp:</strong> ${esc(seller.phone)}</p>
+  <!-- Body -->
+  <div style="background:#f8fafc;padding:0 0 24px">
+    <!-- Car card -->
+    <div style="background:#ffffff;margin:24px 24px 0;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.07)">
+      <!-- Colour stripe -->
+      <div style="height:5px;background:linear-gradient(90deg,#0284c7,#38bdf8)"></div>
+      <div style="padding:20px 22px">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#0284c7;text-transform:uppercase;letter-spacing:.6px">${esc(condition)}</p>
+        <h2 style="margin:0 0 2px;font-size:20px;font-weight:800;color:#0f172a">${esc(year)} ${esc(make)} ${esc(model)}</h2>
+        <p style="margin:0 0 18px;font-size:13px;color:#64748b">${cc}cc &bull; ${esc(color)}</p>
+        <!-- Stats row -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-top:1px solid #f1f5f9;padding-top:16px">
+          <tr>
+            <td style="padding-top:16px;width:33%">
+              <p style="margin:0;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Price</p>
+              <p style="margin:4px 0 0;font-size:16px;font-weight:700;color:#0284c7">${esc(currency)} ${Number(price).toLocaleString()}</p>
+            </td>
+            <td style="padding-top:16px;width:33%;text-align:center">
+              <p style="margin:0;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Mileage</p>
+              <p style="margin:4px 0 0;font-size:16px;font-weight:700;color:#0f172a">${Number(mileage).toLocaleString()} km</p>
+            </td>
+            <td style="padding-top:16px;width:33%;text-align:right">
+              <p style="margin:0;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Location</p>
+              <p style="margin:4px 0 0;font-size:16px;font-weight:700;color:#0f172a">${esc(city)}</p>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <div style="text-align:center;margin:24px 0">
-      <a href="https://www.motokah.com/admin/listings" style="background:#0284c7;color:#fff;padding:12px 24px;border-radius:8px;font-weight:bold;text-decoration:none;display:inline-block">Review &amp; Approve Listing &rarr;</a>
+    <!-- CTA -->
+    <div style="text-align:center;margin:24px 24px 0">
+      <a href="https://www.motokah.com/admin/listings" style="display:inline-block;background:#0284c7;color:#ffffff;font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;letter-spacing:.2px">Review &amp; Approve →</a>
     </div>
-    <p style="font-size:12px;color:#94a3b8;text-align:center;margin-bottom:0">Motokah Marketplace &bull; Auto-generated notification for platform administrators</p>
+  </div>
+  <!-- Footer -->
+  <div style="background:#f1f5f9;padding:16px 24px;border-radius:0 0 12px 12px;text-align:center">
+    <p style="margin:0;font-size:11px;color:#94a3b8">Motokah Marketplace &bull; Admin notification &bull; <a href="https://www.motokah.com/admin" style="color:#0284c7;text-decoration:none">Open Dashboard</a></p>
   </div>
 </div>`,
   };
 }
 
 function buildSignupEmail(person, city, sellerType) {
+  const typeIcon = sellerType === "Dealer" ? "🏢" : "👤";
+  const typeLabel = sellerType === "Dealer" ? "Dealer Account" : "Private Seller";
   return {
-    subject: `New User Registered on Motokah: ${person.name}`,
+    subject: `New signup on Motokah — ${city}`,
     html: `
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
-  <div style="background:#16a34a;padding:20px 24px;color:#fff">
-    <h1 style="margin:0;font-size:20px;font-weight:700">New User Registered on Motokah</h1>
-    <p style="margin:4px 0 0;font-size:13px;opacity:.9">Motokah Community Growth Alert</p>
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff">
+  <!-- Header -->
+  <div style="background:#0284c7;padding:28px 32px 24px;border-radius:12px 12px 0 0">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+      <tr>
+        <td>
+          <span style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.5px">motokah</span>
+          <span style="font-size:22px;font-weight:300;color:rgba(255,255,255,0.7)">.com</span>
+        </td>
+        <td align="right">
+          <span style="background:rgba(255,255,255,0.15);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase">New Signup</span>
+        </td>
+      </tr>
+    </table>
   </div>
-  <div style="padding:24px">
-    <p style="font-size:15px;color:#111827;margin-top:0">A new user just created an account on the Motokah platform:</p>
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0">
-      <p style="margin:4px 0;font-size:14px;color:#0f172a"><strong>Name:</strong> ${esc(person.name)}</p>
-      <p style="margin:4px 0;font-size:14px;color:#0f172a"><strong>Email:</strong> ${esc(person.email)}</p>
-      <p style="margin:4px 0;font-size:14px;color:#64748b"><strong>City:</strong> ${esc(city)}</p>
-      <p style="margin:4px 0;font-size:14px;color:#64748b"><strong>Account Type:</strong> ${esc(sellerType)}</p>
-      <p style="margin:4px 0;font-size:14px;color:#64748b"><strong>Phone:</strong> ${esc(person.phone)}</p>
+  <!-- Body -->
+  <div style="background:#f8fafc;padding:0 0 24px">
+    <!-- Signup card -->
+    <div style="background:#ffffff;margin:24px 24px 0;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.07)">
+      <div style="height:5px;background:linear-gradient(90deg,#0284c7,#38bdf8)"></div>
+      <div style="padding:28px 22px;text-align:center">
+        <div style="display:inline-block;width:52px;height:52px;background:#eff6ff;border-radius:50%;line-height:52px;font-size:24px;margin-bottom:14px">${typeIcon}</div>
+        <h2 style="margin:0 0 6px;font-size:20px;font-weight:800;color:#0f172a">Someone just joined Motokah</h2>
+        <p style="margin:0;font-size:14px;color:#64748b">A new user created an account on the platform</p>
+        <!-- Chips -->
+        <div style="margin-top:20px">
+          <span style="display:inline-block;background:#eff6ff;color:#0284c7;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;margin:4px">${esc(typeLabel)}</span>
+          <span style="display:inline-block;background:#f1f5f9;color:#475569;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;margin:4px">📍 ${esc(city)}</span>
+        </div>
+      </div>
     </div>
-    <div style="text-align:center;margin:24px 0">
-      <a href="https://www.motokah.com/admin/users" style="background:#16a34a;color:#fff;padding:12px 24px;border-radius:8px;font-weight:bold;text-decoration:none;display:inline-block">View User Management &rarr;</a>
+    <!-- CTA -->
+    <div style="text-align:center;margin:24px 24px 0">
+      <a href="https://www.motokah.com/admin/users" style="display:inline-block;background:#0284c7;color:#ffffff;font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;letter-spacing:.2px">View Users →</a>
     </div>
-    <p style="font-size:12px;color:#94a3b8;text-align:center;margin-bottom:0">Motokah Marketplace &bull; Auto-generated notification for platform administrators</p>
+  </div>
+  <!-- Footer -->
+  <div style="background:#f1f5f9;padding:16px 24px;border-radius:0 0 12px 12px;text-align:center">
+    <p style="margin:0;font-size:11px;color:#94a3b8">Motokah Marketplace &bull; Admin notification &bull; <a href="https://www.motokah.com/admin" style="color:#0284c7;text-decoration:none">Open Dashboard</a></p>
   </div>
 </div>`,
   };
@@ -184,13 +240,13 @@ function buildSignupEmail(person, city, sellerType) {
 // ── Event generator ───────────────────────────────────────────────────────────
 
 function generateListingEvent() {
-  const city    = pick(CITIES);
-  const car     = pick(CARS);
-  const year    = car.year();
-  const color   = pick(COLORS);
-  const seller  = fakePerson(city);
-  const title   = `${year} ${car.make} ${car.model} ${car.cc}cc ${color}`;
-  return buildListingEmail({ title, price: car.price(), currency: car.currency, city, condition: pick(CONDITIONS), color, seller });
+  const city      = pick(CITIES);
+  const car       = pick(CARS);
+  const year      = car.year();
+  const color     = pick(COLORS);
+  const mileage   = ri(18_000, 140_000);
+  const title     = `${year} ${car.make} ${car.model} ${car.cc}cc ${color}`;
+  return buildListingEmail({ title, price: car.price(), currency: car.currency, city, condition: pick(CONDITIONS), color, mileage, year, make: car.make, model: car.model, cc: car.cc });
 }
 
 function generateSignupEvent() {
@@ -226,10 +282,20 @@ function buildAnalyticsEmail() {
   const subject = `Motokah Weekly Report — ${weekStart}–${weekEnd}`;
 
   const html = `
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:620px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
-  <div style="background:linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%);padding:22px 24px;color:#fff">
-    <h1 style="margin:0;font-size:19px;font-weight:700">📊 Weekly Site Performance Report</h1>
-    <p style="margin:4px 0 0;font-size:13px;opacity:.85">Motokah Marketplace · ${weekStart} – ${weekEnd}</p>
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:620px;margin:0 auto;background:#ffffff">
+  <div style="background:#0284c7;padding:28px 32px 24px;border-radius:12px 12px 0 0">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+      <tr>
+        <td>
+          <span style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.5px">motokah</span>
+          <span style="font-size:22px;font-weight:300;color:rgba(255,255,255,0.7)">.com</span>
+        </td>
+        <td align="right">
+          <span style="background:rgba(255,255,255,0.15);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase">Weekly Report</span>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:16px 0 0;font-size:16px;font-weight:700;color:#fff">📊 Site Performance — ${weekStart}–${weekEnd}</p>
   </div>
   <div style="padding:24px">
     <!-- KPI row -->
@@ -270,10 +336,12 @@ function buildAnalyticsEmail() {
       </ul>
     </div>
 
-    <div style="text-align:center;margin:20px 0">
-      <a href="https://www.motokah.com/admin" style="background:#0284c7;color:#fff;padding:11px 22px;border-radius:8px;font-weight:bold;text-decoration:none;display:inline-block">View Admin Dashboard →</a>
+    <div style="text-align:center;margin:20px 24px 0">
+      <a href="https://www.motokah.com/admin" style="display:inline-block;background:#0284c7;color:#ffffff;font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;letter-spacing:.2px">Open Admin Dashboard →</a>
     </div>
-    <p style="font-size:11px;color:#94a3b8;text-align:center;margin:0">Motokah Platform Analytics · Auto-generated weekly summary</p>
+  </div>
+  <div style="background:#f1f5f9;padding:16px 24px;border-radius:0 0 12px 12px;text-align:center">
+    <p style="margin:0;font-size:11px;color:#94a3b8">Motokah Marketplace &bull; Weekly analytics &bull; <a href="https://www.motokah.com/admin" style="color:#0284c7;text-decoration:none">Open Dashboard</a></p>
   </div>
 </div>`;
 
