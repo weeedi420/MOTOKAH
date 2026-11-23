@@ -125,11 +125,42 @@ function esc(s) {
 
 // ── Email builders ────────────────────────────────────────────────────────────
 
+/**
+ * Force light-mode in all major email clients:
+ * - Apple Mail / iOS: <meta name="color-scheme" content="light">
+ * - Outlook: color-scheme CSS on :root
+ * - Gmail dark mode: !important on all background-color inline styles
+ */
+function wrapEmail(bodyHtml) {
+  const forced = bodyHtml
+    .replace(/background:(#[0-9a-fA-F]{3,8})\b/g, "background-color:$1 !important")
+    .replace(/color:(#[0-9a-fA-F]{3,8})\b/g, "color:$1 !important");
+  return `<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<style>
+:root { color-scheme: light only; }
+body { margin:0; padding:0; background-color:#f4f6f8 !important; }
+@media (prefers-color-scheme: dark) {
+  body { background-color:#f4f6f8 !important; }
+}
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f6f8 !important">
+${forced}
+</body>
+</html>`;
+}
+
 function buildListingEmail(listing) {
   const { title, price, currency, city, condition, color, mileage, year, make, model, cc } = listing;
   return {
     subject: `New listing pending review: ${year} ${make} ${model}`,
-    html: `
+    html: wrapEmail(`
 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:580px;margin:0 auto;background:#f4f6f8">
   <div style="background:#ffffff;border-radius:0;padding:20px 28px 16px">
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
@@ -179,7 +210,7 @@ function buildListingEmail(listing) {
     <p style="margin:0 0 2px;font-size:13px;color:#ffffff;font-weight:600">Motokah Admin Notifications</p>
     <p style="margin:0;font-size:11px;color:#9ca3af">You're receiving this because you are an admin on <a href="https://www.motokah.com" style="color:#60a5fa;text-decoration:none">motokah.com</a></p>
   </div>
-</div>`,
+</div>`),
   };
 }
 
@@ -187,7 +218,7 @@ function buildSignupEmail(person, city, sellerType) {
   const typeLabel = sellerType === "Dealer" ? "Dealer" : "Private Seller";
   return {
     subject: `New member on Motokah: ${person.name} — ${city}`,
-    html: `
+    html: wrapEmail(`
 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:580px;margin:0 auto;background:#f4f6f8">
   <div style="background:#ffffff;padding:20px 28px 16px">
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
@@ -232,7 +263,7 @@ function buildSignupEmail(person, city, sellerType) {
     <p style="margin:0 0 2px;font-size:13px;color:#ffffff;font-weight:600">Motokah Admin Notifications</p>
     <p style="margin:0;font-size:11px;color:#9ca3af">You're receiving this because you are an admin on <a href="https://www.motokah.com" style="color:#60a5fa;text-decoration:none">motokah.com</a></p>
   </div>
-</div>`,
+</div>`),
   };
 }
 
@@ -280,7 +311,7 @@ function buildAnalyticsEmail() {
 
   const subject = `Motokah Weekly Report — ${weekStart}–${weekEnd}`;
 
-  const html = `
+  const html = wrapEmail(`
 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:580px;margin:0 auto;background:#f4f6f8">
   <div style="background:#ffffff;padding:20px 28px 16px">
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
@@ -351,7 +382,7 @@ function buildAnalyticsEmail() {
     <p style="margin:0 0 2px;font-size:13px;color:#ffffff;font-weight:600">Motokah Admin Notifications</p>
     <p style="margin:0;font-size:11px;color:#9ca3af">You're receiving this because you are an admin on <a href="https://www.motokah.com" style="color:#60a5fa;text-decoration:none">motokah.com</a></p>
   </div>
-</div>`;
+</div>`);
 
   return { subject, html };
 }
