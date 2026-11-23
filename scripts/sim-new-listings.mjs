@@ -143,12 +143,33 @@ function emailBase({ preheader, badge, badgeStyle, headline, subtext, cardHtml, 
 <meta name="supported-color-schemes" content="light">
 <style type="text/css">
 body,table,td,p,a{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
-body{background-color:#eef0f3}
+body{background-color:#eef0f3 !important;color-scheme:light only}
 table{border-collapse:collapse}
 img{border:0;line-height:100%;outline:none;text-decoration:none}
 .preheader{display:none!important;visibility:hidden;mso-hide:all;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden}
 .row-label{font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;padding:12px 0 3px}
 .row-value{font-size:15px;color:#111827;font-weight:600;padding-bottom:0}
+/* Force light mode in Gmail Android dark mode — Gmail wraps content in [data-ogsc] */
+[data-ogsc] body,[data-ogsc] .body-wrap{background-color:#eef0f3 !important}
+[data-ogsc] .email-card{background-color:#ffffff !important}
+[data-ogsc] .card-inner{background-color:#f8fafc !important}
+[data-ogsc] .card-footer{background-color:#f8fafc !important}
+[data-ogsc] h1,[data-ogsc] .headline{color:#0f172a !important}
+[data-ogsc] p,[data-ogsc] .body-text{color:#6b7280 !important}
+[data-ogsc] .label-text{color:#9ca3af !important}
+[data-ogsc] .value-text{color:#111827 !important}
+[data-ogsc] .accent-bar{background-color:#0066cc !important}
+/* iOS Mail / Apple Mail dark mode */
+@media (prefers-color-scheme: dark) {
+  body{background-color:#eef0f3 !important}
+  .email-card{background-color:#ffffff !important}
+  .card-inner{background-color:#f8fafc !important}
+  .card-footer{background-color:#f8fafc !important}
+  h1,.headline{color:#0f172a !important}
+  .body-text{color:#6b7280 !important}
+  .label-text{color:#9ca3af !important}
+  .value-text{color:#111827 !important}
+}
 @media only screen and (max-width:620px){
   .wrapper{width:100%!important}
   .content-cell{padding:24px 20px!important}
@@ -171,13 +192,13 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
   </table>
 
   <!-- CARD -->
-  <table class="wrapper" width="560" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="max-width:560px;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb">
+  <table class="wrapper email-card" width="560" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="max-width:560px;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb;background-color:#ffffff">
 
     <!-- ACCENT BAR -->
-    <tr><td bgcolor="#0066cc" height="4" style="font-size:0;line-height:0;mso-line-height-rule:exactly">&nbsp;</td></tr>
+    <tr><td class="accent-bar" bgcolor="#0066cc" height="4" style="background-color:#0066cc;font-size:0;line-height:0;mso-line-height-rule:exactly">&nbsp;</td></tr>
 
     <!-- BODY -->
-    <tr><td class="content-cell" style="padding:32px 36px 28px">
+    <tr><td class="content-cell" style="padding:32px 36px 28px;background-color:#ffffff">
 
       <!-- BADGE -->
       <table cellpadding="0" cellspacing="0"><tr>
@@ -185,11 +206,11 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
       </tr></table>
 
       <!-- HEADLINE -->
-      <h1 style="margin:18px 0 6px;font-size:21px;font-weight:800;color:#0f172a;line-height:1.3">${headline}</h1>
-      <p style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.6">${subtext}</p>
+      <h1 class="headline" style="margin:18px 0 6px;font-size:21px;font-weight:800;color:#0f172a;line-height:1.3">${headline}</h1>
+      <p class="body-text" style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.6">${subtext}</p>
 
       <!-- DATA CARD -->
-      <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f8fafc" style="border-radius:8px;border:1px solid #e5e7eb">
+      <table class="card-inner" width="100%" cellpadding="0" cellspacing="0" bgcolor="#f8fafc" style="border-radius:8px;border:1px solid #e5e7eb;background-color:#f8fafc">
       <tr><td style="padding:20px 22px">
         ${cardHtml}
       </td></tr>
@@ -205,7 +226,7 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
     </td></tr>
 
     <!-- CARD FOOTER -->
-    <tr><td bgcolor="#f8fafc" style="padding:14px 36px;border-top:1px solid #e5e7eb">
+    <tr><td class="card-footer" bgcolor="#f8fafc" style="padding:14px 36px;border-top:1px solid #e5e7eb;background-color:#f8fafc">
       <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">Motokah Admin &bull; <a href="https://www.motokah.com/admin" style="color:#6b7280;text-decoration:none">Open Dashboard</a></p>
     </td></tr>
 
@@ -253,9 +274,14 @@ function buildListingEmail(listing) {
       </tr>
       <tr><td colspan="2" style="padding:12px 0 0"><div style="height:1px;background-color:#e5e7eb;font-size:0;line-height:0">&nbsp;</div></td></tr>
       <tr>
-        <td colspan="2" style="padding-top:12px">
+        <td style="padding-top:12px">
           <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Condition</p>
           <p style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(condition)}</p>
+        </td>
+        <td style="padding-top:12px" align="right">
+          <p class="row-label" style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Source</p>
+          <p style="font-size:13px;color:#374151;font-weight:600;margin:0">Organic</p>
+          <p style="font-size:11px;color:#9ca3af;margin:2px 0 0">Found through Google</p>
         </td>
       </tr>
     </table>`;
@@ -291,9 +317,14 @@ function buildSignupEmail(person, city, sellerType) {
       </tr>
       <tr><td colspan="2" style="padding:14px 0 0"><div style="height:1px;background-color:#e5e7eb;font-size:0;line-height:0">&nbsp;</div></td></tr>
       <tr>
-        <td colspan="2" style="padding-top:14px">
+        <td style="padding-top:14px">
           <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Location</p>
           <p style="font-size:14px;color:#374151;font-weight:600;margin:0">${esc(city)}</p>
+        </td>
+        <td style="padding-top:14px" align="right">
+          <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Source</p>
+          <p style="font-size:13px;color:#374151;font-weight:600;margin:0">Organic</p>
+          <p style="font-size:11px;color:#9ca3af;margin:2px 0 0">Found through Google</p>
         </td>
       </tr>
     </table>`;
