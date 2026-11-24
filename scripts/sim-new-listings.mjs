@@ -18,6 +18,7 @@
 import { config } from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { readFileSync } from "fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: join(__dirname, "../.env.local") });
@@ -153,6 +154,51 @@ function localPrice(usdAmount, country) {
   return { price, currency: fx.currency };
 }
 
+// ── Real listing pool (from project jiji data) ────────────────────────────────
+
+const JIJI_FILE = {
+  Tanzania: "jiji-tz",
+  Kenya:    "jiji-ke",
+  Uganda:   "jiji-ug",
+  Ethiopia: "jiji-et",
+};
+
+const _jijiCache = {};
+
+function loadJijiPool(country) {
+  const key = JIJI_FILE[country] || "jiji-tz";
+  if (!_jijiCache[key]) {
+    try {
+      const path = join(__dirname, `../public/data/${key}.json`);
+      const raw  = JSON.parse(readFileSync(path, "utf8"));
+      _jijiCache[key] = raw.filter(l => l.image && l.price > 0);
+    } catch {
+      _jijiCache[key] = [];
+    }
+  }
+  return _jijiCache[key];
+}
+
+function pickRealListing(country) {
+  const pool = loadJijiPool(country);
+  if (!pool.length) return null;
+  const l    = pick(pool);
+  const city = (l.location || "").split(",")[0].trim() || country;
+  return {
+    make:      l.make  || l.title.split(" ")[1] || "Toyota",
+    model:     l.model || l.title || "Vehicle",
+    year:      l.year  || ri(2010, 2020),
+    price:     l.price,
+    currency:  l.currency || FX[country]?.currency || "TZS",
+    city,
+    condition: l.condition || pick(CONDITIONS),
+    color:     l.color || pick(COLORS),
+    mileage:   l.mileage || ri(20_000, 130_000),
+    cc:        l.cc || null,
+    imageUrl:  l.image,
+  };
+}
+
 const CONDITIONS   = ["Foreign Used","Foreign Used","Foreign Used","Locally Used","New"];
 const COLORS       = ["White","Silver","Black","Pearl White","Grey","Blue","Maroon","Champagne","Red"];
 const SELLER_TYPES = ["Private Seller","Private Seller","Dealer","Private Seller","Individual"];
@@ -269,14 +315,20 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
 // ── Email builders ────────────────────────────────────────────────────────────
 
 function buildListingEmail(listing) {
-  const { price, currency, city, condition, color, mileage, year, make, model, cc } = listing;
+  const { price, currency, city, condition, color, mileage, year, make, model, cc, imageUrl } = listing;
+  const imgRow = imageUrl
+    ? `<tr><td colspan="2" style="padding-bottom:16px"><img src="${esc(imageUrl)}" width="100%" style="display:block;width:100%;border-radius:6px;max-height:220px;object-fit:cover" alt="${esc(make)} ${esc(model)}"></td></tr>`
+    : "";
+  const ccStr = cc ? ` &bull; ${cc}cc` : "";
+  const colorStr = color ? ` &bull; ${esc(color)}` : "";
   const cardHtml = `
     <table width="100%" cellpadding="0" cellspacing="0">
+      ${imgRow}
       <tr>
         <td width="50%" valign="top">
           <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Make &amp; Model</p>
           <p style="font-size:15px;color:#111827;font-weight:700;margin:0">${esc(make)} ${esc(model)}</p>
-          <p style="font-size:13px;color:#6b7280;margin:2px 0 0">${esc(year)} &bull; ${cc}cc &bull; ${esc(color)}</p>
+          <p style="font-size:13px;color:#6b7280;margin:2px 0 0">${esc(year)}${ccStr}${colorStr}</p>
         </td>
         <td width="50%" valign="top" align="right">
           <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Asking Price</p>
@@ -522,8 +574,14 @@ function buildAnalyticsEmail() {
 // ── Event generator ───────────────────────────────────────────────────────────
 
 function generateListingEvent() {
-  const city              = pick(CITIES);
-  const country           = CITY_COUNTRY[city] || "Tanzania";
+  const city    = pick(CITIES);
+  const country = CITY_COUNTRY[city] || "Tanzania";
+
+  // Try real jiji listing first
+  const real = pickRealListing(country);
+  if (real) return buildListingEmail(real);
+
+  // Fallback to generated listing
   const car               = pick(CARS);
   const year              = car.year();
   const color             = pick(COLORS);
