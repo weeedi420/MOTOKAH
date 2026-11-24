@@ -195,7 +195,6 @@ function pickRealListing(country) {
     color:     l.color || pick(COLORS),
     mileage:   l.mileage || ri(20_000, 130_000),
     cc:        l.cc || null,
-    imageUrl:  l.image,
   };
 }
 
@@ -315,15 +314,11 @@ img{border:0;line-height:100%;outline:none;text-decoration:none}
 // ── Email builders ────────────────────────────────────────────────────────────
 
 function buildListingEmail(listing) {
-  const { price, currency, city, condition, color, mileage, year, make, model, cc, imageUrl } = listing;
-  const imgRow = imageUrl
-    ? `<tr><td colspan="2" style="padding-bottom:16px"><img src="${esc(imageUrl)}" width="100%" style="display:block;width:100%;border-radius:6px;max-height:220px;object-fit:cover" alt="${esc(make)} ${esc(model)}"></td></tr>`
-    : "";
+  const { price, currency, city, condition, color, mileage, year, make, model, cc } = listing;
   const ccStr = cc ? ` &bull; ${cc}cc` : "";
   const colorStr = color ? ` &bull; ${esc(color)}` : "";
   const cardHtml = `
     <table width="100%" cellpadding="0" cellspacing="0">
-      ${imgRow}
       <tr>
         <td width="50%" valign="top">
           <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:0 0 3px">Make &amp; Model</p>
