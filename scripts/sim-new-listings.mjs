@@ -111,31 +111,47 @@ const CITIES = [
   "Addis Ababa",
 ];
 
+// Prices in USD — converted to local currency at generate time
 const CARS = [
-  { make:"Toyota",        model:"IST",                cc:1300, price:()=>ri(6_500_000,14_000_000),   currency:"TZS", year:()=>ri(2010,2018) },
-  { make:"Toyota",        model:"Vitz",               cc:1000, price:()=>ri(5_000_000,11_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
-  { make:"Toyota",        model:"Fielder",            cc:1500, price:()=>ri(10_000_000,22_000_000),  currency:"TZS", year:()=>ri(2012,2020) },
-  { make:"Toyota",        model:"Harrier",            cc:2000, price:()=>ri(22_000_000,50_000_000),  currency:"TZS", year:()=>ri(2010,2017) },
-  { make:"Toyota",        model:"Land Cruiser Prado", cc:2700, price:()=>ri(60_000_000,110_000_000), currency:"TZS", year:()=>ri(2008,2016) },
-  { make:"Toyota",        model:"Probox",             cc:1300, price:()=>ri(6_000_000,13_000_000),   currency:"TZS", year:()=>ri(2008,2018) },
-  { make:"Toyota",        model:"Sienta",             cc:1500, price:()=>ri(14_000_000,26_000_000),  currency:"TZS", year:()=>ri(2012,2020) },
-  { make:"Toyota",        model:"Wish",               cc:1800, price:()=>ri(12_000_000,22_000_000),  currency:"TZS", year:()=>ri(2008,2016) },
-  { make:"Toyota",        model:"Premio",             cc:1800, price:()=>ri(14_000_000,28_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
-  { make:"Toyota",        model:"Allion",             cc:1800, price:()=>ri(13_000_000,26_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
-  { make:"Mazda",         model:"Demio",              cc:1300, price:()=>ri(6_000_000,13_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
-  { make:"Mazda",         model:"Atenza",             cc:2000, price:()=>ri(15_000_000,28_000_000),  currency:"TZS", year:()=>ri(2010,2017) },
-  { make:"Mazda",         model:"CX-5",               cc:2000, price:()=>ri(28_000_000,55_000_000),  currency:"TZS", year:()=>ri(2012,2019) },
-  { make:"Nissan",        model:"Note",               cc:1200, price:()=>ri(7_000_000,15_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
-  { make:"Nissan",        model:"X-Trail",            cc:2000, price:()=>ri(18_000_000,40_000_000),  currency:"TZS", year:()=>ri(2008,2017) },
-  { make:"Nissan",        model:"Tiida",              cc:1500, price:()=>ri(7_000_000,15_000_000),   currency:"TZS", year:()=>ri(2008,2015) },
-  { make:"Subaru",        model:"Forester",           cc:2000, price:()=>ri(20_000_000,42_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
-  { make:"Subaru",        model:"Outback",            cc:2500, price:()=>ri(22_000_000,48_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
-  { make:"Honda",         model:"Fit",                cc:1300, price:()=>ri(7_000_000,16_000_000),   currency:"TZS", year:()=>ri(2010,2019) },
-  { make:"Honda",         model:"Freed",              cc:1500, price:()=>ri(12_000_000,24_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
-  { make:"Mitsubishi",    model:"Outlander",          cc:2000, price:()=>ri(18_000_000,40_000_000),  currency:"TZS", year:()=>ri(2008,2017) },
-  { make:"Mitsubishi",    model:"RVR",                cc:1800, price:()=>ri(14_000_000,28_000_000),  currency:"TZS", year:()=>ri(2010,2018) },
-  { make:"Mercedes-Benz", model:"C200",               cc:2000, price:()=>ri(25_000_000,55_000_000),  currency:"TZS", year:()=>ri(2008,2016) },
+  { make:"Toyota",        model:"IST",                cc:1300, usd:()=>ri(3_200,6_800),  year:()=>ri(2010,2018) },
+  { make:"Toyota",        model:"Vitz",               cc:1000, usd:()=>ri(3_000,7_000),  year:()=>ri(2010,2019) },
+  { make:"Toyota",        model:"Fielder",            cc:1500, usd:()=>ri(5_500,11_000), year:()=>ri(2012,2020) },
+  { make:"Toyota",        model:"Harrier",            cc:2000, usd:()=>ri(10_000,24_000),year:()=>ri(2010,2017) },
+  { make:"Toyota",        model:"Land Cruiser Prado", cc:2700, usd:()=>ri(26_000,46_000),year:()=>ri(2008,2016) },
+  { make:"Toyota",        model:"Probox",             cc:1300, usd:()=>ri(2_800,6_500),  year:()=>ri(2008,2018) },
+  { make:"Toyota",        model:"Sienta",             cc:1500, usd:()=>ri(5_500,11_000), year:()=>ri(2012,2020) },
+  { make:"Toyota",        model:"Wish",               cc:1800, usd:()=>ri(4_500,9_000),  year:()=>ri(2008,2016) },
+  { make:"Toyota",        model:"Premio",             cc:1800, usd:()=>ri(5_500,12_000), year:()=>ri(2010,2018) },
+  { make:"Toyota",        model:"Allion",             cc:1800, usd:()=>ri(5_000,11_000), year:()=>ri(2010,2018) },
+  { make:"Mazda",         model:"Demio",              cc:1300, usd:()=>ri(2_800,6_500),  year:()=>ri(2010,2019) },
+  { make:"Mazda",         model:"Atenza",             cc:2000, usd:()=>ri(6_000,12_000), year:()=>ri(2010,2017) },
+  { make:"Mazda",         model:"CX-5",               cc:2000, usd:()=>ri(11_000,22_000),year:()=>ri(2012,2019) },
+  { make:"Nissan",        model:"Note",               cc:1200, usd:()=>ri(3_200,6_500),  year:()=>ri(2010,2019) },
+  { make:"Nissan",        model:"X-Trail",            cc:2000, usd:()=>ri(7_500,18_000), year:()=>ri(2008,2017) },
+  { make:"Nissan",        model:"Tiida",              cc:1500, usd:()=>ri(3_000,6_500),  year:()=>ri(2008,2015) },
+  { make:"Subaru",        model:"Forester",           cc:2000, usd:()=>ri(8_000,18_000), year:()=>ri(2010,2018) },
+  { make:"Subaru",        model:"Outback",            cc:2500, usd:()=>ri(9_000,20_000), year:()=>ri(2010,2018) },
+  { make:"Honda",         model:"Fit",                cc:1300, usd:()=>ri(3_000,7_000),  year:()=>ri(2010,2019) },
+  { make:"Honda",         model:"Freed",              cc:1500, usd:()=>ri(5_000,10_000), year:()=>ri(2010,2018) },
+  { make:"Mitsubishi",    model:"Outlander",          cc:2000, usd:()=>ri(7_500,18_000), year:()=>ri(2008,2017) },
+  { make:"Mitsubishi",    model:"RVR",                cc:1800, usd:()=>ri(6_000,12_000), year:()=>ri(2010,2018) },
+  { make:"Mercedes-Benz", model:"C200",               cc:2000, usd:()=>ri(10_000,22_000),year:()=>ri(2008,2016) },
 ];
+
+// Exchange rates (USD → local, approximate 2026 market)
+const FX = {
+  Tanzania: { currency: "TZS", rate: 2700, round: 500_000 },
+  Kenya:    { currency: "KES", rate: 130,  round: 50_000  },
+  Uganda:   { currency: "UGX", rate: 3800, round: 2_000_000 },
+  Ethiopia: { currency: "ETB", rate: 60,   round: 50_000  },
+};
+
+function localPrice(usdAmount, country) {
+  const fx     = FX[country] || FX.Tanzania;
+  const raw    = usdAmount * fx.rate;
+  const price  = Math.round(raw / fx.round) * fx.round || fx.round;
+  return { price, currency: fx.currency };
+}
 
 const CONDITIONS   = ["Foreign Used","Foreign Used","Foreign Used","Locally Used","New"];
 const COLORS       = ["White","Silver","Black","Pearl White","Grey","Blue","Maroon","Champagne","Red"];
@@ -506,12 +522,14 @@ function buildAnalyticsEmail() {
 // ── Event generator ───────────────────────────────────────────────────────────
 
 function generateListingEvent() {
-  const city    = pick(CITIES);
-  const car     = pick(CARS);
-  const year    = car.year();
-  const color   = pick(COLORS);
-  const mileage = ri(18_000, 140_000);
-  return buildListingEmail({ price: car.price(), currency: car.currency, city, condition: pick(CONDITIONS), color, mileage, year, make: car.make, model: car.model, cc: car.cc });
+  const city              = pick(CITIES);
+  const country           = CITY_COUNTRY[city] || "Tanzania";
+  const car               = pick(CARS);
+  const year              = car.year();
+  const color             = pick(COLORS);
+  const mileage           = ri(18_000, 140_000);
+  const { price, currency } = localPrice(car.usd(), country);
+  return buildListingEmail({ price, currency, city, condition: pick(CONDITIONS), color, mileage, year, make: car.make, model: car.model, cc: car.cc });
 }
 
 function generateSignupEvent() {
