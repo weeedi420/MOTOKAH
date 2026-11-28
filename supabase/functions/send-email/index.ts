@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const ADMIN_INBOX = "motokahafrica@gmail.com";
+const ADMIN_INBOX = "info@motokah.com";
 
 interface EmailPayload {
   /** Pass either a user_id (we look up the email) or a direct email address */
@@ -40,9 +40,18 @@ serve(async (req) => {
     const internalSecret = Deno.env.get("INTERNAL_PUSH_SECRET");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const bearerToken = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+    // Also accept a valid JWT with role=service_role claim
+    let isServiceRole = false;
+    try {
+      if (bearerToken) {
+        const payload = JSON.parse(atob(bearerToken.split(".")[1]));
+        isServiceRole = payload?.role === "service_role";
+      }
+    } catch {}
     let privileged =
       (!!internalSecret && req.headers.get("x-internal-secret") === internalSecret) ||
-      (!!serviceRoleKey && bearerToken === serviceRoleKey);
+      (!!serviceRoleKey && bearerToken === serviceRoleKey) ||
+      isServiceRole;
     if (!privileged) {
       const { data: caller } = bearerToken ? await admin.auth.getUser(bearerToken) : { data: { user: null } };
       if (caller?.user) {

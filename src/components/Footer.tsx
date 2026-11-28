@@ -35,6 +35,7 @@ const columns = [
     { label: "Terms & Conditions", to: "/terms" },
     { label: "Privacy Policy", to: "/privacy" },
     { label: "Safety Tips", to: "/safety" },
+    { label: "info@motokah.com", to: "mailto:info@motokah.com" },
   ]},
 ];
 
@@ -98,9 +99,15 @@ export default function Footer() {
               <ul className="space-y-1.5">
                 {col.links.map(l => (
                   <li key={l.label}>
-                    <Link to={l.to} className="text-xs text-muted-foreground hover:text-primary transition-colors">
-                      {l.label}
-                    </Link>
+                    {l.to.startsWith("mailto:") || l.to.startsWith("http") ? (
+                      <a href={l.to} className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                        {l.label}
+                      </a>
+                    ) : (
+                      <Link to={l.to} className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                        {l.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
