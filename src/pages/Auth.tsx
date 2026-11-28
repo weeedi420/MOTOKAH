@@ -54,7 +54,9 @@ export default function Auth() {
   const navigate = useNavigate();
   const routeLocation = useLocation();
   const { toast } = useToast();
-  const returnTo = (routeLocation.state as { from?: string } | null)?.from;
+  const nextParam = new URLSearchParams(routeLocation.search).get("next");
+  const safeNext = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : undefined;
+  const returnTo = (routeLocation.state as { from?: string } | null)?.from ?? safeNext;
   usePageTitle(tab === "login" ? "Sign In" : tab === "register" ? "Create Account" : tab === "otp" ? "Magic Link" : "Reset Password");
 
   // Redirect already-logged-in users based on role (in effect to avoid render-phase navigation)
@@ -102,7 +104,7 @@ export default function Auth() {
         if (error) throw error;
         toast({ title: "Welcome back!" });
       } else if (tab === "register") {
-        const { error } = await signUp(email, password, name);
+        const { error } = await signUp(email, password, name, isDealer ? "/become-dealer" : returnTo);
         if (error) throw error;
         toast({ title: "Account created!", description: "Check your email to verify your account." });
         if (isDealer) {

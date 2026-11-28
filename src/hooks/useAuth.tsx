@@ -50,7 +50,7 @@ interface AuthContextType {
   profile: UserProfile | null;
   isAdmin: boolean;
   isDealer: boolean;
-  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, displayName?: string, next?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
@@ -135,14 +135,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string, displayName?: string) => {
+  const signUp = async (email: string, password: string, displayName?: string, next?: string) => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: { display_name: displayName || email },
-          emailRedirectTo: getAppUrl('/auth?verified=1'),
+          // `next` survives the email-confirmation round trip, so a dealer who signed up from an
+          // outreach email lands back on the dealer form, not their profile.
+          emailRedirectTo: getAppUrl(`/auth?verified=1${next ? `&next=${encodeURIComponent(next)}` : ""}`),
         },
       });
       if (error) return { error: new Error(error.message) };
