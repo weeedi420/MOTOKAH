@@ -22,8 +22,15 @@ export default defineConfig(({ mode }) => ({
         description: "Find Your Perfect Ride Across Africa",
         theme_color: "#0066CC",
         background_color: "#0F0F0F",
-        display: "standalone",
+        // Motokah has real iOS/Android apps now, so the website is no longer offered as an
+        // installable web app ("Add to Home Screen"). Browsers that support it point to the
+        // Play Store app instead.
+        display: "browser",
         start_url: "/",
+        prefer_related_applications: true,
+        related_applications: [
+          { platform: "play", url: "https://play.google.com/store/apps/details?id=com.motokah.app", id: "com.motokah.app" },
+        ],
         icons: [
           { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
           { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
