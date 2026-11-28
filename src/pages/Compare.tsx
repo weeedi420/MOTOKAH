@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings } from "@/data/mockData";
 import { isRealUuid } from "@/lib/uuid";
+import { listingSlug } from "@/lib/listingSlug";
 import { IconX, IconScale } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -159,7 +160,7 @@ export default function Compare() {
                           <IconX size={12} />
                         </button>
                         <img src={car.image} alt={car.title} className="w-full h-32 object-contain rounded-lg mb-2" />
-                        <Link to={`/listing/${car.id}`} className="text-sm font-semibold text-foreground hover:text-primary line-clamp-2">
+                        <Link to={`/listing/${listingSlug(car)}`} className="text-sm font-semibold text-foreground hover:text-primary line-clamp-2">
                           {car.title}
                         </Link>
                       </div>

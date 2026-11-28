@@ -55,6 +55,7 @@ import {
 // date-fns kept for future use
 import { mockListings } from "@/data/mockData";
 import { isRealUuid } from "@/lib/uuid";
+import { listingSlug } from "@/lib/listingSlug";
 
 type ProfileData = {
   display_name: string | null;
@@ -683,7 +684,7 @@ export default function Profile() {
                 <div className="space-y-2.5">
                   {listings.slice(0, 3).map((l) => (
                     <div key={l.id} className="bg-muted/30 border border-border/80 rounded-xl p-3 flex items-center gap-3 hover:border-primary/40 transition-colors">
-                      <Link to={`/listing/${l.id}`} className="shrink-0">
+                      <Link to={`/listing/${listingSlug(l)}`} className="shrink-0">
                         <img
                           src={l.image || "/placeholder.svg"}
                           alt={l.title}
@@ -692,7 +693,7 @@ export default function Profile() {
                         />
                       </Link>
                       <div className="min-w-0 flex-1">
-                        <Link to={`/listing/${l.id}`} className="text-sm font-bold text-foreground hover:text-primary truncate block">
+                        <Link to={`/listing/${listingSlug(l)}`} className="text-sm font-bold text-foreground hover:text-primary truncate block">
                           {l.title}
                         </Link>
                         <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
@@ -758,7 +759,7 @@ export default function Profile() {
                 {listings.map((l) => (
                   <div key={l.id} className="bg-card border border-border rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row gap-3.5 sm:gap-4 shadow-xs hover:border-primary/40 transition-all">
                     <div className="relative shrink-0 w-full sm:w-36 h-36 sm:h-28 rounded-xl overflow-hidden bg-muted border border-border">
-                      <Link to={`/listing/${l.id}`}>
+                      <Link to={`/listing/${listingSlug(l)}`}>
                         <img
                           src={l.image || "/placeholder.svg"}
                           alt={l.title}
@@ -779,7 +780,7 @@ export default function Profile() {
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <Link to={`/listing/${l.id}`} className="font-extrabold text-foreground hover:text-primary text-base leading-tight truncate">
+                          <Link to={`/listing/${listingSlug(l)}`} className="font-extrabold text-foreground hover:text-primary text-base leading-tight truncate">
                             {l.title}
                           </Link>
                           <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1 bg-muted/60 px-2 py-0.5 rounded-full">
@@ -804,7 +805,7 @@ export default function Profile() {
 
                       <div className="flex items-center gap-2 shrink-0 pt-3 mt-3 border-t border-border">
                         <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs font-bold rounded-lg">
-                          <Link to={`/listing/${l.id}`}>
+                          <Link to={`/listing/${listingSlug(l)}`}>
                             <IconExternalLink size={14} /> View Ad
                           </Link>
                         </Button>
@@ -862,12 +863,12 @@ export default function Profile() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {wishlistListings.map((l) => (
                   <div key={l.id} className="bg-card border border-border rounded-xl p-3 flex gap-3 hover:shadow-md transition-shadow relative group">
-                    <Link to={`/listing/${l.id}`} className="shrink-0">
+                    <Link to={`/listing/${listingSlug(l)}`} className="shrink-0">
                       <img src={l.image} alt={l.title} className="w-24 h-24 rounded-lg object-contain bg-muted" />
                     </Link>
                     <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                       <div>
-                        <Link to={`/listing/${l.id}`} className="font-bold text-sm text-foreground hover:text-primary truncate block">
+                        <Link to={`/listing/${listingSlug(l)}`} className="font-bold text-sm text-foreground hover:text-primary truncate block">
                           {l.title}
                         </Link>
                         <p className="text-xs font-extrabold text-primary mt-0.5">
@@ -880,7 +881,7 @@ export default function Profile() {
                         )}
                       </div>
                       <div className="flex items-center justify-between pt-2">
-                        <Link to={`/listing/${l.id}`} className="text-xs font-bold text-primary hover:underline">
+                        <Link to={`/listing/${listingSlug(l)}`} className="text-xs font-bold text-primary hover:underline">
                           View Car &rarr;
                         </Link>
                         <button

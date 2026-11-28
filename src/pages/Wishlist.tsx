@@ -6,6 +6,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { supabase } from "@/integrations/supabase/client";
 import { mockListings } from "@/data/mockData";
 import { isRealUuid } from "@/lib/uuid";
+import { listingSlug } from "@/lib/listingSlug";
 import { IconHeart, IconTrash } from "@/components/icons";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ export default function Wishlist() {
           <div className="space-y-3">
             {listings.map((item) => (
               <div key={item.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between">
-                <Link to={`/listing/${item.id}`} className="flex-1">
+                <Link to={`/listing/${listingSlug(item)}`} className="flex-1">
                   <p className="font-semibold text-foreground hover:text-primary text-sm">{item.title}</p>
                   <p className="text-xs text-muted-foreground">{item.currency} {item.price.toLocaleString()} • {item.city || "—"}</p>
                 </Link>

@@ -13,6 +13,7 @@ import {
   IconStarFilled, IconMapPin, IconPhone, IconAlertCircle,
 } from "@/components/icons";
 import { mockDealers } from "@/data/mockData";
+import { listingSlug } from "@/lib/listingSlug";
 import type { Listing } from "@/data/mockData";
 
 type DealerListing = {
@@ -224,7 +225,7 @@ export default function DealerDashboard() {
                   {listings.map(l => (
                     <tr key={l.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
                       <td className="px-5 py-3">
-                        <Link to={`/listing/${l.id}`} className="font-medium text-foreground hover:text-primary line-clamp-1">
+                        <Link to={`/listing/${listingSlug({ id: l.id, year: l.year, make: l.make, model: l.model, location: l.city })}`} className="font-medium text-foreground hover:text-primary line-clamp-1">
                           {l.title}
                         </Link>
                         <p className="text-xs text-muted-foreground">{l.year} · {l.make}</p>
@@ -243,7 +244,7 @@ export default function DealerDashboard() {
                       <td className="px-5 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                            <Link to={`/listing/${l.id}`}><IconExternalLink size={14} /></Link>
+                            <Link to={`/listing/${listingSlug({ id: l.id, year: l.year, make: l.make, model: l.model, location: l.city })}`}><IconExternalLink size={14} /></Link>
                           </Button>
                           <Button
                             variant="ghost"

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings, getShowroomListings, mockDealers } from "@/data/mockData";
 import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing, isStaticListingId } from "@/lib/listingQuality";
+import { idFromSlug } from "@/lib/listingSlug";
 
 export interface ListingWithDescription extends Listing {
   description?: string | null;
@@ -15,7 +16,8 @@ export function useListing(id: string | undefined) {
   useEffect(() => {
     if (!id) { setLoading(false); return; }
 
-    const staticId = id.startsWith("mock-") ? id.replace(/^mock-/, "stock-") : id;
+    const resolved = idFromSlug(id);
+    const staticId = resolved.startsWith("mock-") ? resolved.replace(/^mock-/, "stock-") : resolved;
     if (isStaticListingId(staticId)) {
       let mock: Listing | undefined = mockListings.find((m) => m.id === staticId);
 
@@ -50,7 +52,7 @@ export function useListing(id: string | undefined) {
       const { data: r, error } = await supabase
         .from("listings")
         .select("*, listing_images(image_url, display_order)")
-        .eq("id", id)
+        .eq("id", resolved)
         .single();
 
       if (error || !r) { setLoading(false); return; }

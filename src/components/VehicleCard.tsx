@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { usePriceFormatter } from "@/lib/prices";
 import { cardImageUrl, fullImageUrl, normalizeImageUrl } from "@/lib/imageUrls";
+import { listingSlug } from "@/lib/listingSlug";
 
 export default function VehicleCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
   const { user } = useAuth();
@@ -113,7 +114,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   const showPlaceholder = !imgLoaded || imgError;
 
   return (
-    <Link to={`/listing/${listing.id}`} className="group block w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02]">
+    <Link to={`/listing/${listingSlug(listing)}`} className="group block w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02]">
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {/* Skeleton placeholder */}

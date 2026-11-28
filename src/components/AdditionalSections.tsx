@@ -1,4 +1,5 @@
 import { IconClockPlus, IconTrophy, IconDiamond } from "@/components/icons";
+import { listingSlug } from "@/lib/listingSlug";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useEffect, useState } from "react";
@@ -116,7 +117,7 @@ export function SpecialDeals() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {deals.map(l => (
-          <a key={l.id} href={`/listing/${l.id}`} className="flex flex-col sm:flex-row bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all group">
+          <a key={l.id} href={`/listing/${listingSlug(l)}`} className="flex flex-col sm:flex-row bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all group">
             <div className="relative sm:w-2/5 aspect-[4/3] sm:aspect-auto overflow-hidden bg-muted">
               <img src={l.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70" loading="lazy" />
               <img src={l.image} alt={l.title} className="relative w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />
