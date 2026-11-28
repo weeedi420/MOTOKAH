@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const defaultForwardRecipients = [
   "waleedmurtazamalik@gmail.com",
@@ -157,6 +158,13 @@ serve(async (req) => {
     }
 
     const inbound = event.data ?? {};
+    // A reply from a dealer we emailed stops the outreach autopilot from following up.
+    const senderEmail = (typeof inbound.from === "string" ? inbound.from : inbound.from?.email || "")
+      .match(/[^<\s]+@[^>\s]+/)?.[0]?.toLowerCase();
+    if (senderEmail) {
+      const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      await db.from("dealer_outreach_contacts").update({ status: "replied" }).eq("email", senderEmail).in("status", ["pending", "contacted", "done"]);
+    }
     const forwardRecipients = getForwardRecipients();
     const from = formatAddress(inbound.from);
     const to = formatRecipients(inbound.to);
